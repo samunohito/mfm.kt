@@ -1,7 +1,10 @@
 package com.github.samunohito.mfm.internal.core.type.node
 
-class MfmUrl(override val props: Props) : IMfmBlock<MfmUrl.Props> {
-  override val type = MfmNodeType.HashTag
+data class MfmLink(
+  override val props: Props,
+  override val children: List<IMfmInline<*>>
+) : IMfmBlock<MfmLink.Props>, IMfmIncludeChildren {
+  override val type = MfmNodeType.Link
 
-  data class Props(val url: String, val brackets: Boolean?) : IMfmProps
+  data class Props(val silent: Boolean, val url: String) : IMfmProps
 }

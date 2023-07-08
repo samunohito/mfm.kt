@@ -1,8 +1,7 @@
 package com.github.samunohito.mfm.internal.core.type.node
 
-class MfmQuote(override val children: List<IMfmNode<*>>) : IMfmBlock<MfmQuote.MfmQuoteProps>, IMfmIncludeChildren {
-  override val type = MfmNodeType.Quote
-  override val props = MfmQuoteProps()
+data class MfmSearch(override val props: Props) : IMfmBlock<MfmSearch.Props> {
+  override val type = MfmNodeType.Search
 
-  class MfmQuoteProps : IMfmProps
+  data class Props(val query: String, val content: String) : IMfmProps
 }

@@ -1,10 +1,10 @@
 package com.github.samunohito.mfm.internal.core.type.node
 
-class MfmLink(
+data class MfmFn(
   override val props: Props,
   override val children: List<IMfmInline<*>>
-) : IMfmBlock<MfmLink.Props>, IMfmIncludeChildren {
-  override val type = MfmNodeType.Link
+) : IMfmBlock<MfmFn.Props>, IMfmIncludeChildren {
+  override val type = MfmNodeType.Fn
 
-  data class Props(val silent: Boolean, val url: String) : IMfmProps
+  data class Props(val name: Boolean, val args: Map<String, Any>) : IMfmProps
 }

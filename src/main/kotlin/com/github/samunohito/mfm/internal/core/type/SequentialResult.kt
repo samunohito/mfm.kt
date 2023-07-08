@@ -1,13 +1,15 @@
 package com.github.samunohito.mfm.internal.core.type
 
-data class SeparateResult<T>(
-  val all: List<T>
-) {
-  fun select(index: Int): T {
-    if (all.size < index) {
-      throw IllegalArgumentException("index out of bounds : $index")
-    }
+import com.github.samunohito.mfm.internal.core.Parser
 
-    return all[index]
+class SequentialResult<T>(
+  private val parser: Parser<List<T>>
+) {
+  fun all(): Parser<List<T>> {
+    return parser
+  }
+
+  fun select(index: Int): Parser<T> {
+    return parser.map { it[index] }
   }
 }

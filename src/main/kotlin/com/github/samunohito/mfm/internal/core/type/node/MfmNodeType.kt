@@ -1,4 +1,4 @@
-package com.github.samunohito.mfm.internal.core.type
+package com.github.samunohito.mfm.internal.core.type.node
 
 enum class MfmNodeType {
   Quote,
@@ -21,4 +21,5 @@ enum class MfmNodeType {
   Fn,
   Plain,
   Text,
+  String,
 }

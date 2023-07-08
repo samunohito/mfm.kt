@@ -1,6 +1,6 @@
 package com.github.samunohito.mfm.internal.core.type.node
 
-interface MfmNode<T : MfmProps> {
+interface IMfmNode<T : IMfmProps> {
   val type: MfmNodeType
   val props: T
 }

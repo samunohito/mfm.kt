@@ -1,7 +1,7 @@
 package com.github.samunohito.mfm.internal.core.type.node
 
-class MfmCodeBlock(override val props: Props) : IMfmBlock<MfmCodeBlock.Props> {
-  override val type = MfmNodeType.BlockCode
+data class MfmInlineCode(override val props: Props) : IMfmBlock<MfmInlineCode.Props> {
+  override val type = MfmNodeType.InlineCode
 
-  data class Props(val code: String, val lang: String?) : IMfmProps
+  data class Props(val code: String) : IMfmProps
 }

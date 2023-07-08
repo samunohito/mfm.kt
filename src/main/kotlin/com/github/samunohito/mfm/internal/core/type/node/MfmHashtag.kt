@@ -1,7 +1,7 @@
 package com.github.samunohito.mfm.internal.core.type.node
 
-class MfmMention(override val props: Props) : IMfmBlock<MfmMention.Props> {
-  override val type = MfmNodeType.Mention
+data class MfmHashtag(override val props: Props) : IMfmBlock<MfmHashtag.Props> {
+  override val type = MfmNodeType.HashTag
 
-  data class Props(val username: String, val host: String?, val acct: String) : IMfmProps
+  data class Props(val hashtag: String) : IMfmProps
 }

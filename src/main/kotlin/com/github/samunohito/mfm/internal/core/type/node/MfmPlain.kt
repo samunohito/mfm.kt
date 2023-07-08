@@ -1,7 +1,6 @@
 package com.github.samunohito.mfm.internal.core.type.node
 
-class MfmHashtag(override val props: Props) : IMfmBlock<MfmHashtag.Props> {
-  override val type = MfmNodeType.HashTag
-
-  data class Props(val hashtag: String) : IMfmProps
+data class MfmPlain(override val children: List<MfmText>) : IMfmBlock<MfmPropsEmpty>, IMfmIncludeChildren {
+  override val type = MfmNodeType.Plain
+  override val props = MfmPropsEmpty
 }

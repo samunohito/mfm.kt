@@ -10,6 +10,7 @@ repositories {
 }
 
 dependencies {
+    implementation 'ch.qos.logback:logback-classic:1.4.8'
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
 }
 

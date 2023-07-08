@@ -1,7 +1,7 @@
 package com.github.samunohito.mfm.internal.core.type.node
 
-class MfmMathInline(override val props: Props) : IMfmBlock<MfmMathInline.Props> {
-  override val type = MfmNodeType.MathInline
+data class MfmMention(override val props: Props) : IMfmBlock<MfmMention.Props> {
+  override val type = MfmNodeType.Mention
 
-  data class Props(val formula: String) : IMfmProps
+  data class Props(val username: String, val host: String?, val acct: String) : IMfmProps
 }

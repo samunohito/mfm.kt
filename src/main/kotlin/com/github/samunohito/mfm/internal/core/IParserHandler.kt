@@ -1,5 +1,8 @@
-package com.github.samunohito.mfm.internal.core.type
+package com.github.samunohito.mfm.internal.core
+
+import com.github.samunohito.mfm.internal.core.type.Params
+import com.github.samunohito.mfm.internal.core.type.Result
 
 fun interface IParserHandler<T> {
-  fun handle(input: String, index: Int, state: ParserHandlerState): Result<T>
+  fun handle(params: Params): Result<T>
 }
