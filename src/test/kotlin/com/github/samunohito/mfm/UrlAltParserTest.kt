@@ -1,8 +1,7 @@
 package com.github.samunohito.mfm
 
 import com.github.samunohito.mfm.node.MfmUrl
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
 class UrlAltParserTest {
@@ -23,10 +22,17 @@ class UrlAltParserTest {
   }
 
   @Test
-  fun `ignore label text included url`() {
-    val url = "https://大石泉すき.com#anchor?query=string"
-    val input = "[<click here>](<$url>)"
-    assertUrlAlt(MfmUrl(url, true), input)
+  fun `ignore open angle bracket only`() {
+    val url = "https://example.com#anchor?query=string"
+    val input = "<$url"
+    assertFalse(parser.parse(input, 0).success)
+  }
+
+  @Test
+  fun `ignore close angle bracket only`() {
+    val url = "https://example.com#anchor?query=string"
+    val input = "$url>"
+    assertFalse(parser.parse(input, 0).success)
   }
 
   private fun assertUrlAlt(expected: MfmUrl, input: String) {

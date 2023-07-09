@@ -30,7 +30,7 @@ class SearchParser : IParser<MfmSearch> {
 
           val result = SubstringFinderUtils.sequential(input, latestIndex, searchButtonFinders)
           if (result.success) {
-            // 削除ボタンの検出が成功したら、クエリの範囲がわかるのでそれを返す
+            // 削除ボタンの検出が成功したらクエリの範囲がわかるので、それを返す
             val queryRange = startAt until latestIndex
             return SubstringFinderResult.ofSuccess(input, queryRange, queryRange.last + 1)
           }

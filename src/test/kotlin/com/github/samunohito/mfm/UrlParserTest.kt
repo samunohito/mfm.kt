@@ -3,12 +3,11 @@ package com.github.samunohito.mfm
 import com.github.samunohito.mfm.node.MfmUrl
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
 class UrlParserTest {
   private val context = UrlParser.Context(
-    ignoreLinkLabel = false,
+    disabled = false,
     recursiveDepthLimit = 20,
   )
   private val parser = UrlParser(context)
@@ -23,18 +22,18 @@ class UrlParserTest {
   }
 
   @Test
-  fun `with other texts`() {
+  fun `ignore trailing period`() {
     val url = "https://misskey.io/@ai"
-    val input = "official instance: ${url}."
+    val input = "${url}."
     val output = MfmUrl(url, false)
 
     assertUrl(output, parser.parse(input).node)
   }
 
   @Test
-  fun `ignore trailing period`() {
+  fun `ignore trailing brackets`() {
     val url = "https://misskey.io/@ai"
-    val input = "${url}."
+    val input = "${url})"
     val output = MfmUrl(url, false)
 
     assertUrl(output, parser.parse(input).node)
@@ -83,42 +82,6 @@ class UrlParserTest {
   }
 
   @Test
-  fun `ignore parent brackets`() {
-    val url = "https://example.com/foo"
-    val input = "($url)"
-    val output = MfmUrl(url, false)
-
-    assertUrl(output, parser.parse(input).node)
-  }
-
-  @Test
-  fun `ignore parent brackets (2)`() {
-    val url = "https://example.com/foo"
-    val input = "(foo $url)"
-    val output = MfmUrl(url, false)
-
-    assertUrl(output, parser.parse(input).node)
-  }
-
-  @Test
-  fun `ignore parent brackets with internal brackets`() {
-    val url = "https://example.com/foo(bar)"
-    val input = "($url)"
-    val output = MfmUrl(url, false)
-
-    assertUrl(output, parser.parse(input).node)
-  }
-
-  @Test
-  fun `ignore parent squareBrackets`() {
-    val url = "https://example.com/foo"
-    val input = "foo [$url] bar"
-    val output = MfmUrl(url, false)
-
-    assertUrl(output, parser.parse(input).node)
-  }
-
-  @Test
   fun `ignore non-ascii characters contained url without angle brackets`() {
     val url = "https://大石泉すき.example.com"
     assertFalse(parser.parse(url).success)
@@ -128,25 +91,6 @@ class UrlParserTest {
   fun `prevent xss`() {
     val url = "javascript:foo"
     assertFalse(parser.parse(url).success)
-  }
-
-  @Test
-  fun `support link label format`() {
-    val url = "https://example.com/foo"
-    val input = "[click here]($url)"
-    val output = MfmUrl(url, false)
-
-    assertUrl(output, parser.parse(input).node)
-  }
-
-  @Test
-  fun `ignore label text included url`() {
-    val url = "https://example.com/foo"
-    val input = "[https://example.com/bar]($url)"
-    val output = MfmUrl(url, false)
-
-    context.ignoreLinkLabel = true
-    assertUrl(output, parser.parse(input).node)
   }
 
   private fun assertUrl(expect: MfmUrl, actual: MfmUrl) {

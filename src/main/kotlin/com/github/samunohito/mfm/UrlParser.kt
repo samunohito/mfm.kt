@@ -1,20 +1,23 @@
 package com.github.samunohito.mfm
 
-import com.github.samunohito.mfm.internal.core.*
+import com.github.samunohito.mfm.internal.core.ISubstringFinder
+import com.github.samunohito.mfm.internal.core.RegexFinder
+import com.github.samunohito.mfm.internal.core.SubstringFinderResult
+import com.github.samunohito.mfm.internal.core.SubstringFinderUtils
 import com.github.samunohito.mfm.node.MfmUrl
 
 class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl> {
   companion object {
     private val defaultContext: Context = Context(
-      ignoreLinkLabel = false,
+      disabled = false,
       recursiveDepthLimit = 20
     )
     private val commaAndPeriodRegex = Regex("[.,]+$")
+    private val schemaFinder = RegexFinder(Regex("https?://"))
+    private val wordFinder = RegexFinder(Regex("[.,a-z0-9_/:%#@\\\\$&?!~=+\\-]+"))
 
-    private class UrlFinder(private val context: Context) : CharSequenceFinderBase() {
+    private class UrlFinder(private val context: Context) : ISubstringFinder {
       companion object {
-        private val schemaFinder = RegexFinder(Regex("https?://"))
-        private val wordFinder = RegexFinder(Regex("[.,a-z0-9_/:%#@\\\\$&?!~=+\\-]+"))
         private val openRegexBracket = RegexFinder(Regex("([(\\[])"))
         private val closeRegexBracket = RegexFinder(Regex("([)\\]])"))
 
@@ -25,37 +28,25 @@ class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl>
         )
       }
 
-      override fun doScanning(text: String, startAt: Int): SubstringFinderResult {
+      override fun find(input: String, startAt: Int): SubstringFinderResult {
         var latestIndex = startAt
-        if (context.ignoreLinkLabel) {
-          val scanLinkResult = UrlFinderUtils.scanLink(text, startAt)
-          if (scanLinkResult.success) {
-            // URLの開始部分まで一気に飛ばす
-            latestIndex = scanLinkResult.hrefContents.range.first
-          }
-        }
-
-        val schemaResult = schemaFinder.find(text, latestIndex)
-        if (!schemaResult.success) {
-          return SubstringFinderResult.ofFailure(text, IntRange.EMPTY, -1)
-        }
-
         val bodyResults = mutableListOf<SubstringFinderResult>()
-        latestIndex = schemaResult.next
 
         for (depth in 0 until context.recursiveDepthLimit) {
-          // URLについたカッコとその中身の取得を試みる
-          val bracketResult = SubstringFinderUtils.sequential(text, latestIndex, regexBracketWrappedFinders)
-          if (bracketResult.success) {
-            bodyResults.add(bracketResult)
-            latestIndex = bracketResult.next
-            continue
-          }
-
-          val wordResult = wordFinder.find(text, latestIndex)
+          val wordResult = wordFinder.find(input, latestIndex)
           if (wordResult.success) {
             bodyResults.add(wordResult)
             latestIndex = wordResult.next
+            continue
+          }
+
+          // URLについたカッコとその中身の取得を試みる
+          // wordFinderのパターンにカッコを含めるとリンク形式の終了カッコ検出時に支障が出るので、
+          // URL中のみで開始～終了のカッコが揃っているパターンを検出したい
+          val bracketResult = SubstringFinderUtils.sequential(input, latestIndex, regexBracketWrappedFinders)
+          if (bracketResult.success) {
+            bodyResults.add(bracketResult)
+            latestIndex = bracketResult.next
             continue
           }
 
@@ -63,33 +54,21 @@ class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl>
         }
 
         if (bodyResults.isEmpty()) {
-          return SubstringFinderResult.ofFailure(text, IntRange.EMPTY, -1)
+          return SubstringFinderResult.ofFailure(input, IntRange.EMPTY, -1)
         }
 
         val bodyRange = bodyResults.first().range.first..bodyResults.last().range.last
-        val urlRange = schemaResult.range.first..bodyRange.last
-        return SubstringFinderResult.ofSuccess(
-          text,
-          urlRange,
-          urlRange.last + 1,
-          listOf(
-            schemaResult,
-            SubstringFinderResult.ofSuccess(
-              text,
-              bodyRange,
-              bodyRange.last + 1,
-              bodyResults
-            )
-          )
-        )
+        return SubstringFinderResult.ofSuccess(input, bodyRange, bodyRange.last + 1, bodyResults)
       }
-
     }
   }
 
   override fun parse(input: String, startAt: Int): ParserResult<MfmUrl> {
-    val urlFinder = UrlFinder(context)
-    val result = urlFinder.find(input, startAt)
+    if (context.disabled) {
+      return ParserResult.ofFailure()
+    }
+
+    val result = SubstringFinderUtils.sequential(input, startAt, listOf(schemaFinder, UrlFinder(context)))
     if (!result.success) {
       return ParserResult.ofFailure()
     }
@@ -124,7 +103,7 @@ class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl>
   }
 
   data class Context(
-    var ignoreLinkLabel: Boolean,
+    var disabled: Boolean,
     val recursiveDepthLimit: Int,
   )
 }
