@@ -22,8 +22,9 @@ class SubstringFinderResult private constructor(
       input: String,
       range: IntRange,
       next: Int,
+      nestResult: List<SubstringFinderResult> = emptyList()
     ): SubstringFinderResult {
-      return SubstringFinderResult(false, input, range, next)
+      return SubstringFinderResult(false, input, range, next, nestResult)
     }
   }
 }

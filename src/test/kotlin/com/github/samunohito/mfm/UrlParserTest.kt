@@ -6,7 +6,10 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
 
 class UrlParserTest {
-  private val parser = UrlParser()
+  private val context = UrlParser.Context(
+    ignoreLinkLabel = false
+  )
+  private val parser = UrlParser(context)
 
   @Test
   fun `basic`() {
@@ -116,16 +119,32 @@ class UrlParserTest {
   @Test
   fun `ignore non-ascii characters contained url without angle brackets`() {
     val url = "https://大石泉すき.example.com"
-    val input = "$url"
-    val output = MfmUrl(url, false)
-
-    assertUrl(output, parser.parse(input).node)
+    assertFalse(parser.parse(url).success)
   }
 
   @Test
   fun `prevent xss`() {
     val url = "javascript:foo"
     assertFalse(parser.parse(url).success)
+  }
+
+  @Test
+  fun `support link label format`() {
+    val url = "https://example.com/foo"
+    val input = "[click here]($url)"
+    val output = MfmUrl(url, false)
+
+    assertUrl(output, parser.parse(input).node)
+  }
+
+  @Test
+  fun `ignore label text included url`() {
+    val url = "https://example.com/foo"
+    val input = "[https://example.com/bar]($url)"
+    val output = MfmUrl(url, false)
+
+    context.ignoreLinkLabel = true
+    assertUrl(output, parser.parse(input).node)
   }
 
   private fun assertUrl(expect: MfmUrl, actual: MfmUrl) {
