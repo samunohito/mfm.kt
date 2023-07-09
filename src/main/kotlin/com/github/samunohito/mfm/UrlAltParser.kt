@@ -1,48 +1,74 @@
 package com.github.samunohito.mfm
 
-import com.github.samunohito.mfm.internal.core.CharSequenceFinderBase
-import com.github.samunohito.mfm.internal.core.RegexFinder
-import com.github.samunohito.mfm.internal.core.StringFinder
-import com.github.samunohito.mfm.internal.core.SubstringFinderUtils
+import com.github.samunohito.mfm.internal.core.*
 import com.github.samunohito.mfm.node.MfmUrl
 
-class UrlAltParser : IParser<MfmUrl> {
+class UrlAltParser(private val context: Context = defaultContext) : IParser<MfmUrl> {
   companion object {
+    private val defaultContext: Context = Context(
+      ignoreLinkLabel = false
+    )
+
     private val open = StringFinder("<")
     private val close = StringFinder(">")
-    private val protocol = RegexFinder(Regex("https?://"))
+    private val schema = RegexFinder(Regex("https?://"))
+    private val inequalityBracketWrappers = listOf(
+      open,
+      schema,
+      ScanningFinder(ScanningFinder.Context { it == '>' }),
+      close,
+    )
 
-    private object UrlFinder : CharSequenceFinderBase() {
-      override fun hasNext(text: String, startAt: Int): Boolean {
-        // 開始・終了のブラケットが見つかるまで
-        if (SubstringFinderUtils.alternative(text, startAt, listOf(open, close)).success) {
-          return false
+    private class UrlFinder(private val context: Context) : ISubstringFinder {
+      override fun find(input: String, startAt: Int): SubstringFinderResult {
+        val inputRange = startAt until input.length
+        val text = input.slice(inputRange)
+        for (i in text.indices) {
+          val result = doFind(text, i)
+          if (result.success) {
+            return result
+          }
         }
 
-        return true
+        return SubstringFinderResult.ofFailure(input, IntRange.EMPTY, inputRange.last + 1)
+      }
+
+      private fun doFind(text: String, startAt: Int): SubstringFinderResult {
+        var latestIndex = startAt
+        if (context.ignoreLinkLabel) {
+          val scanLinkResult = UrlFinderUtils.scanLink(text, startAt)
+          if (scanLinkResult.success) {
+            // URLの開始部分まで一気に飛ばす
+            latestIndex = scanLinkResult.hrefContents.range.first
+          }
+        }
+
+        // 開始・終了のブラケットが見つかるまで
+        val scanResult = SubstringFinderUtils.sequential(text, latestIndex, inequalityBracketWrappers)
+        if (scanResult.success) {
+          val schema = scanResult.nests[1]
+          val body = scanResult.nests[2]
+          val urlRange = schema.range.first..body.range.last
+          return SubstringFinderResult.ofSuccess(text, urlRange, scanResult.next)
+        }
+
+        return SubstringFinderResult.ofFailure(text, IntRange.EMPTY, scanResult.next)
       }
     }
   }
 
   override fun parse(input: String, startAt: Int): ParserResult<MfmUrl> {
-    val chainResult = SubstringFinderUtils.sequential(
-      input,
-      startAt,
-      listOf(
-        open,
-        protocol,
-        UrlFinder,
-        close
-      )
-    )
-
-    if (!chainResult.success) {
+    val result = UrlFinder(context).find(input, startAt)
+    if (!result.success) {
       return ParserResult.ofFailure()
     }
 
-    val protocol = input.substring(chainResult.nests[1].range)
-    val body = input.substring(chainResult.nests[2].range)
-    val urlRange = chainResult.nests[1].range.first..chainResult.nests[2].range.last
-    return ParserResult.ofSuccess(MfmUrl(protocol + body, true), input, urlRange, chainResult.next)
+    val url = input.substring(result.range)
+    return ParserResult.ofSuccess(MfmUrl(url, true), input, result.range, result.next)
   }
+
+  data class Context(
+    // TODO:もしかしたらいらない説
+    var ignoreLinkLabel: Boolean
+  )
 }

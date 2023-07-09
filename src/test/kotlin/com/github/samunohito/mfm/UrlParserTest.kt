@@ -3,11 +3,13 @@ package com.github.samunohito.mfm
 import com.github.samunohito.mfm.node.MfmUrl
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
 class UrlParserTest {
   private val context = UrlParser.Context(
-    ignoreLinkLabel = false
+    ignoreLinkLabel = false,
+    recursiveDepthLimit = 20,
   )
   private val parser = UrlParser(context)
 

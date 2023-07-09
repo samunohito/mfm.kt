@@ -5,49 +5,26 @@ import com.github.samunohito.mfm.node.MfmUrl
 
 class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl> {
   companion object {
-    private const val recursiveDepthLimit = 20
     private val defaultContext: Context = Context(
-      ignoreLinkLabel = false
+      ignoreLinkLabel = false,
+      recursiveDepthLimit = 20
     )
     private val commaAndPeriodRegex = Regex("[.,]+$")
 
-    private val schemaFinder = RegexFinder(Regex("https?://"))
-    private val wordFinder = RegexFinder(Regex("[.,a-z0-9_/:%#@\\\\$&?!~=+\\-]+"))
-    private val openBracket = StringFinder("(")
-    private val closeBracket = StringFinder(")")
-    private val openSquareBracket = StringFinder("[")
-    private val closeSquareBracket = StringFinder("]")
-    private val openRegexBracket = RegexFinder(Regex("([(\\[])"))
-    private val closeRegexBracket = RegexFinder(Regex("([)\\]])"))
+    private class UrlFinder(private val context: Context) : ISubstringFinder {
+      companion object {
+        private val schemaFinder = RegexFinder(Regex("https?://"))
+        private val wordFinder = RegexFinder(Regex("[.,a-z0-9_/:%#@\\\\$&?!~=+\\-]+"))
+        private val openRegexBracket = RegexFinder(Regex("([(\\[])"))
+        private val closeRegexBracket = RegexFinder(Regex("([)\\]])"))
 
-    private val linkLabelFinders = listOf(
-      openSquareBracket,
-      wordFinder,
-      closeSquareBracket,
-      openBracket,
-      wordFinder,
-      closeBracket,
-    )
+        private val regexBracketWrappedFinders = listOf(
+          openRegexBracket,
+          wordFinder,
+          closeRegexBracket,
+        )
+      }
 
-    private val bracketWrappedFinders = listOf(
-      openBracket,
-      wordFinder,
-      closeBracket,
-    )
-
-    private val squareBracketWrappedFinders = listOf(
-      openSquareBracket,
-      wordFinder,
-      closeSquareBracket,
-    )
-
-    private val regexBracketWrappedFinders = listOf(
-      openRegexBracket,
-      wordFinder,
-      closeRegexBracket,
-    )
-
-    private class UrlFinder(val context: Context) : ISubstringFinder {
       override fun find(input: String, startAt: Int): SubstringFinderResult {
         val inputRange = startAt until input.length
         val text = input.slice(inputRange)
@@ -63,52 +40,34 @@ class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl>
 
       private fun doFind(text: String, startAt: Int): SubstringFinderResult {
         var latestIndex = startAt
-        val linkLabelFinderResult = SubstringFinderUtils.sequential(text, latestIndex, linkLabelFinders)
-        if (linkLabelFinderResult.success && context.ignoreLinkLabel) {
-          // リンク形式として完成している場合はリンクラベル部分を無視してhref部分をチェックしたい
-          val labelFinderResult = SubstringFinderUtils.sequential(text, latestIndex, squareBracketWrappedFinders)
-          val hrefFinderResult = SubstringFinderUtils.sequential(text, labelFinderResult.next, bracketWrappedFinders)
-          if (hrefFinderResult.nests.isNotEmpty()) {
-            // 開始カッコだけでも検出できたらURLの開始部分まで一気に飛ばす
-            latestIndex = hrefFinderResult.nests[1].range.first
+        if (context.ignoreLinkLabel) {
+          val scanLinkResult = UrlFinderUtils.scanLink(text, startAt)
+          if (scanLinkResult.success) {
+            // URLの開始部分まで一気に飛ばす
+            latestIndex = scanLinkResult.hrefContents.range.first
           }
         }
 
         val schemaResult = schemaFinder.find(text, latestIndex)
-        if (schemaResult.success) {
-          val urlBodyResult = findUrlBody(text, schemaResult.next)
-          if (urlBodyResult.success) {
-            val urlRange = schemaResult.range.first..urlBodyResult.range.last
-            return SubstringFinderResult.ofSuccess(
-              text,
-              urlRange,
-              urlRange.last + 1,
-              listOf(
-                schemaResult,
-                urlBodyResult,
-              )
-            )
-          }
+        if (!schemaResult.success) {
+          return SubstringFinderResult.ofFailure(text, IntRange.EMPTY, -1)
         }
 
-        return SubstringFinderResult.ofFailure(text, IntRange.EMPTY, -1)
-      }
+        val bodyResults = mutableListOf<SubstringFinderResult>()
+        latestIndex = schemaResult.next
 
-      private fun findUrlBody(text: String, startAt: Int): SubstringFinderResult {
-        val results = mutableListOf<SubstringFinderResult>()
-        var latestIndex = startAt
-
-        for (depth in 0 until recursiveDepthLimit) {
+        for (depth in 0 until context.recursiveDepthLimit) {
+          // URLについたカッコとその中身の取得を試みる
           val bracketResult = SubstringFinderUtils.sequential(text, latestIndex, regexBracketWrappedFinders)
           if (bracketResult.success) {
-            results.add(bracketResult)
+            bodyResults.add(bracketResult)
             latestIndex = bracketResult.next
             continue
           }
 
           val wordResult = wordFinder.find(text, latestIndex)
           if (wordResult.success) {
-            results.add(wordResult)
+            bodyResults.add(wordResult)
             latestIndex = wordResult.next
             continue
           }
@@ -116,15 +75,28 @@ class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl>
           break
         }
 
-        if (results.isEmpty()) {
+        if (bodyResults.isEmpty()) {
           return SubstringFinderResult.ofFailure(text, IntRange.EMPTY, -1)
         }
 
-        val firstResult = results.first()
-        val lastResult = results.last()
-        val resultRange = firstResult.range.first..lastResult.range.last
-        return SubstringFinderResult.ofSuccess(text, resultRange, lastResult.next, results)
+        val bodyRange = bodyResults.first().range.first..bodyResults.last().range.last
+        val urlRange = schemaResult.range.first..bodyRange.last
+        return SubstringFinderResult.ofSuccess(
+          text,
+          urlRange,
+          urlRange.last + 1,
+          listOf(
+            schemaResult,
+            SubstringFinderResult.ofSuccess(
+              text,
+              bodyRange,
+              bodyRange.last + 1,
+              bodyResults
+            )
+          )
+        )
       }
+
     }
   }
 
@@ -165,6 +137,7 @@ class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl>
   }
 
   data class Context(
-    var ignoreLinkLabel: Boolean
+    var ignoreLinkLabel: Boolean,
+    val recursiveDepthLimit: Int,
   )
 }
