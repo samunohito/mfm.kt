@@ -2,6 +2,7 @@ package com.github.samunohito.mfm.internal.core.singleton
 
 import com.github.samunohito.mfm.internal.core.ISubstringFinder
 import com.github.samunohito.mfm.internal.core.SubstringFinderResult
+import jdk.internal.util.xml.impl.Input
 
 object LineBeginFinder : ISubstringFinder {
   override fun find(input: String, startAt: Int): SubstringFinderResult {
@@ -14,9 +15,9 @@ object LineBeginFinder : ISubstringFinder {
     }
 
     return if (result) {
-      SubstringFinderResult.ofSuccess(input, startAt..startAt, startAt)
+      SubstringFinderResult.ofSuccess(input, IntRange.EMPTY, startAt)
     } else {
-      SubstringFinderResult.ofFailure()
+      SubstringFinderResult.ofFailure(input, IntRange.EMPTY, startAt)
     }
   }
 }

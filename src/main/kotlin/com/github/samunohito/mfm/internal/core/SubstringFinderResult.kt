@@ -18,8 +18,12 @@ class SubstringFinderResult private constructor(
       return SubstringFinderResult(true, input, range, next, nestResult)
     }
 
-    fun ofFailure(): SubstringFinderResult {
-      return SubstringFinderResult(false, "", IntRange.EMPTY, -1)
+    fun ofFailure(
+      input: String,
+      range: IntRange,
+      next: Int,
+    ): SubstringFinderResult {
+      return SubstringFinderResult(false, input, range, next)
     }
   }
 }

@@ -13,9 +13,9 @@ object LineEndFinder : ISubstringFinder {
     }
 
     return if (result) {
-      SubstringFinderResult.ofSuccess(input, startAt..startAt, startAt)
+      SubstringFinderResult.ofSuccess(input, IntRange.EMPTY, startAt)
     } else {
-      SubstringFinderResult.ofFailure()
+      SubstringFinderResult.ofFailure(input, IntRange.EMPTY, startAt)
     }
   }
 }

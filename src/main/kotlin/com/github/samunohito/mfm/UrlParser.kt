@@ -9,9 +9,10 @@ class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl>
       ignoreLinkLabel = false
     )
     private val commaAndPeriodRegex = Regex("[.,]+$")
+    private val recursiveDepthLimit = 20
 
     private val schemaFinder = RegexFinder(Regex("https?://"))
-    private val wordFinder = RegexFinder(Regex("[.,a-z0-9_/:%#@\\\\$&?!~=+\\-()]+"))
+    private val wordFinder = RegexFinder(Regex("[.,a-z0-9_/:%#@\\\\$&?!~=+\\-]+"))
     private val openBracket = StringFinder("(")
     private val closeBracket = StringFinder(")")
     private val openSquareBracket = StringFinder("[")
@@ -26,29 +27,22 @@ class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl>
       closeBracket,
     )
 
-    private val labelFinders = listOf(
+    private val bracketWrappedFinders = listOf(
+      openBracket,
+      wordFinder,
+      closeBracket,
+    )
+
+    private val squareBracketWrappedFinders = listOf(
       openSquareBracket,
       wordFinder,
       closeSquareBracket,
     )
 
-    private val hrefFinders = listOf(
-      openBracket,
-      schemaFinder,
-      wordFinder,
-      closeBracket,
-    )
-
-    private val urlFinders = listOf(
-      openBracket.optional(),
-      schemaFinder,
-      wordFinder,
-      closeBracket.optional(),
-    )
-
     private class UrlFinder(val context: Context) : ISubstringFinder {
       override fun find(input: String, startAt: Int): SubstringFinderResult {
-        val text = input.slice(startAt until input.length)
+        val inputRange = startAt until input.length
+        val text = input.slice(inputRange)
         for (i in text.indices) {
           val result = doFind(text, i)
           if (result.success) {
@@ -56,30 +50,41 @@ class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl>
           }
         }
 
-        return SubstringFinderResult.ofFailure()
+        return SubstringFinderResult.ofFailure(input, IntRange.EMPTY, inputRange.last + 1)
       }
 
       private fun doFind(text: String, startAt: Int): SubstringFinderResult {
         val linkLabelFinderResult = SubstringFinderUtils.sequential(text, startAt, linkLabelFinders)
         if (linkLabelFinderResult.success && context.ignoreLinkLabel) {
           // リンク形式として完成している場合はリンクラベル部分を無視してhref部分をチェックしたい
-          val labelFinderResult = SubstringFinderUtils.sequential(text, startAt, labelFinders)
-          val hrefFinderResult = SubstringFinderUtils.sequential(text, labelFinderResult.next, hrefFinders)
+          val labelFinderResult = SubstringFinderUtils.sequential(text, startAt, squareBracketWrappedFinders)
+          val hrefFinderResult = SubstringFinderUtils.sequential(text, labelFinderResult.next, bracketWrappedFinders)
           if (hrefFinderResult.success) {
             return SubstringFinderResult.ofSuccess(text, hrefFinderResult.range, hrefFinderResult.next)
           }
-        } else {
-          val urlFinderResult = SubstringFinderUtils.sequential(text, startAt, urlFinders)
-          if (urlFinderResult.success) {
-            val schema = urlFinderResult.nests[1]
-            val body = urlFinderResult.nests[2]
-
-            val urlRange = schema.range.first..body.range.last
-            return SubstringFinderResult.ofSuccess(text, urlRange, urlFinderResult.next)
-          }
         }
 
-        return SubstringFinderResult.ofFailure()
+        return findNest(text, startAt until text.length, 0, recursiveDepthLimit)
+      }
+
+      private fun findNest(text: String, findRange: IntRange, depth: Int, limit: Int): SubstringFinderResult {
+        if (depth > limit) {
+          return SubstringFinderResult.ofFailure(text, IntRange.EMPTY, -1)
+        }
+
+        val bracketResult = SubstringFinderUtils.sequential(text, findRange.first, bracketWrappedFinders)
+        if (bracketResult.success) {
+          val wordResult = bracketResult.nests[1]
+          return findNest(text, wordResult.range, depth + 1, limit)
+        }
+
+        val squareBracketResult = SubstringFinderUtils.sequential(text, findRange.first, squareBracketWrappedFinders)
+        if (squareBracketResult.success) {
+          val wordResult = squareBracketResult.nests[1]
+          return findNest(text, wordResult.range, depth + 1, limit)
+        }
+
+        return wordFinder.find(text, findRange.first)
       }
     }
   }
@@ -109,7 +114,7 @@ class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl>
     val modifyRange = finderResult.range.first..finderResult.range.last - matched.value.length
     if (modifyRange.isEmpty()) {
       // スキーマ形式で始まるがカンマとピリオドのみの場合はスキーマ形式として認識しない
-      return SubstringFinderResult.ofFailure()
+      return SubstringFinderResult.ofFailure(input, IntRange.EMPTY, finderResult.next)
     }
 
     return SubstringFinderResult.ofSuccess(input, modifyRange, finderResult.next)
