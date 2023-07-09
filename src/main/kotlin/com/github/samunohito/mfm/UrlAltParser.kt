@@ -15,12 +15,12 @@ class UrlAltParser(private val context: Context = defaultContext) : IParser<MfmU
     private val inequalityBracketWrappers = listOf(
       open,
       schema,
-      ScanningFinder(ScanningFinder.Context { it == '>' }),
+      ScanningFinder(ScanningFinder.Context(scanPeriod = ">")),
       close,
     )
 
     private class UrlFinder(private val context: Context) : CharSequenceFinderBase() {
-      override fun doFind(text: String, startAt: Int): SubstringFinderResult {
+      override fun doScanning(text: String, startAt: Int): SubstringFinderResult {
         var latestIndex = startAt
         if (context.ignoreLinkLabel) {
           val scanLinkResult = UrlFinderUtils.scanLink(text, startAt)

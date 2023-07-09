@@ -25,7 +25,7 @@ class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl>
         )
       }
 
-      override fun doFind(text: String, startAt: Int): SubstringFinderResult {
+      override fun doScanning(text: String, startAt: Int): SubstringFinderResult {
         var latestIndex = startAt
         if (context.ignoreLinkLabel) {
           val scanLinkResult = UrlFinderUtils.scanLink(text, startAt)

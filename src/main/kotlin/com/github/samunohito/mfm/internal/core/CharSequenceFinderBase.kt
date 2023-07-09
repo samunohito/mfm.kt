@@ -4,7 +4,7 @@ abstract class CharSequenceFinderBase : ISubstringFinder {
   override fun find(input: String, startAt: Int): SubstringFinderResult {
     val inputRange = startAt until input.length
     for (i in inputRange) {
-      val result = doFind(input, i)
+      val result = doScanning(input, i)
       if (result.success) {
         return result
       }
@@ -13,5 +13,5 @@ abstract class CharSequenceFinderBase : ISubstringFinder {
     return SubstringFinderResult.ofFailure(input, IntRange.EMPTY, inputRange.last + 1)
   }
 
-  protected abstract fun doFind(text: String, startAt: Int): SubstringFinderResult
+  protected abstract fun doScanning(text: String, startAt: Int): SubstringFinderResult
 }
