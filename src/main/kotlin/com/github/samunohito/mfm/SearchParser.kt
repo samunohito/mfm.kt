@@ -1,7 +1,8 @@
 package com.github.samunohito.mfm
 
-import com.github.samunohito.mfm.internal.core.CharSequenceFinderBase
+import com.github.samunohito.mfm.internal.core.ISubstringFinder
 import com.github.samunohito.mfm.internal.core.RegexFinder
+import com.github.samunohito.mfm.internal.core.SubstringFinderResult
 import com.github.samunohito.mfm.internal.core.SubstringFinderUtils
 import com.github.samunohito.mfm.internal.core.singleton.LineBeginFinder
 import com.github.samunohito.mfm.internal.core.singleton.LineEndFinder
@@ -14,23 +15,31 @@ class SearchParser : IParser<MfmSearch> {
     private val buttonPattern = Regex("\\[?(検索|search)]?", RegexOption.IGNORE_CASE)
     private val buttonFinder = RegexFinder(buttonPattern)
 
-    private object QueryFinder : CharSequenceFinderBase() {
-      override fun hasNext(text: String, startAt: Int): Boolean {
-        // 検索フォームの書式（スペース、ボタンパターン、行末）が連続している直前までをクエリとしたい
-        if (NewLineFinder.find(text, startAt).success) {
-          return false
+
+    private object QueryFinder : ISubstringFinder {
+      private val searchButtonFinders = listOf(SpaceFinder, buttonFinder, LineEndFinder)
+
+      override fun find(input: String, startAt: Int): SubstringFinderResult {
+        var latestIndex = startAt
+
+        for (i in startAt until input.length) {
+          if (NewLineFinder.find(input, i).success) {
+            // 改行されていたら検索ボタン形式が破綻するので中断
+            return SubstringFinderResult.ofFailure(input, IntRange.EMPTY, latestIndex + 1)
+          }
+
+          val result = SubstringFinderUtils.sequential(input, latestIndex, searchButtonFinders)
+          if (result.success) {
+            // 削除ボタンの検出が成功したら、クエリの範囲がわかるのでそれを返す
+            val queryRange = startAt until latestIndex
+            return SubstringFinderResult.ofSuccess(input, queryRange, queryRange.last + 1)
+          }
+
+          latestIndex = i
         }
 
-        val buttonFormat = SubstringFinderUtils.sequential(
-          text,
-          startAt,
-          listOf(SpaceFinder, buttonFinder, LineEndFinder)
-        )
-        if (buttonFormat.success) {
-          return false
-        }
-
-        return true
+        // 検索ボタンが見つからなかった
+        return SubstringFinderResult.ofFailure(input, IntRange.EMPTY, latestIndex + 1)
       }
     }
   }

@@ -11,7 +11,7 @@ class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl>
     )
     private val commaAndPeriodRegex = Regex("[.,]+$")
 
-    private class UrlFinder(private val context: Context) : ISubstringFinder {
+    private class UrlFinder(private val context: Context) : CharSequenceFinderBase() {
       companion object {
         private val schemaFinder = RegexFinder(Regex("https?://"))
         private val wordFinder = RegexFinder(Regex("[.,a-z0-9_/:%#@\\\\$&?!~=+\\-]+"))
@@ -25,20 +25,7 @@ class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl>
         )
       }
 
-      override fun find(input: String, startAt: Int): SubstringFinderResult {
-        val inputRange = startAt until input.length
-        val text = input.slice(inputRange)
-        for (i in text.indices) {
-          val result = doFind(text, i)
-          if (result.success) {
-            return result
-          }
-        }
-
-        return SubstringFinderResult.ofFailure(input, IntRange.EMPTY, inputRange.last + 1)
-      }
-
-      private fun doFind(text: String, startAt: Int): SubstringFinderResult {
+      override fun doFind(text: String, startAt: Int): SubstringFinderResult {
         var latestIndex = startAt
         if (context.ignoreLinkLabel) {
           val scanLinkResult = UrlFinderUtils.scanLink(text, startAt)

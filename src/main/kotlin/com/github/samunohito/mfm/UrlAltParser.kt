@@ -19,21 +19,8 @@ class UrlAltParser(private val context: Context = defaultContext) : IParser<MfmU
       close,
     )
 
-    private class UrlFinder(private val context: Context) : ISubstringFinder {
-      override fun find(input: String, startAt: Int): SubstringFinderResult {
-        val inputRange = startAt until input.length
-        val text = input.slice(inputRange)
-        for (i in text.indices) {
-          val result = doFind(text, i)
-          if (result.success) {
-            return result
-          }
-        }
-
-        return SubstringFinderResult.ofFailure(input, IntRange.EMPTY, inputRange.last + 1)
-      }
-
-      private fun doFind(text: String, startAt: Int): SubstringFinderResult {
+    private class UrlFinder(private val context: Context) : CharSequenceFinderBase() {
+      override fun doFind(text: String, startAt: Int): SubstringFinderResult {
         var latestIndex = startAt
         if (context.ignoreLinkLabel) {
           val scanLinkResult = UrlFinderUtils.scanLink(text, startAt)
