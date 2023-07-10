@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
-@DisplayName("検索構文を使用できる")
 class SearchParserTest {
   private val parser = SearchParser()
 
