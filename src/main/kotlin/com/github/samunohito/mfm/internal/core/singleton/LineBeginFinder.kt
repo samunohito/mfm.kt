@@ -2,7 +2,6 @@ package com.github.samunohito.mfm.internal.core.singleton
 
 import com.github.samunohito.mfm.internal.core.ISubstringFinder
 import com.github.samunohito.mfm.internal.core.SubstringFinderResult
-import jdk.internal.util.xml.impl.Input
 
 object LineBeginFinder : ISubstringFinder {
   override fun find(input: String, startAt: Int): SubstringFinderResult {
