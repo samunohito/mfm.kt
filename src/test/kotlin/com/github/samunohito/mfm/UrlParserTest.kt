@@ -6,14 +6,11 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
 
 class UrlParserTest {
-  private val context = UrlParser.Context(
-    disabled = false,
-    recursiveDepthLimit = 20,
-  )
+  private val context = UrlParser.Context.init()
   private val parser = UrlParser(context)
 
   @Test
-  fun `basic`() {
+  fun basic() {
     val url = "https://misskey.io/@ai"
     val input = url
     val output = MfmUrl(url, false)
@@ -74,7 +71,7 @@ class UrlParserTest {
 
   @Test
   fun `with brackets`() {
-    val url = "https://example.com/foo(bar)"
+    val url = "https://example.com/foo((bar))"
     val input = "$url"
     val output = MfmUrl(url, false)
 

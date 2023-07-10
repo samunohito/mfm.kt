@@ -8,10 +8,7 @@ import com.github.samunohito.mfm.node.MfmUrl
 
 class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl> {
   companion object {
-    private val defaultContext: Context = Context(
-      disabled = false,
-      recursiveDepthLimit = 20
-    )
+    private val defaultContext: Context = Context.init()
     private val commaAndPeriodRegex = Regex("[.,]+$")
     private val schemaFinder = RegexFinder(Regex("https?://"))
     private val wordFinder = RegexFinder(Regex("[.,a-z0-9_/:%#@\\\\$&?!~=+\\-]+"))
@@ -20,33 +17,35 @@ class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl>
       companion object {
         private val openRegexBracket = RegexFinder(Regex("([(\\[])"))
         private val closeRegexBracket = RegexFinder(Regex("([)\\]])"))
-
-        private val regexBracketWrappedFinders = listOf(
-          openRegexBracket,
-          wordFinder,
-          closeRegexBracket,
-        )
       }
 
       override fun find(input: String, startAt: Int): SubstringFinderResult {
+        if (context.currentDepth > context.recursiveDepthLimit) {
+          return SubstringFinderResult.ofFailure(input, IntRange.EMPTY, startAt)
+        }
+
         var latestIndex = startAt
         val bodyResults = mutableListOf<SubstringFinderResult>()
 
-        for (depth in 0 until context.recursiveDepthLimit) {
-          val wordResult = wordFinder.find(input, latestIndex)
-          if (wordResult.success) {
-            bodyResults.add(wordResult)
-            latestIndex = wordResult.next
-            continue
-          }
-
-          // URLについたカッコとその中身の取得を試みる
-          // wordFinderのパターンにカッコを含めるとリンク形式の終了カッコ検出時に支障が出るので、
-          // URL中のみで開始～終了のカッコが揃っているパターンを検出したい
+        while (true) {
+          // wordFinderのパターンにカッコを含めると、終了カッコのみを誤検出してしまう。
+          // …ので、サポートされている種類の開始・終了カッコが揃っている場合は、その中身を再帰的に検索する
+          val regexBracketWrappedFinders = listOf(
+            openRegexBracket,
+            UrlFinder(context.incrementDepth()),
+            closeRegexBracket,
+          )
           val bracketResult = SubstringFinderUtils.sequential(input, latestIndex, regexBracketWrappedFinders)
           if (bracketResult.success) {
             bodyResults.add(bracketResult)
             latestIndex = bracketResult.next
+            continue
+          }
+
+          val wordResult = wordFinder.find(input, latestIndex)
+          if (wordResult.success) {
+            bodyResults.add(wordResult)
+            latestIndex = wordResult.next
             continue
           }
 
@@ -82,6 +81,9 @@ class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl>
     return ParserResult.ofSuccess(MfmUrl(url, false), input, result.range, result.next)
   }
 
+  /**
+   * URLの末尾にピリオドやカンマがある場合は、それを除外した範囲を作成する
+   */
   private fun processTrailingPeriodAndComma(
     input: String,
     finderResult: SubstringFinderResult
@@ -102,8 +104,27 @@ class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl>
     return SubstringFinderResult.ofSuccess(input, modifyRange, finderResult.next)
   }
 
-  data class Context(
+  class Context private constructor(
     var disabled: Boolean,
+    val currentDepth: Int,
     val recursiveDepthLimit: Int,
-  )
+  ) {
+    companion object {
+      fun init(recursiveDepthLimit: Int = 20): Context {
+        return Context(
+          disabled = false,
+          currentDepth = 0,
+          recursiveDepthLimit = recursiveDepthLimit
+        )
+      }
+    }
+
+    fun incrementDepth(): Context {
+      return Context(
+        disabled = disabled,
+        currentDepth = currentDepth + 1,
+        recursiveDepthLimit = recursiveDepthLimit
+      )
+    }
+  }
 }
