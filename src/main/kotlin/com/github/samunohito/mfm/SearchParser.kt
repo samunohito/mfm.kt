@@ -25,7 +25,7 @@ class SearchParser : IParser<MfmSearch> {
         for (i in startAt until input.length) {
           if (NewLineFinder.find(input, i).success) {
             // 改行されていたら検索ボタン形式が破綻するので中断
-            return SubstringFinderResult.ofFailure(input, IntRange.EMPTY, latestIndex + 1)
+            return SubstringFinderResult.ofFailure()
           }
 
           val result = SubstringFinderUtils.sequential(input, latestIndex, searchButtonFinders)
@@ -39,7 +39,7 @@ class SearchParser : IParser<MfmSearch> {
         }
 
         // 検索ボタンが見つからなかった
-        return SubstringFinderResult.ofFailure(input, IntRange.EMPTY, latestIndex + 1)
+        return SubstringFinderResult.ofFailure()
       }
     }
   }

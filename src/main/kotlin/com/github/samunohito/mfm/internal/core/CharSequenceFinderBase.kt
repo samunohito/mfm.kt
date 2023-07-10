@@ -2,7 +2,7 @@ package com.github.samunohito.mfm.internal.core
 
 abstract class CharSequenceFinderBase : ISubstringFinder {
   override fun find(input: String, startAt: Int): SubstringFinderResult {
-    var latestResult: SubstringFinderResult = SubstringFinderResult.ofFailure(input, IntRange.EMPTY, startAt)
+    var latestResult: SubstringFinderResult = SubstringFinderResult.ofFailure()
 
     val inputRange = startAt until input.length
     for (i in inputRange) {
@@ -16,7 +16,7 @@ abstract class CharSequenceFinderBase : ISubstringFinder {
 
     return if (!latestResult.success) {
       // 一回も成功していない場合は失敗扱い
-      SubstringFinderResult.ofFailure(input, IntRange.EMPTY, startAt)
+      SubstringFinderResult.ofFailure()
     } else {
       val range = startAt..latestResult.range.last
       SubstringFinderResult.ofSuccess(input, range, range.last + 1)

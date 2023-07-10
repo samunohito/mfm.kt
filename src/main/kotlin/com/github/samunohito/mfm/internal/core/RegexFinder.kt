@@ -7,7 +7,7 @@ class RegexFinder(regex: Regex) : ISubstringFinder {
     val text = input.substring(startAt)
     val result = _regex.find(text)
     return if (result == null) {
-      SubstringFinderResult.ofFailure(input, IntRange.EMPTY, startAt)
+      SubstringFinderResult.ofFailure()
     } else {
       val resultRange = startAt until (startAt + result.value.length)
       SubstringFinderResult.ofSuccess(input, resultRange, resultRange.last + 1)

@@ -5,9 +5,9 @@ class StringFinder(private val word: String) : ISubstringFinder {
     val resultRange = startAt until (startAt + word.length)
     val next = resultRange.last + 1
     return if ((input.length - startAt) < word.length) {
-      SubstringFinderResult.ofFailure(input, IntRange.EMPTY, next)
+      SubstringFinderResult.ofFailure()
     } else if (input.substring(resultRange) != word) {
-      SubstringFinderResult.ofFailure(input, IntRange.EMPTY, next)
+      SubstringFinderResult.ofFailure()
     } else {
       SubstringFinderResult.ofSuccess(input, resultRange, next)
     }

@@ -26,7 +26,7 @@ interface ISubstringFinder {
     override fun find(input: String, startAt: Int): SubstringFinderResult {
       val result = delegate.find(input, startAt)
       return if (result.success) {
-        SubstringFinderResult.ofFailure(input, result.range, result.next, result.nests)
+        SubstringFinderResult.ofFailure()
       } else {
         SubstringFinderResult.ofSuccess(input, result.range, result.next, result.nests)
       }

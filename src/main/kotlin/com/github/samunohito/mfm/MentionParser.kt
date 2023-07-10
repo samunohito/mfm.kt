@@ -61,6 +61,7 @@ class MentionParser(private val context: Context = defaultContext) : IParser<Mfm
 
       companion object {
         fun parseUsername(username: String): Result<String> {
+          // ハイフンで始まっている場合は、ユーザー名として認識しない
           if (username.startsWith("-")) {
             return Result.failure(IllegalArgumentException("Username must not start with a hyphen : $username"))
           }
@@ -68,6 +69,7 @@ class MentionParser(private val context: Context = defaultContext) : IParser<Mfm
           val hyphenTailMatch = regexHyphenTail.find(username)
             ?: return Result.success(username)
 
+          // ハイフンで終わっている場合は、ユーザー名として認識しない
           val modifiedUsername = username.substring(0 until hyphenTailMatch.range.first)
           if (modifiedUsername.isEmpty()) {
             return Result.failure(IllegalArgumentException("Username must not end with a hyphen : $username"))
@@ -85,6 +87,7 @@ class MentionParser(private val context: Context = defaultContext) : IParser<Mfm
             return Result.success(null)
           }
 
+          // ドットまたはハイフンで始まっている場合は、ホスト名として認識しない
           if (regexDotHyphenHead.containsMatchIn(hostname)) {
             return Result.failure(IllegalArgumentException("Hostname must not start with a dot or hyphen : $hostname"))
           }
@@ -120,7 +123,6 @@ class MentionParser(private val context: Context = defaultContext) : IParser<Mfm
 
     val username = mentionMatch.groups[regexGroupUserName]?.value ?: error("Regex name group not found")
     val hostname = mentionMatch.groups[regexGroupHostName]?.value
-
     val mention = MentionFormat(username, hostname)
     if (mention.invalid) {
       return ParserResult.ofFailure()

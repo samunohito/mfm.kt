@@ -5,7 +5,7 @@ class SubstringFinderResult private constructor(
   val input: String,
   val range: IntRange,
   val next: Int,
-  val nests: List<SubstringFinderResult> = emptyList()
+  val nests: List<SubstringFinderResult>
 ) {
 
   companion object {
@@ -18,13 +18,8 @@ class SubstringFinderResult private constructor(
       return SubstringFinderResult(true, input, range, next, nestResult)
     }
 
-    fun ofFailure(
-      input: String,
-      range: IntRange,
-      next: Int,
-      nestResult: List<SubstringFinderResult> = emptyList()
-    ): SubstringFinderResult {
-      return SubstringFinderResult(false, input, range, next, nestResult)
+    fun ofFailure(): SubstringFinderResult {
+      return SubstringFinderResult(false, "", IntRange.EMPTY, -1, emptyList())
     }
   }
 }

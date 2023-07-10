@@ -38,8 +38,8 @@ object UrlFinderUtils {
     return ScanLinkResult(
       success = false,
       silent = false,
-      labelContents = SubstringFinderResult.ofFailure(text, IntRange.EMPTY, -1),
-      hrefContents = SubstringFinderResult.ofFailure(text, IntRange.EMPTY, -1),
+      labelContents = SubstringFinderResult.ofFailure(),
+      hrefContents = SubstringFinderResult.ofFailure(),
       next = linkLabelFinderResult.next,
     )
   }

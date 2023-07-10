@@ -21,7 +21,7 @@ class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl>
 
       override fun find(input: String, startAt: Int): SubstringFinderResult {
         if (context.currentDepth > context.recursiveDepthLimit) {
-          return SubstringFinderResult.ofFailure(input, IntRange.EMPTY, startAt)
+          return SubstringFinderResult.ofFailure()
         }
 
         var latestIndex = startAt
@@ -53,7 +53,7 @@ class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl>
         }
 
         if (bodyResults.isEmpty()) {
-          return SubstringFinderResult.ofFailure(input, IntRange.EMPTY, -1)
+          return SubstringFinderResult.ofFailure()
         }
 
         val bodyRange = bodyResults.first().range.first..bodyResults.last().range.last
@@ -96,7 +96,7 @@ class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl>
 
     if (extractUrlBody.length - matched.value.length <= 0) {
       // スキーマ形式で始まるが、それ以降がカンマとピリオドのみの場合はスキーマ形式として認識しない
-      return SubstringFinderResult.ofFailure(input, IntRange.EMPTY, finderResult.next)
+      return SubstringFinderResult.ofFailure()
     }
 
     // finderResultの段階でuntilされているので、ここではやらない（多重にやると範囲がおかしくなる）

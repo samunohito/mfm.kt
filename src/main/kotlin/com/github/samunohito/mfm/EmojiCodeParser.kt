@@ -18,17 +18,17 @@ class EmojiCodeParser : IParser<MfmEmojiCode> {
       override fun find(input: String, startAt: Int): SubstringFinderResult {
         val begin = SubstringFinderUtils.alternative(input, startAt, beginEdgeFinder)
         if (!begin.success) {
-          return SubstringFinderResult.ofFailure(input, IntRange.EMPTY, begin.next)
+          return SubstringFinderResult.ofFailure()
         }
 
         val code = SubstringFinderUtils.sequential(input, begin.next, codeFinders)
         if (!code.success) {
-          return SubstringFinderResult.ofFailure(input, IntRange.EMPTY, code.next)
+          return SubstringFinderResult.ofFailure()
         }
 
         val end = SubstringFinderUtils.alternative(input, code.next, endEdgeFinder)
         if (!end.success) {
-          return SubstringFinderResult.ofFailure(input, IntRange.EMPTY, end.next)
+          return SubstringFinderResult.ofFailure()
         }
 
         val name = code.nests[1]

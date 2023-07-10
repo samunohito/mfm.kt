@@ -25,17 +25,17 @@ class HashtagParser(private val context: Context = defaultContext) : IParser<Mfm
         override fun doScanning(text: String, startAt: Int): SubstringFinderResult {
           val unusable = unusableCharactersFinder.find(text, startAt)
           if (unusable.success) {
-            return SubstringFinderResult.ofFailure(text, unusable.range, unusable.next)
+            return SubstringFinderResult.ofFailure()
           }
 
           val space = SpaceFinder.find(text, startAt)
           if (space.success) {
-            return SubstringFinderResult.ofFailure(text, space.range, space.next)
+            return SubstringFinderResult.ofFailure()
           }
 
           val newLine = NewLineFinder.find(text, startAt)
           if (newLine.success) {
-            return SubstringFinderResult.ofFailure(text, newLine.range, newLine.next)
+            return SubstringFinderResult.ofFailure()
           }
 
           return SubstringFinderResult.ofSuccess(text, startAt..startAt, startAt + 1)
@@ -44,7 +44,7 @@ class HashtagParser(private val context: Context = defaultContext) : IParser<Mfm
 
       override fun find(input: String, startAt: Int): SubstringFinderResult {
         if (context.currentDepth > context.recursiveDepthLimit) {
-          return SubstringFinderResult.ofFailure(input, IntRange.EMPTY, startAt)
+          return SubstringFinderResult.ofFailure()
         }
 
         var latestIndex = startAt
@@ -76,7 +76,7 @@ class HashtagParser(private val context: Context = defaultContext) : IParser<Mfm
         }
 
         if (bodyResults.isEmpty()) {
-          return SubstringFinderResult.ofFailure(input, IntRange.EMPTY, -1)
+          return SubstringFinderResult.ofFailure()
         }
 
         val bodyRange = bodyResults.first().range.first..bodyResults.last().range.last
