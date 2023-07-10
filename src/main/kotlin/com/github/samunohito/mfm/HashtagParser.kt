@@ -22,23 +22,23 @@ class HashtagParser(private val context: Context = defaultContext) : IParser<Mfm
       private object UsableCharacterFinder : CharSequenceFinderBase() {
         private val unusableCharactersFinder = RegexFinder(Regex("[ \\u3000\\t.,!?'\"#:/\\[\\]【】()「」（）<>]"))
 
-        override fun doScanning(text: String, startAt: Int): SubstringFinderResult {
+        override fun hasNext(text: String, startAt: Int): Boolean {
           val unusable = unusableCharactersFinder.find(text, startAt)
           if (unusable.success) {
-            return SubstringFinderResult.ofFailure()
+            return false
           }
 
           val space = SpaceFinder.find(text, startAt)
           if (space.success) {
-            return SubstringFinderResult.ofFailure()
+            return false
           }
 
           val newLine = NewLineFinder.find(text, startAt)
           if (newLine.success) {
-            return SubstringFinderResult.ofFailure()
+            return false
           }
 
-          return SubstringFinderResult.ofSuccess(text, startAt..startAt, startAt + 1)
+          return true
         }
       }
 
