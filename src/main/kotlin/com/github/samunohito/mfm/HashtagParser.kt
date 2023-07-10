@@ -6,8 +6,8 @@ import com.github.samunohito.mfm.internal.core.singleton.SpaceFinder
 import com.github.samunohito.mfm.node.MfmHashtag
 
 class HashtagParser(private val context: Context = defaultContext) : IParser<MfmHashtag> {
-  private val regexAlphaAndNum = Regex("[a-z0-9]$", RegexOption.IGNORE_CASE)
-  private val regexNumeric = Regex("^[0-9]+$")
+  private val regexAlphaAndNumericTail = Regex("[a-z0-9]$", RegexOption.IGNORE_CASE)
+  private val regexNumericOnly = Regex("^[0-9]+$")
 
   companion object {
     private val defaultContext: Context = Context.init()
@@ -91,20 +91,16 @@ class HashtagParser(private val context: Context = defaultContext) : IParser<Mfm
       return ParserResult.ofFailure()
     }
 
-    // 1文字前がアルファベットか数字の場合はハッシュタグではない
-    if (startAt >= 1) {
-      val beforeStr = input.substring(startAt - 1, startAt)
-      val beforeCheckResult = regexAlphaAndNum.find(beforeStr)
-      if (beforeCheckResult != null) {
-        return ParserResult.ofFailure()
-      }
+    // ハッシュタグの直前が英数字の場合はハッシュタグとして認識しない
+    val beforeStr = input.substring(0 until startAt)
+    if (regexAlphaAndNumericTail.containsMatchIn(beforeStr)) {
+      return ParserResult.ofFailure()
     }
 
     // 検出された文字が数値のみの場合はハッシュタグではない
     val hashtagNameResult = result.nests[1]
     val hashtagName = input.substring(hashtagNameResult.range)
-    val hashtagNameCheckResult = regexNumeric.find(hashtagName)
-    if (hashtagNameCheckResult != null) {
+    if (regexNumericOnly.containsMatchIn(hashtagName)) {
       return ParserResult.ofFailure()
     }
 
