@@ -4,5 +4,7 @@ data class MfmMathInline(override val props: Props) :
   IMfmBlock<MfmMathInline.Props> {
   override val type = MfmNodeType.MathInline
 
+  constructor(formula: String) : this(Props(formula))
+
   data class Props(val formula: String) : IMfmProps
 }
