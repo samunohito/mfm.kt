@@ -8,7 +8,6 @@ object SubstringFinderUtils {
     for (parser in parsers) {
       val result = parser.find(input, latestIndex)
       if (!result.success) {
-        val resultRange = startAt until latestIndex
         return SubstringFinderResult.ofFailure()
       }
 
