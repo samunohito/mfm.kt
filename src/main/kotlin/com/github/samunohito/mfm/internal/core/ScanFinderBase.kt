@@ -1,6 +1,6 @@
 package com.github.samunohito.mfm.internal.core
 
-abstract class CharSequenceFinderBase : ISubstringFinder {
+abstract class ScanFinderBase : ISubstringFinder {
   override fun find(input: String, startAt: Int): SubstringFinderResult {
     var latestIndex = startAt
 
@@ -18,7 +18,7 @@ abstract class CharSequenceFinderBase : ISubstringFinder {
       SubstringFinderResult.ofFailure()
     } else {
       val range = startAt..latestIndex
-      SubstringFinderResult.ofSuccess(input, range, range.last + 1)
+      SubstringFinderResult.ofSuccess(range, range.last + 1)
     }
   }
 

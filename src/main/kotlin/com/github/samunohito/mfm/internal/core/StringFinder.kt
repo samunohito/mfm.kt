@@ -9,7 +9,7 @@ class StringFinder(private val word: String) : ISubstringFinder {
     } else if (input.substring(resultRange) != word) {
       SubstringFinderResult.ofFailure()
     } else {
-      SubstringFinderResult.ofSuccess(input, resultRange, next)
+      SubstringFinderResult.ofSuccess(resultRange, next)
     }
   }
 }

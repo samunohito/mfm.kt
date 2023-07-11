@@ -1,22 +1,25 @@
 package com.github.samunohito.mfm
 
-import com.github.samunohito.mfm.internal.core.ISubstringFinder
-import com.github.samunohito.mfm.internal.core.RegexFinder
-import com.github.samunohito.mfm.internal.core.SubstringFinderResult
-import com.github.samunohito.mfm.internal.core.SubstringFinderUtils
+import com.github.samunohito.mfm.internal.core.*
 import com.github.samunohito.mfm.node.MfmUrl
 
 class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl> {
+  private val urlFinder = SequentialFinder(
+    listOf(
+      RegexFinder(Regex("https?://")),
+      UrlBodyFinder(context)
+    )
+  )
+
   companion object {
     private val defaultContext: Context = Context.init()
     private val commaAndPeriodRegex = Regex("[.,]+$")
-    private val schemaFinder = RegexFinder(Regex("https?://"))
-    private val wordFinder = RegexFinder(Regex("[.,a-z0-9_/:%#@\\\\$&?!~=+\\-]+"))
 
-    private class UrlFinder(private val context: Context) : ISubstringFinder {
+    private class UrlBodyFinder(private val context: Context) : ISubstringFinder {
       companion object {
         private val openRegexBracket = RegexFinder(Regex("([(\\[])"))
         private val closeRegexBracket = RegexFinder(Regex("([)\\]])"))
+        private val wordFinder = RegexFinder(Regex("[.,a-z0-9_/:%#@\\\\$&?!~=+\\-]+"))
       }
 
       override fun find(input: String, startAt: Int): SubstringFinderResult {
@@ -32,7 +35,7 @@ class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl>
           // …ので、サポートされている種類の開始・終了カッコが揃っている場合は、その中身を再帰的に検索する
           val regexBracketWrappedFinders = listOf(
             openRegexBracket,
-            UrlFinder(context.incrementDepth()),
+            UrlBodyFinder(context.incrementDepth()),
             closeRegexBracket,
           )
           val bracketResult = SubstringFinderUtils.sequential(input, latestIndex, regexBracketWrappedFinders)
@@ -57,7 +60,7 @@ class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl>
         }
 
         val bodyRange = bodyResults.first().range.first..bodyResults.last().range.last
-        return SubstringFinderResult.ofSuccess(input, bodyRange, bodyRange.last + 1, bodyResults)
+        return SubstringFinderResult.ofSuccess(bodyRange, bodyRange.last + 1, bodyResults)
       }
     }
   }
@@ -67,7 +70,7 @@ class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl>
       return ParserResult.ofFailure()
     }
 
-    val result = SubstringFinderUtils.sequential(input, startAt, listOf(schemaFinder, UrlFinder(context)))
+    val result = urlFinder.find(input, startAt)
     if (!result.success) {
       return ParserResult.ofFailure()
     }
@@ -88,7 +91,7 @@ class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl>
     input: String,
     finderResult: SubstringFinderResult
   ): SubstringFinderResult {
-    val body = finderResult.nests[1]
+    val body = finderResult.subResults[1]
     val extractUrlBody = input.substring(body.range)
     val matched = commaAndPeriodRegex.find(extractUrlBody)
       ?: // 末尾にピリオドやカンマがない場合はそのまま返す
@@ -101,7 +104,7 @@ class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl>
 
     // finderResultの段階でuntilされているので、ここではやらない（多重にやると範囲がおかしくなる）
     val modifyRange = finderResult.range.first..finderResult.range.last - matched.value.length
-    return SubstringFinderResult.ofSuccess(input, modifyRange, finderResult.next)
+    return SubstringFinderResult.ofSuccess(modifyRange, finderResult.next)
   }
 
   class Context private constructor(

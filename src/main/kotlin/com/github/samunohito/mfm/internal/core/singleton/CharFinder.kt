@@ -9,6 +9,6 @@ object CharFinder : ISubstringFinder {
       return SubstringFinderResult.ofFailure()
     }
 
-    return SubstringFinderResult.ofSuccess(input, startAt until (startAt + 1), startAt + 1)
+    return SubstringFinderResult.ofSuccess(startAt until (startAt + 1), startAt + 1)
   }
 }

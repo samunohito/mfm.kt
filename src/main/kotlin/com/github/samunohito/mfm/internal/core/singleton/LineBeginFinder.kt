@@ -14,7 +14,7 @@ object LineBeginFinder : ISubstringFinder {
     }
 
     return if (result) {
-      SubstringFinderResult.ofSuccess(input, IntRange.EMPTY, startAt)
+      SubstringFinderResult.ofSuccess(IntRange.EMPTY, startAt)
     } else {
       SubstringFinderResult.ofFailure()
     }

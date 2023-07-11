@@ -1,34 +1,28 @@
 package com.github.samunohito.mfm
 
-import com.github.samunohito.mfm.internal.core.*
+import com.github.samunohito.mfm.internal.core.AlternateScanFinder
+import com.github.samunohito.mfm.internal.core.RegexFinder
+import com.github.samunohito.mfm.internal.core.SequentialFinder
+import com.github.samunohito.mfm.internal.core.StringFinder
 import com.github.samunohito.mfm.internal.core.singleton.SpaceFinder
 import com.github.samunohito.mfm.node.MfmItalic
 import com.github.samunohito.mfm.node.MfmText
 
 class ItalicUnderParser : IParser<MfmItalic> {
   companion object {
-    private val mark = StringFinder("_")
     private val regexAlphaAndNumericTail = Regex("[a-z0-9]$", RegexOption.IGNORE_CASE)
-
-    private object InnerFinder : ISubstringFinder {
-      private val sequenceTerminateFinders = listOf(
-        RegexFinder(Regex("[a-z0-9]+", RegexOption.IGNORE_CASE)),
-        SpaceFinder
+    private val markFinder = StringFinder("_")
+    private val italicUnderFinder = SequentialFinder(
+      listOf(
+        markFinder,
+        AlternateScanFinder.ofWhile(listOf(RegexFinder(Regex("[a-z0-9]", RegexOption.IGNORE_CASE)), SpaceFinder)),
+        markFinder
       )
-
-      override fun find(input: String, startAt: Int): SubstringFinderResult {
-        val result = SubstringFinderUtils.alternative(input, startAt, sequenceTerminateFinders)
-        if (!result.success) {
-          return SubstringFinderResult.ofFailure()
-        }
-
-        return SubstringFinderResult.ofSuccess(input, startAt..result.range.last, result.next)
-      }
-    }
+    )
   }
 
   override fun parse(input: String, startAt: Int): ParserResult<MfmItalic> {
-    val result = SubstringFinderUtils.sequential(input, startAt, listOf(mark, InnerFinder, mark))
+    val result = italicUnderFinder.find(input, startAt)
     if (!result.success) {
       return ParserResult.ofFailure()
     }
@@ -39,7 +33,7 @@ class ItalicUnderParser : IParser<MfmItalic> {
       return ParserResult.ofFailure()
     }
 
-    val contents = input.substring(result.nests[1].range)
+    val contents = input.substring(result.subResults[1].range)
     val textNode = MfmText(contents)
     return ParserResult.ofSuccess(MfmItalic(listOf(textNode)), input, result.range, result.next)
   }

@@ -1,9 +1,6 @@
 package com.github.samunohito.mfm
 
-import com.github.samunohito.mfm.internal.core.ISubstringFinder
-import com.github.samunohito.mfm.internal.core.RegexFinder
-import com.github.samunohito.mfm.internal.core.SubstringFinderResult
-import com.github.samunohito.mfm.internal.core.SubstringFinderUtils
+import com.github.samunohito.mfm.internal.core.*
 import com.github.samunohito.mfm.internal.core.singleton.LineBeginFinder
 import com.github.samunohito.mfm.internal.core.singleton.LineEndFinder
 import com.github.samunohito.mfm.internal.core.singleton.NewLineFinder
@@ -12,9 +9,18 @@ import com.github.samunohito.mfm.node.MfmSearch
 
 class SearchParser : IParser<MfmSearch> {
   companion object {
-    private val buttonPattern = Regex("\\[?(検索|search)]?", RegexOption.IGNORE_CASE)
-    private val buttonFinder = RegexFinder(buttonPattern)
-
+    private val buttonFinder = RegexFinder(Regex("\\[?(検索|search)]?", RegexOption.IGNORE_CASE))
+    private val searchFormFinder = SequentialFinder(
+      listOf(
+        NewLineFinder.optional(),
+        LineBeginFinder,
+        QueryFinder,
+        SpaceFinder,
+        buttonFinder,
+        LineEndFinder,
+        NewLineFinder.optional()
+      )
+    )
 
     private object QueryFinder : ISubstringFinder {
       private val searchButtonFinders = listOf(SpaceFinder, buttonFinder, LineEndFinder)
@@ -32,7 +38,7 @@ class SearchParser : IParser<MfmSearch> {
           if (result.success) {
             // 削除ボタンの検出が成功したらクエリの範囲がわかるので、それを返す
             val queryRange = startAt until latestIndex
-            return SubstringFinderResult.ofSuccess(input, queryRange, queryRange.last + 1)
+            return SubstringFinderResult.ofSuccess(queryRange, queryRange.last + 1)
           }
 
           latestIndex = i
@@ -47,32 +53,19 @@ class SearchParser : IParser<MfmSearch> {
   override fun parse(input: String, startAt: Int): ParserResult<MfmSearch> {
     val text = input.slice(startAt until input.length)
 
-    val chainResult = SubstringFinderUtils.sequential(
-      input,
-      startAt,
-      listOf(
-        NewLineFinder.optional(),
-        LineBeginFinder,
-        QueryFinder,
-        SpaceFinder,
-        buttonFinder,
-        LineEndFinder,
-        NewLineFinder.optional()
-      )
-    )
-
-    if (!chainResult.success) {
+    val result = searchFormFinder.find(text, 0)
+    if (!result.success) {
       return ParserResult.ofFailure()
     }
 
-    val query = chainResult.nests[2].range
-    val space = chainResult.nests[3].range
-    val button = chainResult.nests[4].range
+    val query = result.subResults[2].range
+    val space = result.subResults[3].range
+    val button = result.subResults[4].range
     val props = MfmSearch.Props(
       query = text.slice(query),
       content = "${text.slice(query)}${text.slice(space)}${text.slice(button)}"
     )
 
-    return ParserResult.ofSuccess(MfmSearch(props), input, chainResult.range, chainResult.next)
+    return ParserResult.ofSuccess(MfmSearch(props), input, result.range, result.next)
   }
 }

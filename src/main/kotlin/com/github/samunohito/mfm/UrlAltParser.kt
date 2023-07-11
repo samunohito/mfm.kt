@@ -1,9 +1,6 @@
 package com.github.samunohito.mfm
 
-import com.github.samunohito.mfm.internal.core.RegexFinder
-import com.github.samunohito.mfm.internal.core.ScanningFinder
-import com.github.samunohito.mfm.internal.core.StringFinder
-import com.github.samunohito.mfm.internal.core.SubstringFinderUtils
+import com.github.samunohito.mfm.internal.core.*
 import com.github.samunohito.mfm.node.MfmUrl
 
 class UrlAltParser(private val context: Context = defaultContext) : IParser<MfmUrl> {
@@ -15,12 +12,7 @@ class UrlAltParser(private val context: Context = defaultContext) : IParser<MfmU
     private val open = StringFinder("<")
     private val close = StringFinder(">")
     private val schema = RegexFinder(Regex("https?://"))
-    private val inequalityBracketWrappers = listOf(
-      open,
-      schema,
-      ScanningFinder(">"),
-      close,
-    )
+    private val urlFinder = SequentialFinder(listOf(open, schema, ScanningFinder(">"), close))
   }
 
   override fun parse(input: String, startAt: Int): ParserResult<MfmUrl> {
@@ -29,13 +21,13 @@ class UrlAltParser(private val context: Context = defaultContext) : IParser<MfmU
     }
 
     // 開始・終了のブラケットが見つかるまで
-    val scanResult = SubstringFinderUtils.sequential(input, startAt, inequalityBracketWrappers)
+    val scanResult = urlFinder.find(input, startAt)
     if (!scanResult.success) {
       return ParserResult.ofFailure()
     }
 
-    val schema = scanResult.nests[1]
-    val body = scanResult.nests[2]
+    val schema = scanResult.subResults[1]
+    val body = scanResult.subResults[2]
     val urlRange = schema.range.first..body.range.last
     val url = input.substring(urlRange)
     return ParserResult.ofSuccess(MfmUrl(url, true), input, urlRange, scanResult.next)

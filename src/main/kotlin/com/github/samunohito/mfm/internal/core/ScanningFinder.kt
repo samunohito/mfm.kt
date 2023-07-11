@@ -7,7 +7,7 @@ class ScanningFinder(private val scanPeriod: String) : ISubstringFinder {
       SubstringFinderResult.ofFailure()
     } else {
       val range = startAt until foundIndex
-      SubstringFinderResult.ofSuccess(input, range, range.last + 1)
+      SubstringFinderResult.ofSuccess(range, range.last + 1)
     }
   }
 }

@@ -19,7 +19,7 @@ class HashtagParser(private val context: Context = defaultContext) : IParser<Mfm
         private val closeRegexBracket = RegexFinder(Regex("[)\\]」）]"))
       }
 
-      private object UsableCharacterFinder : CharSequenceFinderBase() {
+      private object UsableCharacterFinder : ScanFinderBase() {
         private val unusableCharactersFinder = RegexFinder(Regex("[ \\u3000\\t.,!?'\"#:/\\[\\]【】()「」（）<>]"))
 
         override fun hasNext(text: String, startAt: Int): Boolean {
@@ -80,7 +80,7 @@ class HashtagParser(private val context: Context = defaultContext) : IParser<Mfm
         }
 
         val bodyRange = bodyResults.first().range.first..bodyResults.last().range.last
-        return SubstringFinderResult.ofSuccess(input, bodyRange, bodyRange.last + 1, bodyResults)
+        return SubstringFinderResult.ofSuccess(bodyRange, bodyRange.last + 1, bodyResults)
       }
     }
   }
@@ -98,7 +98,7 @@ class HashtagParser(private val context: Context = defaultContext) : IParser<Mfm
     }
 
     // 検出された文字が数値のみの場合はハッシュタグではない
-    val hashtagNameResult = result.nests[1]
+    val hashtagNameResult = result.subResults[1]
     val hashtagName = input.substring(hashtagNameResult.range)
     if (regexNumericOnly.containsMatchIn(hashtagName)) {
       return ParserResult.ofFailure()

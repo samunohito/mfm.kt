@@ -10,7 +10,7 @@ class RegexFinder(regex: Regex) : ISubstringFinder {
       SubstringFinderResult.ofFailure()
     } else {
       val resultRange = startAt until (startAt + result.value.length)
-      SubstringFinderResult.ofSuccess(input, resultRange, resultRange.last + 1)
+      SubstringFinderResult.ofSuccess(resultRange, resultRange.last + 1)
     }
   }
 }

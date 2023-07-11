@@ -8,6 +8,6 @@ object NewLineFinder : ISubstringFinder {
   private val parsers = listOf(CrFinder, LfFinder, CrLfFinder)
 
   override fun find(input: String, startAt: Int): SubstringFinderResult {
-    return SubstringFinderUtils.alternative(input, startAt, parsers)
+    return SubstringFinderUtils.alternate(input, startAt, parsers)
   }
 }

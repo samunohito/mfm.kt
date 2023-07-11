@@ -22,9 +22,9 @@ object UrlFinderUtils {
     val linkLabelFinderResult = SubstringFinderUtils.sequential(text, startAt, linkLabelFinders)
     if (linkLabelFinderResult.success) {
       // リンク形式として完成している場合はリンクラベル部分を無視してhref部分をチェックしたい
-      val silentResult = linkLabelFinderResult.nests[0]
-      val labelFinderResult = linkLabelFinderResult.nests[2]
-      val hrefFinderResult = linkLabelFinderResult.nests[5]
+      val silentResult = linkLabelFinderResult.subResults[0]
+      val labelFinderResult = linkLabelFinderResult.subResults[2]
+      val hrefFinderResult = linkLabelFinderResult.subResults[5]
       return ScanLinkResult(
         success = true,
         // かっこ前に?がある場合、rangeが空ではなくなる（optionalの都合上、successは常にtrueになるので使えない）
