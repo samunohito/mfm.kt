@@ -11,7 +11,7 @@ class InlineCodeParser : IParser<MfmInlineCode> {
     private val mark = StringFinder("`")
     private val mark2 = StringFinder("´")
 
-    private object FormulaFinder : CharSequenceFinderBase() {
+    private object InlineCodeFinder : CharSequenceFinderBase() {
       private val sequenceTerminateFinders = listOf(mark, mark2, NewLineFinder)
 
       override fun hasNext(text: String, startAt: Int): Boolean {
@@ -22,7 +22,7 @@ class InlineCodeParser : IParser<MfmInlineCode> {
   }
 
   override fun parse(input: String, startAt: Int): ParserResult<MfmInlineCode> {
-    val result = SubstringFinderUtils.sequential(input, startAt, listOf(mark, FormulaFinder, mark))
+    val result = SubstringFinderUtils.sequential(input, startAt, listOf(mark, InlineCodeFinder, mark))
     if (!result.success) {
       return ParserResult.ofFailure()
     }
