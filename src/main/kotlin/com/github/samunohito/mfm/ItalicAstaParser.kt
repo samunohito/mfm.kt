@@ -10,10 +10,10 @@ import com.github.samunohito.mfm.internal.core.singleton.SpaceFinder
 import com.github.samunohito.mfm.node.MfmItalic
 import com.github.samunohito.mfm.node.MfmText
 
-class ItalicUnderParser : IParser<MfmItalic> {
+class ItalicAstaParser : IParser<MfmItalic> {
   companion object {
     private val regexAlphaAndNumericTail = Regex("[a-z0-9]$", RegexOption.IGNORE_CASE)
-    private val markFinder = StringFinder("_")
+    private val markFinder = StringFinder("*")
     private val italicUnderFinder = SequentialFinder(
       markFinder,
       AlternateScanFinder.ofWhile(RegexFinder(Regex("[a-z0-9]", RegexOption.IGNORE_CASE)), SpaceFinder),
