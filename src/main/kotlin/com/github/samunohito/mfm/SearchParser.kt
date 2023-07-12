@@ -11,15 +11,13 @@ class SearchParser : IParser<MfmSearch> {
   companion object {
     private val buttonFinder = RegexFinder(Regex("\\[?(検索|search)]?", RegexOption.IGNORE_CASE))
     private val searchFormFinder = SequentialFinder(
-      listOf(
-        NewLineFinder.optional(),
-        LineBeginFinder,
-        QueryFinder,
-        SpaceFinder,
-        buttonFinder,
-        LineEndFinder,
-        NewLineFinder.optional()
-      )
+      NewLineFinder.optional(),
+      LineBeginFinder,
+      QueryFinder,
+      SpaceFinder,
+      buttonFinder,
+      LineEndFinder,
+      NewLineFinder.optional()
     )
 
     private object QueryFinder : ISubstringFinder {

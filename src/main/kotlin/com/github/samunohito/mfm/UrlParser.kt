@@ -5,10 +5,8 @@ import com.github.samunohito.mfm.node.MfmUrl
 
 class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl> {
   private val urlFinder = SequentialFinder(
-    listOf(
-      RegexFinder(Regex("https?://")),
-      UrlBodyFinder(context)
-    )
+    RegexFinder(Regex("https?://")),
+    UrlBodyFinder(context)
   )
 
   companion object {

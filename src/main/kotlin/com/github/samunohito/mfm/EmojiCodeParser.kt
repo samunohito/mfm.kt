@@ -13,13 +13,11 @@ class EmojiCodeParser : IParser<MfmEmojiCode> {
     private val side = RegexFinder(Regex("[a-z0-9]", RegexOption.IGNORE_CASE)).not()
     private val mark = StringFinder(":")
     private val emojiCodeFinder = SequentialFinder(
-      listOf(
-        AlternateFinder(listOf(LineBeginFinder, side)),
-        mark,
-        SequentialFinder(RegexFinder(Regex("[a-z0-9_+-]+", RegexOption.IGNORE_CASE))),
-        mark,
-        AlternateFinder(listOf(LineEndFinder, side))
-      )
+      AlternateFinder(LineBeginFinder, side),
+      mark,
+      SequentialFinder(RegexFinder(Regex("[a-z0-9_+-]+", RegexOption.IGNORE_CASE))),
+      mark,
+      AlternateFinder(LineEndFinder, side)
     )
   }
 

@@ -12,7 +12,7 @@ class UrlAltParser(private val context: Context = defaultContext) : IParser<MfmU
     private val open = StringFinder("<")
     private val close = StringFinder(">")
     private val schema = RegexFinder(Regex("https?://"))
-    private val urlFinder = SequentialFinder(listOf(open, schema, ScanningFinder(">"), close))
+    private val urlFinder = SequentialFinder(open, schema, ScanningFinder(">"), close)
   }
 
   override fun parse(input: String, startAt: Int): ParserResult<MfmUrl> {

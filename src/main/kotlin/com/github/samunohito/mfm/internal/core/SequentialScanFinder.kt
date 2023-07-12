@@ -12,5 +12,9 @@ class SequentialScanFinder private constructor(
     fun ofUntil(terminates: Collection<ISubstringFinder>): SequentialScanFinder {
       return SequentialScanFinder(terminates)
     }
+
+    fun ofUntil(vararg terminates: ISubstringFinder): SequentialScanFinder {
+      return SequentialScanFinder(terminates.toList())
+    }
   }
 }

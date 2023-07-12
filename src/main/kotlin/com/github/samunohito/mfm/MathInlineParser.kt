@@ -11,11 +11,9 @@ class MathInlineParser : IParser<MfmMathInline> {
     private val open = StringFinder("\\(")
     private val close = StringFinder("\\)")
     private val mathInlineFinder = SequentialFinder(
-      listOf(
-        open,
-        AlternateScanFinder.ofUntil(listOf(close, NewLineFinder)),
-        close
-      )
+      open,
+      AlternateScanFinder.ofUntil(close, NewLineFinder),
+      close
     )
   }
 

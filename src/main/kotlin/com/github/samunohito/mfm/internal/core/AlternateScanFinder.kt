@@ -20,8 +20,16 @@ class AlternateScanFinder private constructor(
       return AlternateScanFinder(terminates, true)
     }
 
+    fun ofWhile(vararg terminates: ISubstringFinder): AlternateScanFinder {
+      return AlternateScanFinder(terminates.toList(), true)
+    }
+
     fun ofUntil(terminates: Collection<ISubstringFinder>): AlternateScanFinder {
       return AlternateScanFinder(terminates, false)
+    }
+
+    fun ofUntil(vararg terminates: ISubstringFinder): AlternateScanFinder {
+      return AlternateScanFinder(terminates.toList(), false)
     }
   }
 }

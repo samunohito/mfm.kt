@@ -13,11 +13,9 @@ class ItalicUnderParser : IParser<MfmItalic> {
     private val regexAlphaAndNumericTail = Regex("[a-z0-9]$", RegexOption.IGNORE_CASE)
     private val markFinder = StringFinder("_")
     private val italicUnderFinder = SequentialFinder(
-      listOf(
-        markFinder,
-        AlternateScanFinder.ofWhile(listOf(RegexFinder(Regex("[a-z0-9]", RegexOption.IGNORE_CASE)), SpaceFinder)),
-        markFinder
-      )
+      markFinder,
+      AlternateScanFinder.ofWhile(RegexFinder(Regex("[a-z0-9]", RegexOption.IGNORE_CASE)), SpaceFinder),
+      markFinder
     )
   }
 

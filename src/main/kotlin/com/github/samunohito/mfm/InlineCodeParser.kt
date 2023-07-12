@@ -11,11 +11,9 @@ class InlineCodeParser : IParser<MfmInlineCode> {
     private val mark = StringFinder("`")
     private val mark2 = StringFinder("´")
     private val inlineCodeFinder = SequentialFinder(
-      listOf(
-        mark,
-        AlternateScanFinder.ofUntil(listOf(mark, mark2, NewLineFinder)),
-        mark
-      )
+      mark,
+      AlternateScanFinder.ofUntil(mark, mark2, NewLineFinder),
+      mark
     )
   }
 

@@ -12,13 +12,11 @@ class PlainTagParser : IParser<MfmPlain> {
     private val open = StringFinder("<plain>")
     private val close = StringFinder("</plain>")
     private val plainTagFinder = SequentialFinder(
-      listOf(
-        open,
-        NewLineFinder.optional(),
-        SequentialScanFinder.ofUntil(listOf(NewLineFinder.optional(), close)),
-        NewLineFinder.optional(),
-        close,
-      )
+      open,
+      NewLineFinder.optional(),
+      SequentialScanFinder.ofUntil(NewLineFinder.optional(), close),
+      NewLineFinder.optional(),
+      close,
     )
   }
 
