@@ -1,10 +1,9 @@
 package com.github.samunohito.mfm
 
-import com.github.samunohito.mfm.node.MfmBold
+import com.github.samunohito.mfm.node.MfmFn
 
-// TODO:型がない
-class BigParser : IParser<MfmBold> {
-  override fun parse(input: String, startAt: Int): ParserResult<MfmBold> {
+class BigParser : IParser<MfmFn> {
+  override fun parse(input: String, startAt: Int): ParserResult<MfmFn> {
     return ParserResult.ofFailure()
   }
 }
