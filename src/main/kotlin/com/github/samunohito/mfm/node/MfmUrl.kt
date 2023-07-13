@@ -1,6 +1,6 @@
 package com.github.samunohito.mfm.node
 
-data class MfmUrl(override val props: Props) : IMfmBlock<MfmUrl.Props> {
+data class MfmUrl(override val props: Props) : IMfmInline<MfmUrl.Props> {
   override val type = MfmNodeType.Url
 
   constructor(url: String, brackets: Boolean?) : this(Props(url, brackets))
