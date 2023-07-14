@@ -6,5 +6,7 @@ data class MfmLink(
 ) : IMfmInline<MfmLink.Props>, IMfmIncludeChildren {
   override val type = MfmNodeType.Link
 
+  constructor(silent: Boolean, url: String, children: List<IMfmInline<*>>) : this(Props(silent, url), children)
+
   data class Props(val silent: Boolean, val url: String) : IMfmProps
 }
