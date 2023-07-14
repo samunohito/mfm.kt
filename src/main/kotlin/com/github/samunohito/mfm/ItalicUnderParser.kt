@@ -35,6 +35,6 @@ class ItalicUnderParser : IParser<MfmItalic> {
 
     val contents = input.substring(result.subResults[1].range)
     val textNode = MfmText(contents)
-    return ParserResult.ofSuccess(MfmItalic(listOf(textNode)), input, result.range, result.next)
+    return ParserResult.ofSuccess(MfmItalic(listOf(textNode)), result.range, result.next)
   }
 }

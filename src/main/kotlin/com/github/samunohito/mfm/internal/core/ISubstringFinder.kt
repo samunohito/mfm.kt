@@ -28,7 +28,7 @@ interface ISubstringFinder {
       return if (result.success) {
         SubstringFinderResult.ofFailure()
       } else {
-        SubstringFinderResult.ofSuccess(result.range, result.next, result.subResults)
+        SubstringFinderResult.ofSuccess(startAt..startAt, startAt, result.subResults)
       }
     }
   }

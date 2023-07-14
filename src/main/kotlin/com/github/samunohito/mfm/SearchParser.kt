@@ -64,6 +64,6 @@ class SearchParser : IParser<MfmSearch> {
       content = "${text.slice(query)}${text.slice(space)}${text.slice(button)}"
     )
 
-    return ParserResult.ofSuccess(MfmSearch(props), input, result.range, result.next)
+    return ParserResult.ofSuccess(MfmSearch(props), result.range, result.next)
   }
 }

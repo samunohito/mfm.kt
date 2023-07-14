@@ -28,6 +28,6 @@ class EmojiCodeParser : IParser<MfmEmojiCode> {
     }
 
     val code = input.slice(result.subResults[2].range)
-    return ParserResult.ofSuccess(MfmEmojiCode(code), input, result.range, result.next)
+    return ParserResult.ofSuccess(MfmEmojiCode(code), result.range, result.next)
   }
 }

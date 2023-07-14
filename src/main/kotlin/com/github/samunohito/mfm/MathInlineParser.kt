@@ -24,6 +24,6 @@ class MathInlineParser : IParser<MfmMathInline> {
     }
 
     val formula = input.substring(result.subResults[1].range)
-    return ParserResult.ofSuccess(MfmMathInline(formula), input, result.range, result.next)
+    return ParserResult.ofSuccess(MfmMathInline(formula), result.range, result.next)
   }
 }

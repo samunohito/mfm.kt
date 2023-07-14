@@ -28,6 +28,6 @@ class PlainTagParser : IParser<MfmPlain> {
 
     val contents = input.substring(result.subResults[2].range)
     val textNode = MfmText(contents)
-    return ParserResult.ofSuccess(MfmPlain(listOf(textNode)), input, result.range, result.next)
+    return ParserResult.ofSuccess(MfmPlain(listOf(textNode)), result.range, result.next)
   }
 }

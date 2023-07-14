@@ -32,6 +32,6 @@ class MathBlockParser : IParser<MfmMathBlock> {
     }
 
     val formula = input.substring(result.subResults[4].range)
-    return ParserResult.ofSuccess(MfmMathBlock(formula), input, result.range, result.next)
+    return ParserResult.ofSuccess(MfmMathBlock(formula), result.range, result.next)
   }
 }

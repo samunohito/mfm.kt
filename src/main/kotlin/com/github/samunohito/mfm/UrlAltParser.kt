@@ -30,7 +30,7 @@ class UrlAltParser(private val context: Context = defaultContext) : IParser<MfmU
     val body = scanResult.subResults[2]
     val urlRange = schema.range.first..body.range.last
     val url = input.substring(urlRange)
-    return ParserResult.ofSuccess(MfmUrl(url, true), input, urlRange, scanResult.next)
+    return ParserResult.ofSuccess(MfmUrl(url, true), urlRange, scanResult.next)
   }
 
   data class Context(

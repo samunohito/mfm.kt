@@ -104,7 +104,7 @@ class HashtagParser(private val context: Context = defaultContext) : IParser<Mfm
       return ParserResult.ofFailure()
     }
 
-    return ParserResult.ofSuccess(MfmHashtag(hashtagName), input, hashtagNameResult.range, result.next)
+    return ParserResult.ofSuccess(MfmHashtag(hashtagName), hashtagNameResult.range, result.next)
   }
 
   class Context private constructor(

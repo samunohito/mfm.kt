@@ -33,6 +33,6 @@ class CodeBlockParser : IParser<MfmBlockCode> {
 
     val lang = input.substring(result.subResults[3].range).trim().ifEmpty { null }
     val code = input.substring(result.subResults[5].range)
-    return ParserResult.ofSuccess(MfmBlockCode(code, lang), input, result.range, result.next)
+    return ParserResult.ofSuccess(MfmBlockCode(code, lang), result.range, result.next)
   }
 }

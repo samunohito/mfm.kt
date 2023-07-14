@@ -130,7 +130,6 @@ class MentionParser(private val context: Context = defaultContext) : IParser<Mfm
 
     return ParserResult.ofSuccess(
       MfmMention(mention.username!!, mention.hostname, mention.toString()),
-      input,
       mentionMatch.range,
       mentionMatch.range.last + 1,
     )

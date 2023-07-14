@@ -79,7 +79,7 @@ class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl>
     }
 
     val url = input.substring(proceedResult.range)
-    return ParserResult.ofSuccess(MfmUrl(url, false), input, result.range, result.next)
+    return ParserResult.ofSuccess(MfmUrl(url, false), result.range, result.next)
   }
 
   /**

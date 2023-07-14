@@ -24,6 +24,6 @@ class InlineCodeParser : IParser<MfmInlineCode> {
     }
 
     val code = input.substring(result.subResults[1].range)
-    return ParserResult.ofSuccess(MfmInlineCode(code), input, result.range, result.next)
+    return ParserResult.ofSuccess(MfmInlineCode(code), result.range, result.next)
   }
 }
