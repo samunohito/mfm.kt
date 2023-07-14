@@ -23,4 +23,5 @@ enum class MfmNodeType {
   Plain,
   Text,
   String,
+  Nest,
 }

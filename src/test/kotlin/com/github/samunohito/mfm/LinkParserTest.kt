@@ -3,9 +3,8 @@ package com.github.samunohito.mfm
 import com.github.samunohito.mfm.node.MfmBold
 import com.github.samunohito.mfm.node.MfmLink
 import com.github.samunohito.mfm.node.MfmText
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Test
 
 class LinkParserTest {
@@ -42,6 +41,20 @@ class LinkParserTest {
   fun `cannot nest a mention in a link label`() {
     val input = "[@example](<https://misskey.io/@ai>)."
     val output = MfmLink(false, "https://misskey.io/@ai", listOf(MfmText("@example")))
+    assertEquals(output, parser.parse(input).node)
+  }
+
+  @Test
+  fun `cannot nest a mention in a link label nested`() {
+    val input = "[@example**@example**](<https://misskey.io/@ai>)."
+    val output = MfmLink(
+      false,
+      "https://misskey.io/@ai",
+      listOf(
+        MfmText("@example"),
+        MfmBold(listOf(MfmText("@example")))
+      )
+    )
     assertEquals(output, parser.parse(input).node)
   }
 }

@@ -1,6 +1,6 @@
 package com.github.samunohito.mfm.internal.core
 
-class SubstringFinderResult private constructor(
+open class SubstringFinderResult protected constructor(
   val success: Boolean,
   val range: IntRange,
   val next: Int,
@@ -16,12 +16,8 @@ class SubstringFinderResult private constructor(
       return SubstringFinderResult(true, range, next, nestResult)
     }
 
-    fun ofFailure(
-      range: IntRange = IntRange.EMPTY,
-      next: Int = -1,
-      nestResult: List<SubstringFinderResult> = listOf()
-    ): SubstringFinderResult {
-      return SubstringFinderResult(false, range, next, nestResult)
+    fun ofFailure(): SubstringFinderResult {
+      return SubstringFinderResult(false, IntRange.EMPTY, -1, listOf())
     }
   }
 }
