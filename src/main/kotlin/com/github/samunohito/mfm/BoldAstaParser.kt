@@ -1,8 +1,8 @@
 package com.github.samunohito.mfm
 
-import com.github.samunohito.mfm.internal.core.ParserAdapter
-import com.github.samunohito.mfm.internal.core.SequentialFinder
-import com.github.samunohito.mfm.internal.core.StringFinder
+import com.github.samunohito.mfm.finder.core.ParserAdapter
+import com.github.samunohito.mfm.finder.core.SequentialFinder
+import com.github.samunohito.mfm.finder.core.StringFinder
 import com.github.samunohito.mfm.node.MfmBold
 import com.github.samunohito.mfm.node.MfmNest
 

@@ -1,4 +1,6 @@
-package com.github.samunohito.mfm.internal.core
+package com.github.samunohito.mfm.finder.core
+
+import com.github.samunohito.mfm.finder.core.utils.SubstringFinderUtils
 
 object UrlFinderUtils {
   private val wordFinder = RegexFinder(Regex("[.,a-z0-9_/:%#@\\\\$&?!~=+\\-]+"))
@@ -38,8 +40,8 @@ object UrlFinderUtils {
     return ScanLinkResult(
       success = false,
       silent = false,
-      labelContents = SubstringFinderResult.ofFailure(),
-      hrefContents = SubstringFinderResult.ofFailure(),
+      labelContents = CoreFinderResult.ofFailure(),
+      hrefContents = CoreFinderResult.ofFailure(),
       next = linkLabelFinderResult.next,
     )
   }

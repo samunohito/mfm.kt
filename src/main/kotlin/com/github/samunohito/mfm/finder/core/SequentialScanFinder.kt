@@ -1,4 +1,7 @@
-package com.github.samunohito.mfm.internal.core
+package com.github.samunohito.mfm.finder.core
+
+import com.github.samunohito.mfm.finder.ISubstringFinder
+import com.github.samunohito.mfm.finder.core.utils.SubstringFinderUtils
 
 class SequentialScanFinder private constructor(
   private val terminates: Collection<ISubstringFinder>

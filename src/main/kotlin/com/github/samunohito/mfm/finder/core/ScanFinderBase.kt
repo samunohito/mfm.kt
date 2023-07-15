@@ -1,7 +1,13 @@
-package com.github.samunohito.mfm.internal.core
+package com.github.samunohito.mfm.finder.core
+
+import com.github.samunohito.mfm.finder.ISubstringFinder
+import com.github.samunohito.mfm.finder.ISubstringFinderResult
+import com.github.samunohito.mfm.finder.failure
+import com.github.samunohito.mfm.finder.success
+import com.github.samunohito.mfm.utils.next
 
 abstract class ScanFinderBase : ISubstringFinder {
-  override fun find(input: String, startAt: Int): SubstringFinderResult {
+  override fun find(input: String, startAt: Int): ISubstringFinderResult {
     var latestIndex = startAt
 
     val inputRange = startAt until input.length
@@ -15,10 +21,10 @@ abstract class ScanFinderBase : ISubstringFinder {
 
     return if (startAt == latestIndex) {
       // 一回も成功していない場合は失敗扱い
-      SubstringFinderResult.ofFailure()
+      failure()
     } else {
       val range = startAt..latestIndex
-      SubstringFinderResult.ofSuccess(range, range.last + 1)
+      success(FoundType.Core, range, range.next())
     }
   }
 

@@ -4,8 +4,8 @@ import com.github.samunohito.mfm.internal.core.AlternateFinder
 import com.github.samunohito.mfm.internal.core.RegexFinder
 import com.github.samunohito.mfm.internal.core.SequentialFinder
 import com.github.samunohito.mfm.internal.core.StringFinder
-import com.github.samunohito.mfm.internal.core.singleton.LineBeginFinder
-import com.github.samunohito.mfm.internal.core.singleton.LineEndFinder
+import com.github.samunohito.mfm.finder.core.singleton.LineBeginFinder
+import com.github.samunohito.mfm.finder.core.singleton.LineEndFinder
 import com.github.samunohito.mfm.node.MfmEmojiCode
 
 class EmojiCodeParser : IParser<MfmEmojiCode> {

@@ -3,9 +3,9 @@ package com.github.samunohito.mfm
 import com.github.samunohito.mfm.internal.core.SequentialFinder
 import com.github.samunohito.mfm.internal.core.SequentialScanFinder
 import com.github.samunohito.mfm.internal.core.StringFinder
-import com.github.samunohito.mfm.internal.core.singleton.LineBeginFinder
-import com.github.samunohito.mfm.internal.core.singleton.LineEndFinder
-import com.github.samunohito.mfm.internal.core.singleton.NewLineFinder
+import com.github.samunohito.mfm.finder.core.singleton.LineBeginFinder
+import com.github.samunohito.mfm.finder.core.singleton.LineEndFinder
+import com.github.samunohito.mfm.finder.core.singleton.NewLineFinder
 import com.github.samunohito.mfm.node.MfmMathBlock
 
 class MathBlockParser : IParser<MfmMathBlock> {

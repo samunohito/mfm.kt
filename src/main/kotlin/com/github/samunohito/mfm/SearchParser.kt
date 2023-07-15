@@ -1,10 +1,11 @@
 package com.github.samunohito.mfm
 
 import com.github.samunohito.mfm.internal.core.*
-import com.github.samunohito.mfm.internal.core.singleton.LineBeginFinder
-import com.github.samunohito.mfm.internal.core.singleton.LineEndFinder
-import com.github.samunohito.mfm.internal.core.singleton.NewLineFinder
-import com.github.samunohito.mfm.internal.core.singleton.SpaceFinder
+import com.github.samunohito.mfm.finder.core.singleton.LineBeginFinder
+import com.github.samunohito.mfm.finder.core.singleton.LineEndFinder
+import com.github.samunohito.mfm.finder.core.singleton.NewLineFinder
+import com.github.samunohito.mfm.finder.core.singleton.SpaceFinder
+import com.github.samunohito.mfm.finder.core.SubstringFinderResult
 import com.github.samunohito.mfm.node.MfmSearch
 
 class SearchParser : IParser<MfmSearch> {
@@ -29,21 +30,21 @@ class SearchParser : IParser<MfmSearch> {
         for (i in startAt until input.length) {
           if (NewLineFinder.find(input, i).success) {
             // 改行されていたら検索ボタン形式が破綻するので中断
-            return SubstringFinderResult.ofFailure()
+            return CoreFinderResult.ofFailure()
           }
 
           val result = SubstringFinderUtils.sequential(input, latestIndex, searchButtonFinders)
           if (result.success) {
             // 削除ボタンの検出が成功したらクエリの範囲がわかるので、それを返す
             val queryRange = startAt until latestIndex
-            return SubstringFinderResult.ofSuccess(queryRange, queryRange.last + 1)
+            return CoreFinderResult.ofSuccess(queryRange, queryRange.last + 1)
           }
 
           latestIndex = i
         }
 
         // 検索ボタンが見つからなかった
-        return SubstringFinderResult.ofFailure()
+        return CoreFinderResult.ofFailure()
       }
     }
   }

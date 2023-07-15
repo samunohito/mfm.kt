@@ -1,8 +1,9 @@
 package com.github.samunohito.mfm
 
 import com.github.samunohito.mfm.internal.core.*
-import com.github.samunohito.mfm.internal.core.singleton.NewLineFinder
-import com.github.samunohito.mfm.internal.core.singleton.SpaceFinder
+import com.github.samunohito.mfm.finder.core.singleton.NewLineFinder
+import com.github.samunohito.mfm.finder.core.singleton.SpaceFinder
+import com.github.samunohito.mfm.finder.core.SubstringFinderResult
 import com.github.samunohito.mfm.node.MfmHashtag
 
 class HashtagParser(private val context: Context = defaultContext) : IParser<MfmHashtag> {
@@ -44,7 +45,7 @@ class HashtagParser(private val context: Context = defaultContext) : IParser<Mfm
 
       override fun find(input: String, startAt: Int): SubstringFinderResult {
         if (context.currentDepth > context.recursiveDepthLimit) {
-          return SubstringFinderResult.ofFailure()
+          return CoreFinderResult.ofFailure()
         }
 
         var latestIndex = startAt
@@ -76,11 +77,11 @@ class HashtagParser(private val context: Context = defaultContext) : IParser<Mfm
         }
 
         if (bodyResults.isEmpty()) {
-          return SubstringFinderResult.ofFailure()
+          return CoreFinderResult.ofFailure()
         }
 
         val bodyRange = bodyResults.first().range.first..bodyResults.last().range.last
-        return SubstringFinderResult.ofSuccess(bodyRange, bodyRange.last + 1, bodyResults)
+        return CoreFinderResult.ofSuccess(bodyRange, bodyRange.last + 1, bodyResults)
       }
     }
   }

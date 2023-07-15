@@ -1,18 +1,20 @@
-package com.github.samunohito.mfm
+package com.github.samunohito.mfm.finder
 
-import com.github.samunohito.mfm.internal.core.*
-import com.github.samunohito.mfm.finder.core.SubstringFinderResult
-import com.github.samunohito.mfm.node.MfmUrl
+import com.github.samunohito.mfm.finder.core.FoundType
+import com.github.samunohito.mfm.finder.core.RegexFinder
+import com.github.samunohito.mfm.finder.core.SequentialFinder
+import com.github.samunohito.mfm.finder.core.utils.SubstringFinderUtils
+import com.github.samunohito.mfm.utils.merge
+import com.github.samunohito.mfm.utils.next
 
-class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl> {
+class UrlFinder(private val context: Context = Context.init()) : ISubstringFinder {
   private val urlFinder = SequentialFinder(
     RegexFinder(Regex("https?://")),
     UrlBodyFinder(context)
   )
 
   companion object {
-    private val defaultContext: Context = Context.init()
-    private val commaAndPeriodRegex = Regex("[.,]+$")
+    private val regexCommaAndPeriodTail = Regex("[.,]+$")
 
     private class UrlBodyFinder(private val context: Context) : ISubstringFinder {
       companion object {
@@ -21,13 +23,13 @@ class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl>
         private val wordFinder = RegexFinder(Regex("[.,a-z0-9_/:%#@\\\\$&?!~=+\\-]+"))
       }
 
-      override fun find(input: String, startAt: Int): SubstringFinderResult {
+      override fun find(input: String, startAt: Int): ISubstringFinderResult {
         if (context.currentDepth > context.recursiveDepthLimit) {
-          return CoreFinderResult.ofFailure()
+          return SubstringFinderResult.ofFailure()
         }
 
         var latestIndex = startAt
-        val bodyResults = mutableListOf<SubstringFinderResult>()
+        val foundInfos = mutableListOf<SubstringFoundInfo>()
 
         while (true) {
           // wordFinderのパターンにカッコを含めると、終了カッコのみを誤検出してしまう。
@@ -39,48 +41,43 @@ class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl>
           )
           val bracketResult = SubstringFinderUtils.sequential(input, latestIndex, regexBracketWrappedFinders)
           if (bracketResult.success) {
-            bodyResults.add(bracketResult)
-            latestIndex = bracketResult.next
+            foundInfos.add(bracketResult.foundInfo)
+            latestIndex = bracketResult.foundInfo.next
             continue
           }
 
           val wordResult = wordFinder.find(input, latestIndex)
           if (wordResult.success) {
-            bodyResults.add(wordResult)
-            latestIndex = wordResult.next
+            foundInfos.add(wordResult.foundInfo)
+            latestIndex = wordResult.foundInfo.next
             continue
           }
 
           break
         }
 
-        if (bodyResults.isEmpty()) {
-          return CoreFinderResult.ofFailure()
+        if (foundInfos.isEmpty()) {
+          return SubstringFinderResult.ofFailure()
         }
 
-        val bodyRange = bodyResults.first().range.first..bodyResults.last().range.last
-        return CoreFinderResult.ofSuccess(bodyRange, bodyRange.last + 1, bodyResults)
+        val resultRange = foundInfos.map { it.range }.merge()
+        return SubstringFinderResult.ofSuccess(FoundType.Url, resultRange, resultRange.next(), foundInfos)
       }
     }
   }
 
-  override fun parse(input: String, startAt: Int): ParserResult<MfmUrl> {
-    if (context.disabled) {
-      return ParserResult.ofFailure()
-    }
-
+  override fun find(input: String, startAt: Int): ISubstringFinderResult {
     val result = urlFinder.find(input, startAt)
     if (!result.success) {
-      return ParserResult.ofFailure()
+      return SubstringFinderResult.ofFailure()
     }
 
     val proceedResult = processTrailingPeriodAndComma(input, result)
     if (!proceedResult.success) {
-      return ParserResult.ofFailure()
+      return SubstringFinderResult.ofFailure()
     }
 
-    val url = input.substring(proceedResult.range)
-    return ParserResult.ofSuccess(MfmUrl(url, false), result.range, result.next)
+    return SubstringFinderResult.ofSuccess(FoundType.Url, proceedResult)
   }
 
   /**
@@ -88,33 +85,32 @@ class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl>
    */
   private fun processTrailingPeriodAndComma(
     input: String,
-    finderResult: SubstringFinderResult
-  ): SubstringFinderResult {
-    val body = finderResult.subResults[1]
+    finderResult: ISubstringFinderResult
+  ): ISubstringFinderResult {
+    val foundInfo = finderResult.foundInfo
+    val body = foundInfo.sub[1]
     val extractUrlBody = input.substring(body.range)
-    val matched = commaAndPeriodRegex.find(extractUrlBody)
+    val matched = regexCommaAndPeriodTail.find(extractUrlBody)
       ?: // 末尾にピリオドやカンマがない場合はそのまま返す
       return finderResult
 
     if (extractUrlBody.length - matched.value.length <= 0) {
       // スキーマ形式で始まるが、それ以降がカンマとピリオドのみの場合はスキーマ形式として認識しない
-      return CoreFinderResult.ofFailure()
+      return SubstringFinderResult.ofFailure()
     }
 
     // finderResultの段階でuntilされているので、ここではやらない（多重にやると範囲がおかしくなる）
-    val modifyRange = finderResult.range.first..finderResult.range.last - matched.value.length
-    return CoreFinderResult.ofSuccess(modifyRange, finderResult.next)
+    val modifyRange = foundInfo.range.first..foundInfo.range.last - matched.value.length
+    return SubstringFinderResult.ofSuccess(FoundType.Url, modifyRange, foundInfo.next)
   }
 
   class Context private constructor(
-    var disabled: Boolean,
     val currentDepth: Int,
     val recursiveDepthLimit: Int,
   ) {
     companion object {
       fun init(recursiveDepthLimit: Int = 20): Context {
         return Context(
-          disabled = false,
           currentDepth = 0,
           recursiveDepthLimit = recursiveDepthLimit
         )
@@ -123,7 +119,6 @@ class UrlParser(private val context: Context = defaultContext) : IParser<MfmUrl>
 
     fun incrementDepth(): Context {
       return Context(
-        disabled = disabled,
         currentDepth = currentDepth + 1,
         recursiveDepthLimit = recursiveDepthLimit
       )

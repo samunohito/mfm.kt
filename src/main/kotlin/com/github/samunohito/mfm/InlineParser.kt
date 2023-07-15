@@ -2,7 +2,7 @@ package com.github.samunohito.mfm
 
 import com.github.samunohito.mfm.internal.core.AlternateFinder
 import com.github.samunohito.mfm.internal.core.ISubstringFinder
-import com.github.samunohito.mfm.internal.core.singleton.LineEndFinder
+import com.github.samunohito.mfm.finder.core.singleton.LineEndFinder
 import com.github.samunohito.mfm.node.IMfmInline
 import com.github.samunohito.mfm.node.MfmNest
 import com.github.samunohito.mfm.node.MfmText

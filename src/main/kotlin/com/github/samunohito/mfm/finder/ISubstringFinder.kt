@@ -1,7 +1,7 @@
-package com.github.samunohito.mfm.internal.core
+package com.github.samunohito.mfm.finder
 
 interface ISubstringFinder {
-  fun find(input: String, startAt: Int = 0): SubstringFinderResult
+  fun find(input: String, startAt: Int = 0): ISubstringFinderResult
 
   fun optional(): ISubstringFinder {
     return Optional(this)
@@ -12,23 +12,23 @@ interface ISubstringFinder {
   }
 
   private class Optional(private val delegate: ISubstringFinder) : ISubstringFinder {
-    override fun find(input: String, startAt: Int): SubstringFinderResult {
+    override fun find(input: String, startAt: Int): ISubstringFinderResult {
       val result = delegate.find(input, startAt)
       return if (result.success) {
         result
       } else {
-        SubstringFinderResult.ofSuccess(IntRange.EMPTY, startAt)
+        CoreFinderResult.ofSuccess(IntRange.EMPTY, startAt)
       }
     }
   }
 
   private class Not(private val delegate: ISubstringFinder) : ISubstringFinder {
-    override fun find(input: String, startAt: Int): SubstringFinderResult {
+    override fun find(input: String, startAt: Int): ISubstringFinderResult {
       val result = delegate.find(input, startAt)
       return if (result.success) {
-        SubstringFinderResult.ofFailure()
+        CoreFinderResult.ofFailure()
       } else {
-        SubstringFinderResult.ofSuccess(startAt..startAt, startAt, result.subResults)
+        CoreFinderResult.ofSuccess(startAt..startAt, startAt, result.subResults)
       }
     }
   }

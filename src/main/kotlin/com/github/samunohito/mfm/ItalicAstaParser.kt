@@ -2,11 +2,11 @@
 
 package com.github.samunohito.mfm
 
-import com.github.samunohito.mfm.internal.core.AlternateScanFinder
+import com.github.samunohito.mfm.finder.core.AlternateScanFinder
 import com.github.samunohito.mfm.internal.core.RegexFinder
 import com.github.samunohito.mfm.internal.core.SequentialFinder
 import com.github.samunohito.mfm.internal.core.StringFinder
-import com.github.samunohito.mfm.internal.core.singleton.SpaceFinder
+import com.github.samunohito.mfm.finder.core.singleton.SpaceFinder
 import com.github.samunohito.mfm.node.MfmItalic
 import com.github.samunohito.mfm.node.MfmText
 

@@ -1,9 +1,9 @@
 package com.github.samunohito.mfm
 
-import com.github.samunohito.mfm.internal.core.AlternateScanFinder
+import com.github.samunohito.mfm.finder.core.AlternateScanFinder
 import com.github.samunohito.mfm.internal.core.SequentialFinder
 import com.github.samunohito.mfm.internal.core.StringFinder
-import com.github.samunohito.mfm.internal.core.singleton.NewLineFinder
+import com.github.samunohito.mfm.finder.core.singleton.NewLineFinder
 import com.github.samunohito.mfm.node.MfmInlineCode
 
 class InlineCodeParser : IParser<MfmInlineCode> {

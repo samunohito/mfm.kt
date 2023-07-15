@@ -3,7 +3,7 @@ package com.github.samunohito.mfm
 import com.github.samunohito.mfm.internal.core.SequentialFinder
 import com.github.samunohito.mfm.internal.core.SequentialScanFinder
 import com.github.samunohito.mfm.internal.core.StringFinder
-import com.github.samunohito.mfm.internal.core.singleton.NewLineFinder
+import com.github.samunohito.mfm.finder.core.singleton.NewLineFinder
 import com.github.samunohito.mfm.node.MfmPlain
 import com.github.samunohito.mfm.node.MfmText
 

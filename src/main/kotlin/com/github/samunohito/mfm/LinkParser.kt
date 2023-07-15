@@ -1,7 +1,7 @@
 package com.github.samunohito.mfm
 
 import com.github.samunohito.mfm.internal.core.*
-import com.github.samunohito.mfm.internal.core.singleton.NewLineFinder
+import com.github.samunohito.mfm.finder.core.singleton.NewLineFinder
 import com.github.samunohito.mfm.node.IMfmInline
 import com.github.samunohito.mfm.node.MfmLink
 import com.github.samunohito.mfm.node.MfmNest

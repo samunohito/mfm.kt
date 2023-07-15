@@ -1,10 +1,14 @@
-package com.github.samunohito.mfm.internal.core
+package com.github.samunohito.mfm.finder.core
+
+import com.github.samunohito.mfm.finder.ISubstringFinder
+import com.github.samunohito.mfm.finder.ISubstringFinderResult
+import com.github.samunohito.mfm.finder.core.utils.SubstringFinderUtils
 
 class AlternateScanFinder private constructor(
   private val terminates: Collection<ISubstringFinder>,
   isWhile: Boolean
 ) : ScanFinderBase() {
-  private val handler: (SubstringFinderResult) -> Boolean = if (isWhile) {
+  private val handler: (ISubstringFinderResult) -> Boolean = if (isWhile) {
     { it.success }
   } else {
     { !it.success }
