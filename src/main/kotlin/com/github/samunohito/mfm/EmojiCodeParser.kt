@@ -4,8 +4,8 @@ import com.github.samunohito.mfm.internal.core.AlternateFinder
 import com.github.samunohito.mfm.internal.core.RegexFinder
 import com.github.samunohito.mfm.internal.core.SequentialFinder
 import com.github.samunohito.mfm.internal.core.StringFinder
-import com.github.samunohito.mfm.finder.core.singleton.LineBeginFinder
-import com.github.samunohito.mfm.finder.core.singleton.LineEndFinder
+import com.github.samunohito.mfm.finder.core.fixed.LineBeginFinder
+import com.github.samunohito.mfm.finder.core.fixed.LineEndFinder
 import com.github.samunohito.mfm.node.MfmEmojiCode
 
 class EmojiCodeParser : IParser<MfmEmojiCode> {
@@ -21,13 +21,13 @@ class EmojiCodeParser : IParser<MfmEmojiCode> {
     )
   }
 
-  override fun parse(input: String, startAt: Int): ParserResult<MfmEmojiCode> {
+  override fun parse(input: String, startAt: Int): IParserResult<MfmEmojiCode> {
     val result = emojiCodeFinder.find(input, startAt)
     if (!result.success) {
-      return ParserResult.ofFailure()
+      return IParserResult.ofFailure()
     }
 
     val code = input.slice(result.subResults[2].range)
-    return ParserResult.ofSuccess(MfmEmojiCode(code), result.range, result.next)
+    return IParserResult.ofSuccess(MfmEmojiCode(code), result.range, result.next)
   }
 }

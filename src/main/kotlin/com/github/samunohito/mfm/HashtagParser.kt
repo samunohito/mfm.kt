@@ -1,8 +1,8 @@
 package com.github.samunohito.mfm
 
 import com.github.samunohito.mfm.internal.core.*
-import com.github.samunohito.mfm.finder.core.singleton.NewLineFinder
-import com.github.samunohito.mfm.finder.core.singleton.SpaceFinder
+import com.github.samunohito.mfm.finder.core.fixed.NewLineFinder
+import com.github.samunohito.mfm.finder.core.fixed.SpaceFinder
 import com.github.samunohito.mfm.finder.core.SubstringFinderResult
 import com.github.samunohito.mfm.node.MfmHashtag
 
@@ -86,26 +86,26 @@ class HashtagParser(private val context: Context = defaultContext) : IParser<Mfm
     }
   }
 
-  override fun parse(input: String, startAt: Int): ParserResult<MfmHashtag> {
+  override fun parse(input: String, startAt: Int): IParserResult<MfmHashtag> {
     val result = SubstringFinderUtils.sequential(input, startAt, listOf(markFinder, HashtagFinder(context)))
     if (!result.success) {
-      return ParserResult.ofFailure()
+      return IParserResult.ofFailure()
     }
 
     // ハッシュタグの直前が英数字の場合はハッシュタグとして認識しない
     val beforeStr = input.substring(0 until startAt)
     if (regexAlphaAndNumericTail.containsMatchIn(beforeStr)) {
-      return ParserResult.ofFailure()
+      return IParserResult.ofFailure()
     }
 
     // 検出された文字が数値のみの場合はハッシュタグではない
     val hashtagNameResult = result.subResults[1]
     val hashtagName = input.substring(hashtagNameResult.range)
     if (regexNumericOnly.containsMatchIn(hashtagName)) {
-      return ParserResult.ofFailure()
+      return IParserResult.ofFailure()
     }
 
-    return ParserResult.ofSuccess(MfmHashtag(hashtagName), hashtagNameResult.range, result.next)
+    return IParserResult.ofSuccess(MfmHashtag(hashtagName), hashtagNameResult.range, result.next)
   }
 
   class Context private constructor(

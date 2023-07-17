@@ -1,29 +1,15 @@
 package com.github.samunohito.mfm
 
-import com.github.samunohito.mfm.finder.core.AlternateScanFinder
-import com.github.samunohito.mfm.internal.core.SequentialFinder
-import com.github.samunohito.mfm.internal.core.StringFinder
-import com.github.samunohito.mfm.finder.core.singleton.NewLineFinder
+import com.github.samunohito.mfm.finder.MathInlineFinder
+import com.github.samunohito.mfm.finder.SubstringFoundInfo
+import com.github.samunohito.mfm.finder.core.FoundType
 import com.github.samunohito.mfm.node.MfmMathInline
 
-class MathInlineParser : IParser<MfmMathInline> {
-  companion object {
-    private val open = StringFinder("\\(")
-    private val close = StringFinder("\\)")
-    private val mathInlineFinder = SequentialFinder(
-      open,
-      AlternateScanFinder.ofUntil(close, NewLineFinder),
-      close
-    )
-  }
+class MathInlineParser : SimpleParserBase<MfmMathInline, MathInlineFinder>() {
+  override val finder = MathInlineFinder()
+  override val supportFoundTypes: Set<FoundType> = setOf(FoundType.MathInline)
 
-  override fun parse(input: String, startAt: Int): ParserResult<MfmMathInline> {
-    val result = mathInlineFinder.find(input, startAt)
-    if (!result.success) {
-      return ParserResult.ofFailure()
-    }
-
-    val formula = input.substring(result.subResults[1].range)
-    return ParserResult.ofSuccess(MfmMathInline(formula), result.range, result.next)
+  override fun doParse(input: String, foundInfo: SubstringFoundInfo): IParserResult<MfmMathInline> {
+    return success(MfmMathInline(input.substring(foundInfo.range)), foundInfo)
   }
 }

@@ -1,7 +1,8 @@
-package com.github.samunohito.mfm.finder.core
+package com.github.samunohito.mfm.finder.core.charsequence
 
 import com.github.samunohito.mfm.finder.ISubstringFinder
 import com.github.samunohito.mfm.finder.ISubstringFinderResult
+import com.github.samunohito.mfm.finder.core.FoundType
 import com.github.samunohito.mfm.finder.failure
 import com.github.samunohito.mfm.finder.success
 

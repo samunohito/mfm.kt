@@ -1,6 +1,7 @@
 package com.github.samunohito.mfm.finder
 
 import com.github.samunohito.mfm.finder.core.*
+import com.github.samunohito.mfm.finder.core.charsequence.ScanningFinder
 import com.github.samunohito.mfm.utils.merge
 
 class UrlAltFinder : ISubstringFinder {
@@ -15,12 +16,12 @@ class UrlAltFinder : ISubstringFinder {
     // 開始・終了のブラケットが見つかるまで
     val scanResult = urlFinder.find(input, startAt)
     if (!scanResult.success) {
-      return SubstringFinderResult.ofFailure()
+      return failure()
     }
 
     val schema = scanResult.foundInfo.sub[1]
     val body = scanResult.foundInfo.sub[2]
     val urlRange = listOf(schema.range, body.range).merge()
-    return SubstringFinderResult.ofSuccess(FoundType.UrlAlt, urlRange, scanResult.foundInfo.next)
+    return success(FoundType.UrlAlt, urlRange, scanResult.foundInfo.next)
   }
 }

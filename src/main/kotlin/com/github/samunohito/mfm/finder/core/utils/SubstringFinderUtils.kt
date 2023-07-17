@@ -2,9 +2,10 @@ package com.github.samunohito.mfm.finder.core.utils
 
 import com.github.samunohito.mfm.finder.ISubstringFinder
 import com.github.samunohito.mfm.finder.ISubstringFinderResult
-import com.github.samunohito.mfm.finder.SubstringFinderResult
 import com.github.samunohito.mfm.finder.core.FoundType
-import com.github.samunohito.mfm.utils.IntRangeUtils
+import com.github.samunohito.mfm.finder.failure
+import com.github.samunohito.mfm.finder.success
+import com.github.samunohito.mfm.utils.next
 
 object SubstringFinderUtils {
   fun sequential(input: String, startAt: Int, finders: Collection<ISubstringFinder>): ISubstringFinderResult {
@@ -14,7 +15,7 @@ object SubstringFinderUtils {
     for (finder in finders) {
       val result = finder.find(input, latestIndex)
       if (!result.success) {
-        return SubstringFinderResult.ofFailure()
+        return failure()
       }
 
       latestIndex = result.foundInfo.next
@@ -22,10 +23,10 @@ object SubstringFinderUtils {
     }
 
     val resultRange = startAt until latestIndex
-    return SubstringFinderResult.ofSuccess(
+    return success(
       FoundType.Core,
       resultRange,
-      IntRangeUtils.calcNext(resultRange),
+      resultRange.next(),
       results
     )
   }
@@ -38,6 +39,6 @@ object SubstringFinderUtils {
       }
     }
 
-    return SubstringFinderResult.ofFailure()
+    return failure()
   }
 }

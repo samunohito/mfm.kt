@@ -1,39 +1,15 @@
 package com.github.samunohito.mfm
 
-import com.github.samunohito.mfm.internal.core.*
+import com.github.samunohito.mfm.finder.SubstringFoundInfo
+import com.github.samunohito.mfm.finder.UrlAltFinder
+import com.github.samunohito.mfm.finder.core.FoundType
 import com.github.samunohito.mfm.node.MfmUrl
 
-class UrlAltParser(private val context: Context = defaultContext) : IParser<MfmUrl> {
-  companion object {
-    private val defaultContext: Context = Context(
-      disabled = false
-    )
+class UrlAltParser : SimpleParserBase<MfmUrl, UrlAltFinder>() {
+  override val finder = UrlAltFinder()
+  override val supportFoundTypes: Set<FoundType> = setOf(FoundType.UrlAlt)
 
-    private val open = StringFinder("<")
-    private val close = StringFinder(">")
-    private val schema = RegexFinder(Regex("https?://"))
-    private val urlFinder = SequentialFinder(open, schema, ScanningFinder(">"), close)
+  override fun doParse(input: String, foundInfo: SubstringFoundInfo): IParserResult<MfmUrl> {
+    return success(MfmUrl(input.substring(foundInfo.range), true), foundInfo)
   }
-
-  override fun parse(input: String, startAt: Int): ParserResult<MfmUrl> {
-    if (context.disabled) {
-      return ParserResult.ofFailure()
-    }
-
-    // 開始・終了のブラケットが見つかるまで
-    val scanResult = urlFinder.find(input, startAt)
-    if (!scanResult.success) {
-      return ParserResult.ofFailure()
-    }
-
-    val schema = scanResult.subResults[1]
-    val body = scanResult.subResults[2]
-    val urlRange = schema.range.first..body.range.last
-    val url = input.substring(urlRange)
-    return ParserResult.ofSuccess(MfmUrl(url, true), urlRange, scanResult.next)
-  }
-
-  data class Context(
-    var disabled: Boolean
-  )
 }

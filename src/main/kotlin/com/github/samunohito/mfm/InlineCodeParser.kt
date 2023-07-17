@@ -1,9 +1,9 @@
 package com.github.samunohito.mfm
 
-import com.github.samunohito.mfm.finder.core.AlternateScanFinder
+import com.github.samunohito.mfm.finder.core.charsequence.AlternateScanFinder
 import com.github.samunohito.mfm.internal.core.SequentialFinder
 import com.github.samunohito.mfm.internal.core.StringFinder
-import com.github.samunohito.mfm.finder.core.singleton.NewLineFinder
+import com.github.samunohito.mfm.finder.core.fixed.NewLineFinder
 import com.github.samunohito.mfm.node.MfmInlineCode
 
 class InlineCodeParser : IParser<MfmInlineCode> {
@@ -17,13 +17,13 @@ class InlineCodeParser : IParser<MfmInlineCode> {
     )
   }
 
-  override fun parse(input: String, startAt: Int): ParserResult<MfmInlineCode> {
+  override fun parse(input: String, startAt: Int): IParserResult<MfmInlineCode> {
     val result = inlineCodeFinder.find(input, startAt)
     if (!result.success) {
-      return ParserResult.ofFailure()
+      return IParserResult.ofFailure()
     }
 
     val code = input.substring(result.subResults[1].range)
-    return ParserResult.ofSuccess(MfmInlineCode(code), result.range, result.next)
+    return IParserResult.ofSuccess(MfmInlineCode(code), result.range, result.next)
   }
 }

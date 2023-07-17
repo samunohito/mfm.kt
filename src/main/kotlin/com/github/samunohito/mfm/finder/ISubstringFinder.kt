@@ -1,5 +1,7 @@
 package com.github.samunohito.mfm.finder
 
+import com.github.samunohito.mfm.finder.core.FoundType
+
 interface ISubstringFinder {
   fun find(input: String, startAt: Int = 0): ISubstringFinderResult
 
@@ -17,7 +19,7 @@ interface ISubstringFinder {
       return if (result.success) {
         result
       } else {
-        CoreFinderResult.ofSuccess(IntRange.EMPTY, startAt)
+        success(FoundType.Core, IntRange.EMPTY, startAt)
       }
     }
   }
@@ -26,9 +28,9 @@ interface ISubstringFinder {
     override fun find(input: String, startAt: Int): ISubstringFinderResult {
       val result = delegate.find(input, startAt)
       return if (result.success) {
-        CoreFinderResult.ofFailure()
+        failure()
       } else {
-        CoreFinderResult.ofSuccess(startAt..startAt, startAt, result.subResults)
+        success(FoundType.Core, result.foundInfo)
       }
     }
   }

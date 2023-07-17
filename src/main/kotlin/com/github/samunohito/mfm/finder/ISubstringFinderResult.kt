@@ -86,6 +86,10 @@ fun success(foundType: FoundType, result: ISubstringFinderResult): ISubstringFin
   return Impl.ofSuccess(SubstringFoundInfo(foundType, result.foundInfo))
 }
 
+fun success(foundType: FoundType, info: SubstringFoundInfo): ISubstringFinderResult {
+  return Impl.ofSuccess(SubstringFoundInfo(foundType, info))
+}
+
 fun failure(): ISubstringFinderResult {
   return Impl.ofFailure()
 }

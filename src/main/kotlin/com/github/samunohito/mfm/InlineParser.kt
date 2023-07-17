@@ -1,112 +1,34 @@
 package com.github.samunohito.mfm
 
-import com.github.samunohito.mfm.internal.core.AlternateFinder
-import com.github.samunohito.mfm.internal.core.ISubstringFinder
-import com.github.samunohito.mfm.finder.core.singleton.LineEndFinder
-import com.github.samunohito.mfm.node.IMfmInline
-import com.github.samunohito.mfm.node.MfmNest
-import com.github.samunohito.mfm.node.MfmText
+import com.github.samunohito.mfm.finder.ISubstringFinder
+import com.github.samunohito.mfm.finder.InlineFinder
+import com.github.samunohito.mfm.finder.SubstringFoundInfo
+import com.github.samunohito.mfm.finder.core.AlternateFinder
+import com.github.samunohito.mfm.finder.core.FoundType
+import com.github.samunohito.mfm.finder.core.fixed.LineEndFinder
+import com.github.samunohito.mfm.node.IMfmNode
+import com.github.samunohito.mfm.node.IMfmNodeNestable
 
 class InlineParser(
-  terminateFinder: ISubstringFinder,
-  private val callback: Callback = Callback.impl
-) : IParser<MfmNest<IMfmInline<*>>> {
-  private val terminateFinder = AlternateFinder(terminateFinder, LineEndFinder)
-  private val factories: List<() -> IParser<out IMfmInline<*>>> = listOf(
-    { UnicodeEmojiParser() },
-    { SmallTagParser() },
-    { PlainTagParser() },
-    { BoldTagParser() },
-    { ItalicTagParser() },
-    { StrikeTagParser() },
-    { UrlAltParser() },
-    { BigParser() },
-    { BoldAstaParser() },
-    { ItalicAstaParser() },
-    { BoldUnderParser() },
-    { ItalicUnderParser() },
-    { InlineCodeParser() },
-    { MathInlineParser() },
-    { StrikeWaveParser() },
-    { FnParser() },
-    { MentionParser() },
-    { HashtagParser() },
-    { EmojiCodeParser() },
-    { LinkParser() },
-    { UrlParser() },
-  )
+  terminate: ISubstringFinder
+) : SimpleParserBase<IMfmNode<*>, InlineFinder>() {
+  override val finder = InlineFinder(AlternateFinder(terminate, LineEndFinder))
+  override val supportFoundTypes = setOf(FoundType.Inline)
 
-  override fun parse(input: String, startAt: Int): ParserResult<MfmNest<IMfmInline<*>>> {
-    var prevIndex = startAt
-    var latestIndex = startAt
-    val mfmNodes = mutableListOf<ParserResult<IMfmInline<*>>>()
-
-    while (!shouldTerminate(input, latestIndex)) {
-      val parserResult = parseWithFactories(input, latestIndex)
-      if (parserResult.success) {
-        if (prevIndex != latestIndex) {
-          val range = prevIndex until latestIndex
-          val text = input.substring(range)
-          mfmNodes.add(ParserResult.ofSuccess(MfmText(text), range, range.last + 1))
-        }
-        mfmNodes.add(ParserResult.ofSuccess(parserResult.node, parserResult.range, parserResult.next))
-
-        prevIndex = latestIndex
-        latestIndex = parserResult.next
-      } else {
-        latestIndex++
-      }
-    }
-
-    return if (startAt == latestIndex) {
-      ParserResult.ofFailure()
-    } else {
-      val range = startAt until latestIndex
-      val nest = createMfmNest(input, range, mfmNodes)
-      ParserResult.ofSuccess(nest, range, range.last + 1)
-    }
+  override fun doParse(input: String, foundInfo: SubstringFoundInfo): IParserResult<IMfmNode<*>> {
+    return success(parseNestable(input, foundInfo), foundInfo)
   }
 
-  private fun shouldTerminate(input: String, latestIndex: Int): Boolean {
-    return terminateFinder.find(input, latestIndex).success
-  }
+  private fun parseNestable(input: String, foundInfo: SubstringFoundInfo): IMfmNode<*> {
+    val parser = ParserFactory.get(foundInfo.type)
+    val parseResult = parser.parse(input, foundInfo)
 
-  private fun parseWithFactories(input: String, latestIndex: Int): ParserResult<IMfmInline<*>> {
-    for (factory in factories) {
-      val parser = factory.invoke()
-      if (callback.needParse(input, latestIndex, parser)) {
-        val result = parser.parse(input, latestIndex)
-        if (result.success) {
-          return ParserResult.ofSuccess(result.node, result.range, result.next)
-        }
-      }
+    val node = parseResult.node
+    if (node is IMfmNodeNestable<*, *>) {
+      val children = foundInfo.sub.map { parseNestable(input, it) }
+      return node.addChild(children)
     }
-    return ParserResult.ofFailure()
-  }
 
-  private fun createMfmNest(
-    input: String,
-    range: IntRange,
-    mfmNodes: List<ParserResult<IMfmInline<*>>>
-  ): MfmNest<IMfmInline<*>> {
-    val content = if (mfmNodes.isEmpty()) {
-      val text = input.substring(range)
-      listOf<IMfmInline<*>>(MfmText(text))
-    } else {
-      mfmNodes.map { it.node }
-    }
-    return MfmNest(content)
-  }
-
-  interface Callback {
-    fun needParse(input: String, startAt: Int, parser: IParser<out IMfmInline<*>>): Boolean
-
-    companion object {
-      val impl = object : Callback {
-        override fun needParse(input: String, startAt: Int, parser: IParser<out IMfmInline<*>>): Boolean {
-          return true
-        }
-      }
-    }
+    return node
   }
 }

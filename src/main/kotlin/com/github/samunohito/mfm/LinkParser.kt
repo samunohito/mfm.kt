@@ -1,66 +1,18 @@
 package com.github.samunohito.mfm
 
-import com.github.samunohito.mfm.internal.core.*
-import com.github.samunohito.mfm.finder.core.singleton.NewLineFinder
-import com.github.samunohito.mfm.node.IMfmInline
+import com.github.samunohito.mfm.finder.LinkFinder
+import com.github.samunohito.mfm.finder.SubstringFoundInfo
+import com.github.samunohito.mfm.finder.core.FoundType
 import com.github.samunohito.mfm.node.MfmLink
-import com.github.samunohito.mfm.node.MfmNest
 
-class LinkParser : IParser<MfmLink> {
-  companion object {
-    private val squareOpen = RegexFinder(Regex("\\??\\["))
-    private val squareClose = StringFinder("]")
-    private val roundOpen = StringFinder("(")
-    private val roundClose = StringFinder(")")
-    private val terminateFinder = AlternateFinder(squareClose, NewLineFinder)
-    private val linkFinder = SequentialFinder(
-      squareOpen,
-      ParserAdapter(InlineParser(terminateFinder, NestInlineParserCallback)),
-      squareClose,
-      roundOpen,
-      AlternateFinder(ParserAdapter(UrlAltParser()), ParserAdapter(UrlParser())),
-      roundClose,
-    )
+class LinkParser : SimpleParserBase<MfmLink, LinkFinder>() {
+  override val finder = LinkFinder()
+  override val supportFoundTypes: Set<FoundType> = setOf(FoundType.Link)
 
-    private object NestInlineParserCallback : InlineParser.Callback {
-      override fun needParse(input: String, startAt: Int, parser: IParser<out IMfmInline<*>>): Boolean {
-        return when (parser) {
-          is HashtagParser,
-          is LinkParser,
-          is MentionParser,
-          is UrlParser,
-          is UrlAltParser -> {
-            false
-          }
-
-          else -> {
-            true
-          }
-        }
-      }
-    }
+  override fun doParse(input: String, foundInfo: SubstringFoundInfo): IParserResult<MfmLink> {
+    val squareOpen = foundInfo[LinkFinder.SubIndex.squareOpen]
+    val label = foundInfo[LinkFinder.SubIndex.label]
+    val url = foundInfo[LinkFinder.SubIndex.url]
   }
 
-  override fun parse(input: String, startAt: Int): ParserResult<MfmLink> {
-    val linkFinderResult = linkFinder.find(input, startAt)
-    if (!linkFinderResult.success) {
-      return ParserResult.ofFailure()
-    }
-
-    val squareOpenResult = linkFinderResult.subResults[0]
-    val labelResult = linkFinderResult.subResults[1]
-    val urlResult = linkFinderResult.subResults[4]
-
-    val isSilent = input.substring(squareOpenResult.range) == "?["
-    val url = input.substring(urlResult.range)
-
-    val label = if (labelResult is ParserAdapter.Result<*>) labelResult else error("invalid result type.")
-    val nest = if (label.node is MfmNest<*>) label.node as MfmNest<*> else error("invalid node type.")
-
-    return ParserResult.ofSuccess(
-      MfmLink.fromNest(isSilent, url, nest),
-      linkFinderResult.range,
-      linkFinderResult.next
-    )
-  }
 }

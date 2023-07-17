@@ -3,14 +3,26 @@ package com.github.samunohito.mfm.finder
 import com.github.samunohito.mfm.finder.core.FoundType
 
 data class SubstringFoundInfo(
-  val foundType: FoundType,
+  val type: FoundType,
   val range: IntRange,
   val next: Int,
-  val sub: List<SubstringFoundInfo>,
+  val sub: List<SubstringFoundInfo> = listOf(),
 ) {
-  constructor(foundType: FoundType, info: SubstringFoundInfo) : this(foundType, info.range, info.next, info.sub)
-
   companion object {
-    val EMPTY = SubstringFoundInfo(FoundType.Unknown, IntRange.EMPTY, Int.MIN_VALUE, emptyList())
+    val EMPTY = SubstringFoundInfo(FoundType.Empty, IntRange.EMPTY, Int.MIN_VALUE, emptyList())
   }
+
+  constructor(type: FoundType, info: SubstringFoundInfo) : this(type, info.range, info.next, info.sub)
+
+  operator fun get(index: Int): SubstringFoundInfo {
+    return sub[index]
+  }
+
+  operator fun get(index: ISubIndex): SubstringFoundInfo {
+    return sub[index.index]
+  }
+}
+
+interface ISubIndex {
+  val index: Int
 }

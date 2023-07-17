@@ -2,11 +2,11 @@
 
 package com.github.samunohito.mfm
 
-import com.github.samunohito.mfm.finder.core.AlternateScanFinder
+import com.github.samunohito.mfm.finder.core.charsequence.AlternateScanFinder
 import com.github.samunohito.mfm.internal.core.RegexFinder
 import com.github.samunohito.mfm.internal.core.SequentialFinder
 import com.github.samunohito.mfm.internal.core.StringFinder
-import com.github.samunohito.mfm.finder.core.singleton.SpaceFinder
+import com.github.samunohito.mfm.finder.core.fixed.SpaceFinder
 import com.github.samunohito.mfm.node.MfmBold
 import com.github.samunohito.mfm.node.MfmText
 
@@ -20,14 +20,14 @@ class BoldUnderParser : IParser<MfmBold> {
     )
   }
 
-  override fun parse(input: String, startAt: Int): ParserResult<MfmBold> {
+  override fun parse(input: String, startAt: Int): IParserResult<MfmBold> {
     val result = italicUnderFinder.find(input, startAt)
     if (!result.success) {
-      return ParserResult.ofFailure()
+      return IParserResult.ofFailure()
     }
 
     val contents = input.substring(result.subResults[1].range)
     val textNode = MfmText(contents)
-    return ParserResult.ofSuccess(MfmBold(listOf(textNode)), result.range, result.next)
+    return IParserResult.ofSuccess(MfmBold(listOf(textNode)), result.range, result.next)
   }
 }

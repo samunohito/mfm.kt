@@ -1,4 +1,4 @@
-package com.github.samunohito.mfm.finder.core.singleton
+package com.github.samunohito.mfm.finder.core.fixed
 
 import com.github.samunohito.mfm.finder.ISubstringFinder
 import com.github.samunohito.mfm.finder.ISubstringFinderResult

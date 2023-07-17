@@ -3,9 +3,9 @@ package com.github.samunohito.mfm
 import com.github.samunohito.mfm.internal.core.SequentialFinder
 import com.github.samunohito.mfm.internal.core.SequentialScanFinder
 import com.github.samunohito.mfm.internal.core.StringFinder
-import com.github.samunohito.mfm.finder.core.singleton.LineBeginFinder
-import com.github.samunohito.mfm.finder.core.singleton.LineEndFinder
-import com.github.samunohito.mfm.finder.core.singleton.NewLineFinder
+import com.github.samunohito.mfm.finder.core.fixed.LineBeginFinder
+import com.github.samunohito.mfm.finder.core.fixed.LineEndFinder
+import com.github.samunohito.mfm.finder.core.fixed.NewLineFinder
 import com.github.samunohito.mfm.node.MfmBlockCode
 
 class CodeBlockParser : IParser<MfmBlockCode> {
@@ -25,14 +25,14 @@ class CodeBlockParser : IParser<MfmBlockCode> {
     )
   }
 
-  override fun parse(input: String, startAt: Int): ParserResult<MfmBlockCode> {
+  override fun parse(input: String, startAt: Int): IParserResult<MfmBlockCode> {
     val result = mathBlockFinder.find(input, startAt)
     if (!result.success) {
-      return ParserResult.ofFailure()
+      return IParserResult.ofFailure()
     }
 
     val lang = input.substring(result.subResults[3].range).trim().ifEmpty { null }
     val code = input.substring(result.subResults[5].range)
-    return ParserResult.ofSuccess(MfmBlockCode(code, lang), result.range, result.next)
+    return IParserResult.ofSuccess(MfmBlockCode(code, lang), result.range, result.next)
   }
 }

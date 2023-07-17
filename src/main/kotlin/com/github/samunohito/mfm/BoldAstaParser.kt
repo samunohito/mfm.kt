@@ -16,14 +16,14 @@ class BoldAstaParser : IParser<MfmBold> {
     )
   }
 
-  override fun parse(input: String, startAt: Int): ParserResult<MfmBold> {
+  override fun parse(input: String, startAt: Int): IParserResult<MfmBold> {
     val result = boldAstaFinder.find(input, startAt)
     if (!result.success) {
-      return ParserResult.ofFailure()
+      return IParserResult.ofFailure()
     }
 
     val inlineResult = result.subResults[1] as ParserAdapter.Result<*>
     val nest = inlineResult.node as MfmNest<*>
-    return ParserResult.ofSuccess(MfmBold.fromNest(nest), result.range, result.next)
+    return IParserResult.ofSuccess(MfmBold.fromNest(nest), result.range, result.next)
   }
 }

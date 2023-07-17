@@ -1,11 +1,11 @@
-package com.github.samunohito.mfm.finder.core.singleton
+package com.github.samunohito.mfm.finder.core.fixed
 
 import com.github.samunohito.mfm.finder.ISubstringFinder
 import com.github.samunohito.mfm.finder.ISubstringFinderResult
 import com.github.samunohito.mfm.finder.core.RegexFinder
 
-object CrLfFinder : ISubstringFinder {
-  private val finder = RegexFinder(Regex("\r\n"))
+object SpaceFinder : ISubstringFinder {
+  private val finder = RegexFinder(Regex("[\u0020\u3000\t]"))
 
   override fun find(input: String, startAt: Int): ISubstringFinderResult {
     return finder.find(input, startAt)
