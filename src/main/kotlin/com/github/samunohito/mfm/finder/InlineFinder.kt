@@ -1,5 +1,7 @@
 package com.github.samunohito.mfm.finder
 
+import com.github.samunohito.mfm.finder.core.FoundType
+
 class InlineFinder(
   terminateFinder: ISubstringFinder,
   callback: Callback = Callback.impl,
@@ -27,4 +29,5 @@ class InlineFinder(
     LinkFinder(),
     UrlFinder(),
   )
+  override val foundType = FoundType.Inline
 }

@@ -5,7 +5,6 @@ data class MfmStrike(
 ) : IMfmInline, IMfmNodeNestable<MfmStrike> {
   override val type = MfmNodeType.Strike
 
-  constructor(vararg children: IMfmInline) : this(children.toList())
 
   override fun addChild(nodes: Iterable<IMfmNode>): MfmStrike {
     val filteredNodes = nodes.filterIsInstance<IMfmInline>()

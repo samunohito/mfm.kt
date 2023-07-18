@@ -1,7 +1,6 @@
 package com.github.samunohito.mfm
 
 import com.github.samunohito.mfm.finder.SubstringFoundInfo
-import com.github.samunohito.mfm.finder.UrlAltFinder
 import com.github.samunohito.mfm.finder.core.FoundType
 import com.github.samunohito.mfm.node.MfmUrl
 

@@ -9,7 +9,7 @@ import com.github.samunohito.mfm.finder.core.fixed.SpaceFinder
 
 @Suppress("DuplicatedCode")
 class ItalicAstaFinder : ISubstringFinder {
-    companion object {
+  companion object {
     private val regexAlphaAndNumericTail = Regex("[a-z0-9]$", RegexOption.IGNORE_CASE)
     private val markFinder = StringFinder("*")
     private val italicUnderFinder = SequentialFinder(

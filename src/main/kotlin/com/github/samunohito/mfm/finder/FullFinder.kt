@@ -1,8 +1,10 @@
 package com.github.samunohito.mfm.finder
 
+import com.github.samunohito.mfm.finder.core.FoundType
+
 class FullFinder(
   terminateFinder: ISubstringFinder,
-  callback: Callback
+  callback: Callback = Callback.impl,
 ) : RecursiveFinderBase(terminateFinder, callback) {
   override val finders: List<ISubstringFinder> = listOf(
     UnicodeEmojiFinder(),
@@ -32,4 +34,5 @@ class FullFinder(
     UrlFinder(),
     SearchFinder(),
   )
+  override val foundType = FoundType.Full
 }

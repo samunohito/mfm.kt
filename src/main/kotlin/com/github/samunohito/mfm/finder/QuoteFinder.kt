@@ -6,7 +6,6 @@ import com.github.samunohito.mfm.finder.core.StringFinder
 import com.github.samunohito.mfm.finder.core.charsequence.SequentialScanFinder
 import com.github.samunohito.mfm.finder.core.fixed.NewLineFinder
 import com.github.samunohito.mfm.finder.core.fixed.SpaceFinder
-import com.github.samunohito.mfm.utils.merge
 import com.github.samunohito.mfm.utils.next
 
 class QuoteFinder : ISubstringFinder {
@@ -28,14 +27,16 @@ class QuoteFinder : ISubstringFinder {
           }
 
           latestIndex = result.foundInfo.next
-          lines.add(result.foundInfo)
+
+          // 引用符を省いた本文部分だけを蓄積したい
+          lines.add(result.foundInfo[2])
         }
 
         return if (startAt == latestIndex) {
           failure()
         } else {
-          val range = lines.map { it.range }.merge()
-          success(FoundType.Quote, range, range.next())
+          val range = startAt..latestIndex
+          success(FoundType.Quote, range, range.next(), lines)
         }
       }
     }

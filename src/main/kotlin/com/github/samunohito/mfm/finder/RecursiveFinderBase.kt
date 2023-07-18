@@ -12,6 +12,7 @@ abstract class RecursiveFinderBase(
 ) : ISubstringFinder {
   private val terminateFinder = AlternateFinder(terminateFinder, LineEndFinder)
   protected abstract val finders: List<ISubstringFinder>
+  protected abstract val foundType: FoundType
 
   override fun find(input: String, startAt: Int): ISubstringFinderResult {
     var prevIndex = startAt
@@ -44,7 +45,7 @@ abstract class RecursiveFinderBase(
       }
 
       val range = foundInfos.map { it.range }.merge()
-      success(FoundType.Inline, range, range.next())
+      success(foundType, range, range.next())
     }
   }
 
