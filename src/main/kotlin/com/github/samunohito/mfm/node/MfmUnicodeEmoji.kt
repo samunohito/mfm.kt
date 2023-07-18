@@ -1,6 +1,8 @@
 package com.github.samunohito.mfm.node
 
-data class MfmUnicodeEmoji(override val props: Props) : IMfmInline, IMfmNodePropertyHolder<MfmUnicodeEmoji.Props> {
+data class MfmUnicodeEmoji(
+  override val props: Props
+) : IMfmInline, IMfmSimpleNode, IMfmNodePropertyHolder<MfmUnicodeEmoji.Props> {
   override val type = MfmNodeType.UnicodeEmoji
 
   constructor(emoji: String) : this(Props(emoji))
