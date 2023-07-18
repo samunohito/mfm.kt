@@ -31,7 +31,7 @@ class ItalicAstaFinder : ISubstringFinder {
       return failure()
     }
 
-    val contentsResult = result.foundInfo.sub[1]
-    return success(FoundType.Italic, contentsResult.range, result.foundInfo.next)
+    val contents = result.foundInfo.sub[1]
+    return success(FoundType.ItalicAsta, contents.range, result.foundInfo.next)
   }
 }

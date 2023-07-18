@@ -31,7 +31,7 @@ class ItalicUnderFinder : ISubstringFinder {
       return failure()
     }
 
-    val contentsResult = result.foundInfo.sub[1]
-    return success(FoundType.Italic, contentsResult.range, result.foundInfo.next)
+    val contents = result.foundInfo.sub[1]
+    return success(FoundType.ItalicUnder, contents.range, result.foundInfo.next)
   }
 }

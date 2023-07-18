@@ -23,7 +23,7 @@ class EmojiCodeFinder : ISubstringFinder {
       return failure()
     }
 
-    val contentsResult = result.foundInfo.sub[2]
-    return success(FoundType.EmojiCode, contentsResult.range, contentsResult.next)
+    val contents = result.foundInfo.sub[2]
+    return success(FoundType.EmojiCode, contents.range, contents.next)
   }
 }

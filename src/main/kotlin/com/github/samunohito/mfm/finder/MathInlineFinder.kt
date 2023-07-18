@@ -23,6 +23,7 @@ class MathInlineFinder : ISubstringFinder {
       return failure()
     }
 
-    return success(FoundType.MathInline, result.foundInfo.range, result.foundInfo.next)
+    val contents = result.foundInfo.sub[1]
+    return success(FoundType.MathInline, contents.range, result.foundInfo.next)
   }
 }

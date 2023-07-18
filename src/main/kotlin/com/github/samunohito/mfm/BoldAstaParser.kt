@@ -1,29 +1,16 @@
 package com.github.samunohito.mfm
 
-import com.github.samunohito.mfm.finder.core.ParserAdapter
-import com.github.samunohito.mfm.finder.core.SequentialFinder
-import com.github.samunohito.mfm.finder.core.StringFinder
+import com.github.samunohito.mfm.finder.SubstringFoundInfo
+import com.github.samunohito.mfm.finder.core.FoundType
 import com.github.samunohito.mfm.node.MfmBold
-import com.github.samunohito.mfm.node.MfmNest
+import com.github.samunohito.mfm.node.MfmText
 
-class BoldAstaParser : IParser<MfmBold> {
-  companion object {
-    private val mark = StringFinder("**")
-    private val boldAstaFinder = SequentialFinder(
-      mark,
-      ParserAdapter(InlineParser(mark)),
-      mark,
-    )
-  }
+class BoldAstaParser : SimpleParserBase<MfmBold>() {
+  override val supportFoundTypes: Set<FoundType> = setOf(FoundType.BoldAsta)
 
-  override fun parse(input: String, startAt: Int): IParserResult<MfmBold> {
-    val result = boldAstaFinder.find(input, startAt)
-    if (!result.success) {
-      return IParserResult.ofFailure()
-    }
-
-    val inlineResult = result.subResults[1] as ParserAdapter.Result<*>
-    val nest = inlineResult.node as MfmNest<*>
-    return IParserResult.ofSuccess(MfmBold.fromNest(nest), result.range, result.next)
+  override fun doParse(input: String, foundInfo: SubstringFoundInfo): IParserResult<MfmBold> {
+    val contents = input.substring(foundInfo.range)
+    val textNode = MfmText(contents)
+    return success(MfmBold(listOf(textNode)), foundInfo)
   }
 }

@@ -23,7 +23,7 @@ class InlineCodeFinder : ISubstringFinder {
       return failure()
     }
 
-    val contentsResult = result.foundInfo.sub[1]
-    return success(FoundType.InlineCode, contentsResult.range, contentsResult.next)
+    val contents = result.foundInfo.sub[1]
+    return success(FoundType.InlineCode, contents.range, contents.next)
   }
 }

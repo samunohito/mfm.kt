@@ -20,7 +20,7 @@ class LinkFinder : ISubstringFinder {
       roundClose,
     )
 
-    private object InlineFinderCallback : InlineFinder.Callback {
+    private object InlineFinderCallback : RecursiveFinderBase.Callback {
       override fun needProcess(input: String, startAt: Int, finder: ISubstringFinder): Boolean {
         return when (finder) {
           is HashtagFinder,
@@ -40,26 +40,26 @@ class LinkFinder : ISubstringFinder {
   }
 
   override fun find(input: String, startAt: Int): ISubstringFinderResult {
-    val linkFinderResult = linkFinder.find(input, startAt)
-    if (!linkFinderResult.success) {
+    val result = linkFinder.find(input, startAt)
+    if (!result.success) {
       return failure()
     }
 
-    val squareOpenResult = linkFinderResult.foundInfo.sub[0]
-    val labelResult = linkFinderResult.foundInfo.sub[1]
-    val urlResult = linkFinderResult.foundInfo.sub[4]
+    val squareOpen = result.foundInfo.sub[0]
+    val label = result.foundInfo.sub[1]
+    val url = result.foundInfo.sub[4]
 
     return success(
       FoundType.Link,
-      linkFinderResult.foundInfo.range,
-      linkFinderResult.foundInfo.range.next(),
-      listOf(squareOpenResult, labelResult, urlResult)
+      result.foundInfo.range,
+      result.foundInfo.range.next(),
+      listOf(squareOpen, label, url)
     )
   }
 
   enum class SubIndex(override val index: Int) : ISubIndex {
-    squareOpen(0),
-    label(1),
-    url(2),
+    SquareOpen(0),
+    Label(1),
+    Url(2),
   }
 }

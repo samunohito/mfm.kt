@@ -5,8 +5,7 @@ import com.github.samunohito.mfm.finder.SubstringFoundInfo
 import com.github.samunohito.mfm.finder.core.FoundType
 import com.github.samunohito.mfm.node.MfmSearch
 
-class SearchParser : SimpleParserBase<MfmSearch, SearchFinder>() {
-  override val finder = SearchFinder()
+class SearchParser : SimpleParserBase<MfmSearch>() {
   override val supportFoundTypes: Set<FoundType> = setOf(FoundType.Search)
 
   override fun doParse(input: String, foundInfo: SubstringFoundInfo): IParserResult<MfmSearch> {

@@ -5,8 +5,7 @@ import com.github.samunohito.mfm.finder.UrlAltFinder
 import com.github.samunohito.mfm.finder.core.FoundType
 import com.github.samunohito.mfm.node.MfmUrl
 
-class UrlAltParser : SimpleParserBase<MfmUrl, UrlAltFinder>() {
-  override val finder = UrlAltFinder()
+class UrlAltParser : SimpleParserBase<MfmUrl>() {
   override val supportFoundTypes: Set<FoundType> = setOf(FoundType.UrlAlt)
 
   override fun doParse(input: String, foundInfo: SubstringFoundInfo): IParserResult<MfmUrl> {

@@ -1,16 +1,13 @@
 package com.github.samunohito.mfm.finder.core.utils
 
-import com.github.samunohito.mfm.finder.ISubstringFinder
-import com.github.samunohito.mfm.finder.ISubstringFinderResult
+import com.github.samunohito.mfm.finder.*
 import com.github.samunohito.mfm.finder.core.FoundType
-import com.github.samunohito.mfm.finder.failure
-import com.github.samunohito.mfm.finder.success
 import com.github.samunohito.mfm.utils.next
 
 object SubstringFinderUtils {
   fun sequential(input: String, startAt: Int, finders: Collection<ISubstringFinder>): ISubstringFinderResult {
     var latestIndex = startAt
-    val results = mutableListOf<ISubstringFinderResult>()
+    val results = mutableListOf<SubstringFoundInfo>()
 
     for (finder in finders) {
       val result = finder.find(input, latestIndex)
@@ -19,7 +16,7 @@ object SubstringFinderUtils {
       }
 
       latestIndex = result.foundInfo.next
-      results.add(result)
+      results.add(result.foundInfo)
     }
 
     val resultRange = startAt until latestIndex

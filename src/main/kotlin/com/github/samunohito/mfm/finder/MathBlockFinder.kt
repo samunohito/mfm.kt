@@ -31,7 +31,7 @@ class MathBlockFinder : ISubstringFinder {
       return failure()
     }
 
-    val contentsResult = result.foundInfo.sub[4]
-    return success(FoundType.MathBlock, contentsResult.range, result.foundInfo.next)
+    val contents = result.foundInfo.sub[4]
+    return success(FoundType.MathBlock, contents.range, result.foundInfo.next)
   }
 }

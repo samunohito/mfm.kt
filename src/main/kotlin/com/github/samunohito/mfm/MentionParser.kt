@@ -5,8 +5,7 @@ import com.github.samunohito.mfm.finder.SubstringFoundInfo
 import com.github.samunohito.mfm.finder.core.FoundType
 import com.github.samunohito.mfm.node.MfmMention
 
-class MentionParser : SimpleParserBase<MfmMention, MentionFinder>() {
-  override val finder = MentionFinder()
+class MentionParser : SimpleParserBase<MfmMention>() {
   override val supportFoundTypes: Set<FoundType> = setOf(FoundType.Mention)
 
   private class MentionFormat(username: String, hostname: String?) {

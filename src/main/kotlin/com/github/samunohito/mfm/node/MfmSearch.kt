@@ -1,6 +1,6 @@
 package com.github.samunohito.mfm.node
 
-data class MfmSearch(override val props: Props) : IMfmBlock<MfmSearch.Props> {
+data class MfmSearch(override val props: Props) : IMfmBlock, IMfmNodePropertyHolder<MfmSearch.Props> {
   override val type = MfmNodeType.Search
 
   constructor(query: String, content: String) : this(Props(query, content))

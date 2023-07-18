@@ -1,11 +1,12 @@
 package com.github.samunohito.mfm.finder
 
-class InlineFinder(
+class FullFinder(
   terminateFinder: ISubstringFinder,
-  callback: Callback = Callback.impl,
+  callback: Callback
 ) : RecursiveFinderBase(terminateFinder, callback) {
   override val finders: List<ISubstringFinder> = listOf(
     UnicodeEmojiFinder(),
+    CenterTagFinder(),
     SmallTagFinder(),
     PlainTagFinder(),
     BoldTagFinder(),
@@ -17,7 +18,10 @@ class InlineFinder(
     ItalicAstaFinder(),
     BoldUnderFinder(),
     ItalicUnderFinder(),
+    CodeBlockFinder(),
     InlineCodeFinder(),
+    QuoteFinder(),
+    MathBlockFinder(),
     MathInlineFinder(),
     StrikeWaveFinder(),
     FnFinder(),
@@ -26,5 +30,6 @@ class InlineFinder(
     EmojiCodeFinder(),
     LinkFinder(),
     UrlFinder(),
+    SearchFinder(),
   )
 }

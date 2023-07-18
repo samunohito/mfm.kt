@@ -21,6 +21,6 @@ class BoldAstaFinder : ISubstringFinder {
     }
 
     val contentsResult = result.foundInfo.sub[1]
-    return success(FoundType.Bold, contentsResult.range, result.foundInfo.next)
+    return success(FoundType.BoldAsta, contentsResult.range, result.foundInfo.next)
   }
 }
