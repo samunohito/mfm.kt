@@ -15,20 +15,20 @@ abstract class RecursiveFinderBase(
   protected abstract val foundType: FoundType
 
   override fun find(input: String, startAt: Int): ISubstringFinderResult {
-    var prevIndex = startAt
+    var textNodeStartAt = startAt
     var latestIndex = startAt
     val foundInfos = mutableListOf<SubstringFoundInfo>()
 
     while (!shouldTerminate(input, latestIndex)) {
       val findResult = findWithFactories(input, latestIndex)
       if (findResult.success) {
-        if (prevIndex != latestIndex) {
-          val range = prevIndex until latestIndex
+        if (textNodeStartAt != latestIndex) {
+          val range = textNodeStartAt until latestIndex
           foundInfos.add(SubstringFoundInfo(FoundType.Text, range, range.last + 1))
         }
         foundInfos.add(findResult.foundInfo)
 
-        prevIndex = latestIndex
+        textNodeStartAt = findResult.foundInfo.next
         latestIndex = findResult.foundInfo.next
       } else {
         latestIndex++
@@ -38,14 +38,14 @@ abstract class RecursiveFinderBase(
     return if (startAt == latestIndex) {
       failure()
     } else {
-      if (prevIndex != latestIndex) {
+      if (textNodeStartAt != latestIndex) {
         // ここに来てprevとlatestに差がある場合、リストに登録してないTextが存在するということ
-        val range = prevIndex until latestIndex
+        val range = textNodeStartAt until latestIndex
         foundInfos.add(SubstringFoundInfo(FoundType.Text, range, range.last + 1))
       }
 
       val range = foundInfos.map { it.range }.merge()
-      success(foundType, range, range.next())
+      success(foundType, range, range.next(), foundInfos)
     }
   }
 

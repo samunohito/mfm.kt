@@ -7,7 +7,7 @@ import com.github.samunohito.mfm.node.MfmMathBlock
 class MathBlockNodeFactory : SimpleNodeFactoryBase<MfmMathBlock>() {
   override val supportFoundTypes: Set<FoundType> = setOf(FoundType.MathBlock)
 
-  override fun doParse(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<MfmMathBlock> {
+  override fun doCreate(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<MfmMathBlock> {
     return success(MfmMathBlock(input.substring(foundInfo.range)), foundInfo)
   }
 }

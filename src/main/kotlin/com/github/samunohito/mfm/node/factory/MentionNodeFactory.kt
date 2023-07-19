@@ -105,7 +105,7 @@ class MentionNodeFactory : SimpleNodeFactoryBase<MfmMention>() {
     }
   }
 
-  override fun doParse(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<MfmMention> {
+  override fun doCreate(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<MfmMention> {
     val usernameInfo = foundInfo[MentionFinder.SubIndex.Username]
     val hostnameInfo = foundInfo[MentionFinder.SubIndex.Hostname]
 

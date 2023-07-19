@@ -7,7 +7,7 @@ import com.github.samunohito.mfm.node.MfmHashtag
 class HashtagNodeFactory : SimpleNodeFactoryBase<MfmHashtag>() {
   override val supportFoundTypes: Set<FoundType> = setOf(FoundType.Hashtag)
 
-  override fun doParse(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<MfmHashtag> {
+  override fun doCreate(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<MfmHashtag> {
     return success(MfmHashtag(input.substring(foundInfo.range)), foundInfo)
   }
 }

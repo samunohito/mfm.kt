@@ -7,13 +7,13 @@ import com.github.samunohito.mfm.node.IMfmNode
 abstract class SimpleNodeFactoryBase<T : IMfmNode> : INodeFactory<T> {
   protected abstract val supportFoundTypes: Set<FoundType>
 
-  override fun parse(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<T> {
+  override fun create(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<T> {
     if (!supportFoundTypes.contains(foundInfo.type)) {
       return failure()
     }
 
-    return doParse(input, foundInfo)
+    return doCreate(input, foundInfo)
   }
 
-  protected abstract fun doParse(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<T>
+  protected abstract fun doCreate(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<T>
 }

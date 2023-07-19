@@ -7,7 +7,7 @@ import com.github.samunohito.mfm.node.MfmUrl
 class UrlNodeFactory : SimpleNodeFactoryBase<MfmUrl>() {
   override val supportFoundTypes: Set<FoundType> = setOf(FoundType.Url)
 
-  override fun doParse(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<MfmUrl> {
+  override fun doCreate(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<MfmUrl> {
     return success(MfmUrl(input.substring(foundInfo.range), false), foundInfo)
   }
 }

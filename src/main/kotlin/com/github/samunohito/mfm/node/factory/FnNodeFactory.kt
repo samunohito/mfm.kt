@@ -4,22 +4,23 @@ import com.github.samunohito.mfm.finder.FnFinder
 import com.github.samunohito.mfm.finder.SubstringFoundInfo
 import com.github.samunohito.mfm.finder.core.FoundType
 import com.github.samunohito.mfm.node.IMfmInline
+import com.github.samunohito.mfm.node.IMfmNode
 import com.github.samunohito.mfm.node.MfmFn
-import com.github.samunohito.mfm.node.MfmNest
+import com.github.samunohito.mfm.node.factory.utils.NodeFactoryUtils
 
 class FnNodeFactory : SimpleNodeFactoryBase<MfmFn>() {
   override val supportFoundTypes: Set<FoundType> = setOf(FoundType.Fn)
 
-  override fun doParse(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<MfmFn> {
-    val content = sliceContent(input, foundInfo)
-    if (!content.success) {
+  override fun doCreate(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<MfmFn> {
+    val contents = sliceContent(input, foundInfo)
+    if (contents.isEmpty()) {
       return failure()
     }
 
     val name = sliceName(input, foundInfo)
     val args = sliceArgs(input, foundInfo)
 
-    val node = MfmFn(name, args, content.node.children.filterIsInstance(IMfmInline::class.java))
+    val node = MfmFn(name, args, contents)
     return success(node, foundInfo)
   }
 
@@ -36,8 +37,8 @@ class FnNodeFactory : SimpleNodeFactoryBase<MfmFn>() {
       .associate { (key, value) -> key to value }
   }
 
-  private fun sliceContent(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<MfmNest> {
+  private fun sliceContent(input: String, foundInfo: SubstringFoundInfo): List<IMfmInline> {
     val content = foundInfo[FnFinder.SubIndex.Content]
-    return InlineNodeFactory().parse(input, content)
+    return NodeFactoryUtils.recursiveInline(input, content)
   }
 }

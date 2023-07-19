@@ -7,7 +7,7 @@ import com.github.samunohito.mfm.node.MfmUnicodeEmoji
 class UnicodeEmojiNodeFactory : SimpleNodeFactoryBase<MfmUnicodeEmoji>() {
   override val supportFoundTypes: Set<FoundType> = setOf(FoundType.UnicodeEmoji)
 
-  override fun doParse(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<MfmUnicodeEmoji> {
+  override fun doCreate(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<MfmUnicodeEmoji> {
     return success(MfmUnicodeEmoji(input.substring(foundInfo.range)), foundInfo)
   }
 }

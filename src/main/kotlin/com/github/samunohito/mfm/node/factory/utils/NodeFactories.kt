@@ -1,6 +1,7 @@
-package com.github.samunohito.mfm.node.factory
+package com.github.samunohito.mfm.node.factory.utils
 
 import com.github.samunohito.mfm.finder.core.FoundType
+import com.github.samunohito.mfm.node.factory.*
 
 object NodeFactories {
   fun get(foundType: FoundType): INodeFactory<*> {
@@ -13,10 +14,8 @@ object NodeFactories {
       FoundType.CodeBlock -> CodeBlockNodeFactory()
       FoundType.EmojiCode -> EmojiCodeNodeFactory()
       FoundType.Fn -> FnNodeFactory()
-      FoundType.Full -> FullNodeFactory()
       FoundType.Hashtag -> HashtagNodeFactory()
       FoundType.InlineCode -> InlineCodeNodeFactory()
-      FoundType.Inline -> InlineNodeFactory()
       FoundType.ItalicAsta -> ItalicAstaNodeFactory()
       FoundType.ItalicTag -> ItalicTagNodeFactory()
       FoundType.ItalicUnder -> ItalicUnderNodeFactory()
@@ -27,7 +26,6 @@ object NodeFactories {
       FoundType.PlainTag -> PlainTagNodeFactory()
       FoundType.Quote -> QuoteNodeFactory()
       FoundType.Search -> SearchNodeFactory()
-      FoundType.Simple -> SimpleNodeFactory()
       FoundType.SmallTag -> SmallTagNodeFactory()
       FoundType.StrikeTag -> StrikeTagNodeFactory()
       FoundType.StrikeWave -> StrikeWaveNodeFactory()
