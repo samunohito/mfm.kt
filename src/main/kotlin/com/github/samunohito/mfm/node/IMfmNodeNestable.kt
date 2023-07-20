@@ -1,11 +1,11 @@
 package com.github.samunohito.mfm.node
 
-interface IMfmNodeNestable<T : IMfmNodeNestable<T>> : IMfmNode {
+interface IMfmNodeNestable : IMfmNode {
   val children: List<IMfmNode>
 
-  fun addChild(node: IMfmNode): T {
+  fun addChild(node: IMfmNode) {
     return addChild(listOf(node))
   }
 
-  fun addChild(nodes: Iterable<IMfmNode>): T
+  fun addChild(nodes: Iterable<IMfmNode>)
 }

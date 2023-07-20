@@ -21,6 +21,6 @@ class BigFinder : ISubstringFinder {
     }
 
     val contents = result.foundInfo.sub[1]
-    return success(FoundType.Big, contents.range, result.foundInfo.next)
+    return success(FoundType.Big, contents.range, result.foundInfo.next, contents.sub)
   }
 }

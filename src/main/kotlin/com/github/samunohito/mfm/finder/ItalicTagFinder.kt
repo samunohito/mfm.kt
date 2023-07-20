@@ -22,6 +22,6 @@ class ItalicTagFinder : ISubstringFinder {
     }
 
     val contents = result.foundInfo.sub[1]
-    return success(FoundType.ItalicTag, contents.range, result.foundInfo.next)
+    return success(FoundType.ItalicTag, contents.range, result.foundInfo.next, contents.sub)
   }
 }

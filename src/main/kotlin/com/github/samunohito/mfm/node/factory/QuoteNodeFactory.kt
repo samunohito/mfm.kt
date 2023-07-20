@@ -23,7 +23,7 @@ class QuoteNodeFactory : SimpleNodeFactoryBase<MfmQuote>() {
       return failure()
     }
 
-    val result = NodeFactoryUtils.recursiveFull(input, foundInfo)
+    val result = NodeFactoryUtils.createNodes(contentText, contentFindResult.foundInfo.sub)
     if (result.isEmpty()) {
       return failure()
     }

@@ -6,7 +6,7 @@ import com.github.samunohito.mfm.finder.core.FoundType
 import com.github.samunohito.mfm.finder.failure
 import com.github.samunohito.mfm.finder.success
 
-object CharSequenceEndFinder : ISubstringFinder {
+object CharSequenceTerminateFinder : ISubstringFinder {
   override fun find(input: String, startAt: Int): ISubstringFinderResult {
     return if (input.length <= startAt) {
       success(FoundType.Core, IntRange.EMPTY, startAt)

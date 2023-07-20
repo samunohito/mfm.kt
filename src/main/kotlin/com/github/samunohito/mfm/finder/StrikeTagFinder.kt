@@ -22,6 +22,6 @@ class StrikeTagFinder : ISubstringFinder {
     }
 
     val contents = result.foundInfo.sub[1]
-    return success(FoundType.StrikeTag, contents.range, result.foundInfo.next)
+    return success(FoundType.StrikeTag, contents.range, result.foundInfo.next, contents.sub)
   }
 }

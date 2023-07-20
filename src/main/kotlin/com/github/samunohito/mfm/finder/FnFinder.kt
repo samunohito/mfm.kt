@@ -4,7 +4,6 @@ import com.github.samunohito.mfm.finder.core.FoundType
 import com.github.samunohito.mfm.finder.core.RegexFinder
 import com.github.samunohito.mfm.finder.core.SequentialFinder
 import com.github.samunohito.mfm.finder.core.StringFinder
-import com.github.samunohito.mfm.finder.core.charsequence.SequentialScanFinder
 import com.github.samunohito.mfm.utils.merge
 import com.github.samunohito.mfm.utils.next
 
@@ -22,7 +21,7 @@ class FnFinder : ISubstringFinder {
       nameFinder,
       argsFinder.optional(),
       StringFinder(" "),
-      SequentialScanFinder.ofUntil(close),
+      InlineFinder(close),
       close,
     )
 

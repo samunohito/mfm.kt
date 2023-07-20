@@ -3,9 +3,9 @@ package com.github.samunohito.mfm.node.factory
 import com.github.samunohito.mfm.finder.FnFinder
 import com.github.samunohito.mfm.finder.SubstringFoundInfo
 import com.github.samunohito.mfm.finder.core.FoundType
-import com.github.samunohito.mfm.node.IMfmInline
 import com.github.samunohito.mfm.node.IMfmNode
 import com.github.samunohito.mfm.node.MfmFn
+import com.github.samunohito.mfm.node.MfmNodeAttribute
 import com.github.samunohito.mfm.node.factory.utils.NodeFactoryUtils
 
 class FnNodeFactory : SimpleNodeFactoryBase<MfmFn>() {
@@ -37,8 +37,8 @@ class FnNodeFactory : SimpleNodeFactoryBase<MfmFn>() {
       .associate { (key, value) -> key to value }
   }
 
-  private fun sliceContent(input: String, foundInfo: SubstringFoundInfo): List<IMfmInline> {
+  private fun sliceContent(input: String, foundInfo: SubstringFoundInfo): List<IMfmNode> {
     val content = foundInfo[FnFinder.SubIndex.Content]
-    return NodeFactoryUtils.recursiveInline(input, content)
+    return NodeFactoryUtils.createNodes(input, content.sub, MfmNodeAttribute.setOfInline)
   }
 }

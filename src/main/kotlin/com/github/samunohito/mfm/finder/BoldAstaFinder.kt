@@ -20,7 +20,7 @@ class BoldAstaFinder : ISubstringFinder {
       return failure()
     }
 
-    val contentsResult = result.foundInfo.sub[1]
-    return success(FoundType.BoldAsta, contentsResult.range, result.foundInfo.next)
+    val contents = result.foundInfo.sub[1]
+    return success(FoundType.BoldAsta, contents.range, result.foundInfo.next, contents.sub)
   }
 }

@@ -11,8 +11,6 @@ class ItalicAstaNodeFactory : SimpleNodeFactoryBase<MfmItalic>() {
   override val supportFoundTypes: Set<FoundType> = setOf(FoundType.ItalicAsta)
 
   override fun doCreate(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<MfmItalic> {
-    val contents = input.substring(foundInfo.range)
-    val textNode = MfmText(contents)
-    return success(MfmItalic(listOf(textNode)), foundInfo)
+    return success(MfmItalic(listOf(MfmText(input.substring(foundInfo.range)))), foundInfo)
   }
 }

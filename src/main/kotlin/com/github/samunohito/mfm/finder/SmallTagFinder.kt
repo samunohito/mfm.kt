@@ -22,6 +22,6 @@ class SmallTagFinder : ISubstringFinder {
     }
 
     val contents = result.foundInfo.sub[1]
-    return success(FoundType.SmallTag, contents.range, result.foundInfo.next)
+    return success(FoundType.SmallTag, contents.range, result.foundInfo.next, contents.sub)
   }
 }

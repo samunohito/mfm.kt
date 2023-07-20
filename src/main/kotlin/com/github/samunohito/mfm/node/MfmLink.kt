@@ -1,17 +1,12 @@
 package com.github.samunohito.mfm.node
 
-data class MfmLink(
+class MfmLink(
   override val props: Props,
-  override val children: List<IMfmInline>
-) : IMfmInline, IMfmNodePropertyHolder<MfmLink.Props>, IMfmNodeNestable<MfmLink> {
+  children: List<IMfmNode>
+) : IMfmNode, IMfmNodePropertyHolder<MfmLink.Props>, MfmNodeNestableBase(children) {
   override val type = MfmNodeType.Link
 
-  constructor(silent: Boolean, url: String, children: List<IMfmInline>) : this(Props(silent, url), children)
+  constructor(silent: Boolean, url: String, children: List<IMfmNode>) : this(Props(silent, url), children)
 
-  override fun addChild(nodes: Iterable<IMfmNode>): MfmLink {
-    val filteredNodes = nodes.filterIsInstance<IMfmInline>()
-    return copy(children = children + filteredNodes)
-  }
-
-  data class Props(val silent: Boolean, val url: String) : IMfmProps
+  class Props(val silent: Boolean, val url: String) : IMfmProps
 }

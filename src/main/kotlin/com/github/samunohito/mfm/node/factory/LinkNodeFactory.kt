@@ -4,6 +4,7 @@ import com.github.samunohito.mfm.finder.LinkFinder
 import com.github.samunohito.mfm.finder.SubstringFoundInfo
 import com.github.samunohito.mfm.finder.core.FoundType
 import com.github.samunohito.mfm.node.MfmLink
+import com.github.samunohito.mfm.node.MfmNodeAttribute
 import com.github.samunohito.mfm.node.factory.utils.NodeFactoryUtils
 
 class LinkNodeFactory : SimpleNodeFactoryBase<MfmLink>() {
@@ -16,7 +17,7 @@ class LinkNodeFactory : SimpleNodeFactoryBase<MfmLink>() {
 
     val isSilent = (input.substring(squareOpen.range) == "?[")
     val urlText = input.substring(url.range)
-    val labelContents = NodeFactoryUtils.recursiveInline(input, label)
+    val labelContents = NodeFactoryUtils.createNodes(input, label.sub, MfmNodeAttribute.setOfInline)
     if (labelContents.isEmpty()) {
       return failure()
     }

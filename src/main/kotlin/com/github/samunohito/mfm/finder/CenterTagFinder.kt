@@ -31,6 +31,6 @@ class CenterTagFinder : ISubstringFinder {
     }
 
     val contents = result.foundInfo.sub[4]
-    return success(FoundType.CenterTag, contents.range, result.foundInfo.next)
+    return success(FoundType.CenterTag, contents.range, result.foundInfo.next, contents.sub)
   }
 }
