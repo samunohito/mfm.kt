@@ -1,6 +1,8 @@
 package com.github.samunohito.mfm.node
 
-abstract class MfmNodeNestableBase(children: List<IMfmNode> = listOf()) : IMfmNodeNestable {
+abstract class MfmNodeChildrenHolderBase(
+  children: List<IMfmNode> = listOf()
+) : MfmNodeBase(), IMfmNodeChildrenHolder {
   private val _children = mutableListOf<IMfmNode>().apply { addAll(children) }
 
   override val children: List<IMfmNode>

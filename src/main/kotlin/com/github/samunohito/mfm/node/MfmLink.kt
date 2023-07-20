@@ -3,10 +3,10 @@ package com.github.samunohito.mfm.node
 class MfmLink(
   override val props: Props,
   children: List<IMfmNode>
-) : IMfmNode, IMfmNodePropertyHolder<MfmLink.Props>, MfmNodeNestableBase(children) {
+) : MfmNodeChildrenHolderBase(children), IMfmNode, IMfmNodePropertyHolder<MfmLink.Props> {
   override val type = MfmNodeType.Link
 
   constructor(silent: Boolean, url: String, children: List<IMfmNode>) : this(Props(silent, url), children)
 
-  class Props(val silent: Boolean, val url: String) : IMfmProps
+  data class Props(val silent: Boolean, val url: String) : IMfmProps
 }

@@ -1,7 +1,6 @@
 package com.github.samunohito.mfm.node
 
 enum class MfmNodeType(val attributes: Set<MfmNodeAttribute>) {
-  Empty(setOf(MfmNodeAttribute.Virtuality)),
   Quote(setOf(MfmNodeAttribute.Block)),
   Search(setOf(MfmNodeAttribute.Block)),
   BlockCode(setOf(MfmNodeAttribute.Block)),
@@ -21,7 +20,7 @@ enum class MfmNodeType(val attributes: Set<MfmNodeAttribute>) {
   Link(setOf(MfmNodeAttribute.Inline)),
   Fn(setOf(MfmNodeAttribute.Inline)),
   Plain(setOf(MfmNodeAttribute.Inline)),
-  Text(setOf(MfmNodeAttribute.Inline)),
+  Text(setOf(MfmNodeAttribute.Inline, MfmNodeAttribute.Simple)),
   Nest(setOf(MfmNodeAttribute.Virtuality)),
   ;
 

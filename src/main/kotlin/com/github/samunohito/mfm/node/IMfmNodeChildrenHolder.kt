@@ -1,6 +1,6 @@
 package com.github.samunohito.mfm.node
 
-interface IMfmNodeNestable : IMfmNode {
+interface IMfmNodeChildrenHolder : IMfmNode {
   val children: List<IMfmNode>
 
   fun addChild(node: IMfmNode) {

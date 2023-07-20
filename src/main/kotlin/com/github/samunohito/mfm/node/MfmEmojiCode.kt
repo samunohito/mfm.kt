@@ -1,9 +1,9 @@
 package com.github.samunohito.mfm.node
 
-class MfmEmojiCode(override val props: Props) : IMfmNode, IMfmNodePropertyHolder<MfmEmojiCode.Props> {
-  override val type = MfmNodeType.EmojiCode
-
+class MfmEmojiCode(override val props: Props) : MfmNodeBase(), IMfmNode, IMfmNodePropertyHolder<MfmEmojiCode.Props> {
   constructor(name: String) : this(Props(name))
 
-  class Props(val name: String) : IMfmProps
+  override val type = MfmNodeType.EmojiCode
+
+  data class Props(val name: String) : IMfmProps
 }

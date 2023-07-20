@@ -1,9 +1,9 @@
 package com.github.samunohito.mfm.node
 
-class MfmText(override val props: Props) : IMfmNode, IMfmNodePropertyHolder<MfmText.Props> {
+class MfmText(override val props: Props) : MfmNodeBase(), IMfmNode, IMfmNodePropertyHolder<MfmText.Props> {
   override val type = MfmNodeType.Text
 
   constructor(text: String) : this(Props(text))
 
-  class Props(val text: String) : IMfmProps
+  data class Props(val text: String) : IMfmProps
 }
