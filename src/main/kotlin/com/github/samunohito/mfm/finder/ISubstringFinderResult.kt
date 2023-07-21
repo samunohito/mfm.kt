@@ -7,7 +7,7 @@ interface ISubstringFinderResult {
   val foundInfo: SubstringFoundInfo
 }
 
-private class Impl private constructor(
+private data class Impl(
   override val success: Boolean,
   override val foundInfo: SubstringFoundInfo,
 ) : ISubstringFinderResult {

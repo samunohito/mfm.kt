@@ -50,6 +50,9 @@ class SearchFinder : ISubstringFinder {
 
   override fun find(input: String, startAt: Int): ISubstringFinderResult {
     val result = searchFormFinder.find(input, startAt)
+    if (!result.success) {
+      return failure()
+    }
 
     val query = result.foundInfo.sub[2]
     val space = result.foundInfo.sub[3]

@@ -2,6 +2,7 @@ package com.github.samunohito.mfm.finder
 
 import com.github.samunohito.mfm.finder.core.FoundType
 import com.github.samunohito.mfm.utils.next
+import com.github.samunohito.mfm.utils.offset
 
 class MentionFinder : ISubstringFinder {
   companion object {
@@ -12,7 +13,7 @@ class MentionFinder : ISubstringFinder {
   }
 
   override fun find(input: String, startAt: Int): ISubstringFinderResult {
-    val mentionMatch = regexMention.find(input, startAt)
+    val mentionMatch = regexMention.find(input.substring(startAt))
       ?: return failure()
 
     // メンションの直前が英数字だった場合、メンションとして認識しない
@@ -25,13 +26,15 @@ class MentionFinder : ISubstringFinder {
       ?: return failure()
     val hostnameGroup = mentionMatch.groups[regexGroupHostName]
 
+    val mentionRange = mentionMatch.range.offset(startAt)
+    val usernameRange = usernameGroup.range.offset(startAt)
     return success(
       FoundType.Mention,
-      mentionMatch.range,
-      mentionMatch.range.next(),
+      mentionRange,
+      mentionRange.next(),
       listOf(
-        SubstringFoundInfo(FoundType.Mention, usernameGroup.range, usernameGroup.range.next()),
-        hostnameGroup?.let { SubstringFoundInfo(FoundType.Mention, it.range, it.range.next()) }
+        SubstringFoundInfo(FoundType.Mention, usernameRange, usernameRange.next()),
+        hostnameGroup?.let { SubstringFoundInfo(FoundType.Mention, it.range.offset(startAt), it.range.next()) }
           ?: SubstringFoundInfo.EMPTY
       )
     )

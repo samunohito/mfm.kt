@@ -13,6 +13,10 @@ abstract class MfmNodeBase : IMfmNode {
     return nodeHashCode(this)
   }
 
+  override fun toString(): String {
+    return nodeToString(this)
+  }
+
   companion object {
     private fun nodeEquals(x: IMfmNode, y: IMfmNode): Boolean {
       if (x === y) return true
@@ -35,6 +39,23 @@ abstract class MfmNodeBase : IMfmNode {
         result = 31 * result + x.children.hashCode()
       }
       return result
+    }
+
+    private fun nodeToString(x: IMfmNode): String {
+      val sb = StringBuilder()
+      sb.append(x.javaClass.simpleName)
+      sb.append("(type=")
+      sb.append(x.type)
+      if (x is IMfmNodePropertyHolder<*>) {
+        sb.append(", ")
+        sb.append(x.props)
+      }
+      if (x is IMfmNodeChildrenHolder) {
+        sb.append(", children=")
+        sb.append(x.children)
+      }
+      sb.append(")")
+      return sb.toString()
     }
   }
 }

@@ -16,7 +16,7 @@ class CenterTagFinder : ISubstringFinder {
       LineBeginFinder,
       open,
       NewLineFinder.optional(),
-      InlineFinder(SequentialFinder(NewLineFinder, close)),
+      InlineFinder(SequentialFinder(NewLineFinder.optional(), close)),
       NewLineFinder.optional(),
       close,
       LineEndFinder,

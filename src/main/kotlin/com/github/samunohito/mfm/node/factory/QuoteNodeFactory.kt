@@ -11,6 +11,7 @@ class QuoteNodeFactory : SimpleNodeFactoryBase<MfmQuote>() {
 
   override fun doCreate(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<MfmQuote> {
     val contentLines = foundInfo.sub.map { input.substring(it.range) }
+
     if (contentLines.isEmpty() || (contentLines.size == 1 && contentLines[0].isEmpty())) {
       // disallow empty content if single line
       return failure()

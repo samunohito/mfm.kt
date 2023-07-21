@@ -12,6 +12,10 @@ object IntRangeUtils {
   fun calcNext(range: IntRange): Int {
     return range.last + 1
   }
+
+  fun offset(range: IntRange, offset: Int): IntRange {
+    return range.first + offset..range.last + offset
+  }
 }
 
 fun Iterable<IntRange>.merge(): IntRange {
@@ -20,4 +24,8 @@ fun Iterable<IntRange>.merge(): IntRange {
 
 fun IntRange.next(): Int {
   return IntRangeUtils.calcNext(this)
+}
+
+fun IntRange.offset(offset: Int): IntRange {
+  return IntRangeUtils.offset(this, offset)
 }

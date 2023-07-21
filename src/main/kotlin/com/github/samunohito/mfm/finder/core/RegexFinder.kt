@@ -6,7 +6,7 @@ import com.github.samunohito.mfm.finder.failure
 import com.github.samunohito.mfm.finder.success
 
 class RegexFinder(regex: Regex) : ISubstringFinder {
-  private val _regex = Regex("^(?:${regex.pattern})", regex.options)
+  private val _regex = Regex("^${regex.pattern}", regex.options)
 
   override fun find(input: String, startAt: Int): ISubstringFinderResult {
     val text = input.substring(startAt)

@@ -17,14 +17,14 @@ abstract class ScanFinderBase : ISubstringFinder {
         break
       }
 
-      latestIndex = i
+      latestIndex++
     }
 
     return if (startAt == latestIndex) {
       // 一回も成功していない場合は失敗扱い
       failure()
     } else {
-      val range = startAt..latestIndex
+      val range = startAt until latestIndex
       success(FoundType.Core, range, range.next())
     }
   }
