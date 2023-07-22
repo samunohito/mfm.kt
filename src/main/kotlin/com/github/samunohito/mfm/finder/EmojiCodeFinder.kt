@@ -28,17 +28,18 @@ class EmojiCodeFinder : ISubstringFinder {
 
     // コロンの直前が半角英数の場合は絵文字コードとして認識しない
     if (startAt >= 1) {
-      val first = result.foundInfo.range.first
-      val beforeStr = input.substring(first - 1, first)
+      val idx = result.foundInfo.range.first
+      val beforeStr = input.substring(idx - 1, idx)
       if (regexSide.containsMatchIn(beforeStr)) {
         return failure()
       }
     }
 
     // コロンの直後が半角英数の場合は絵文字コードとして認識しない
-    if (input.length >= result.foundInfo.range.last + 1) {
-      val last = result.foundInfo.range.last
-      val afterStr = input.substring(last, last + 1)
+    if ((input.length - 1) >= result.foundInfo.range.last + 1) {
+      // 範囲を外れた次の1文字目を取りたいので+1している
+      val idx = result.foundInfo.range.last + 1
+      val afterStr = input.substring(idx, idx + 1)
       if (regexSide.containsMatchIn(afterStr)) {
         return failure()
       }

@@ -7,7 +7,7 @@ import com.github.samunohito.mfm.node.MfmNodeAttribute
 import com.github.samunohito.mfm.node.factory.utils.NodeFactoryUtils
 
 class BigNodeFactory : SimpleNodeFactoryBase<MfmFn>() {
-  override val supportFoundTypes: Set<FoundType> = setOf(FoundType.Fn)
+  override val supportFoundTypes: Set<FoundType> = setOf(FoundType.Big)
 
   override fun doCreate(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<MfmFn> {
     val result = NodeFactoryUtils.createNodes(input, foundInfo.sub, MfmNodeAttribute.setOfInline)
