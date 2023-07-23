@@ -24,6 +24,6 @@ class InlineCodeFinder : ISubstringFinder {
     }
 
     val contents = result.foundInfo.sub[1]
-    return success(FoundType.InlineCode, contents.range, contents.next)
+    return success(FoundType.InlineCode, contents.range, result.foundInfo.next)
   }
 }

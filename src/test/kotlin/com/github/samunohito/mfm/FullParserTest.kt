@@ -837,4 +837,203 @@ class FullParserTest {
       assertMfmNodeEquals(output, Mfm.parse(input))
     }
   }
+
+  @Nested
+  inner class InlineCode {
+    @Test
+    fun basic() {
+      val input = "`var x = \"Strawberry Pasta\";`"
+      val output = listOf(
+        MfmInlineCode("var x = \"Strawberry Pasta\";")
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `disallow line break`() {
+      val input = "`foo\nbar`"
+      val output = listOf(
+        MfmText("`foo\nbar`")
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `disallow ´`() {
+      val input = "`foo´bar`"
+      val output = listOf(
+        MfmText("`foo´bar`")
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+  }
+
+  @Nested
+  inner class MathInline {
+    @Test
+    fun basic() {
+      val input = "\\(x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}\\)"
+      val output = listOf(
+        MfmMathInline("x = {-b \\pm \\sqrt{b^2-4ac} \\over 2a}")
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+  }
+
+  @Nested
+  inner class Mention {
+    @Test
+    fun basic() {
+      val input = "@abc"
+      val output = listOf(
+        MfmMention("abc", null, "@abc")
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun basic2() {
+      val input = "before @abc after"
+      val output = listOf(
+        MfmText("before "),
+        MfmMention("abc", null, "@abc"),
+        MfmText(" after"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun basicRemote() {
+      val input = "@abc@example.com"
+      val output = listOf(
+        MfmMention("abc", "example.com", "@abc@example.com")
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun basicRemote2() {
+      val input = "before @abc@example.com after"
+      val output = listOf(
+        MfmText("before "),
+        MfmMention("abc", "example.com", "@abc@example.com"),
+        MfmText(" after"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun basicRemote3() {
+      val input = "before\n@abc@example.com\nafter"
+      val output = listOf(
+        MfmText("before\n"),
+        MfmMention("abc", "example.com", "@abc@example.com"),
+        MfmText("\nafter"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `ignore format of mail address`() {
+      val input = "abc@example.com"
+      val output = listOf(
+        MfmText("abc@example.com"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `detect as a mention if the before char is ^a-z0-9i`() {
+      val input = "あいう@abc"
+      val output = listOf(
+        MfmText("あいう"),
+        MfmMention("abc", null, "@abc"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `invalid char only username`() {
+      val input = "@-"
+      val output = listOf(
+        MfmText("@-"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `invalid char only hostname`() {
+      val input = "@abc@."
+      val output = listOf(
+        MfmText("@abc@."),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `allow "-" in username`() {
+      val input = "@abc-d"
+      val output = listOf(
+        MfmMention("abc-d", null, "@abc-d"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `disallow "-" in head of username`() {
+      val input = "@-abc"
+      val output = listOf(
+        MfmText("@-abc"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `disallow "-" in tail of username`() {
+      val input = "@abc-"
+      val output = listOf(
+        MfmMention("abc", null, "@abc"),
+        MfmText("-"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `disallow period in head of hostname`() {
+      val input = "@abc@.aaa"
+      val output = listOf(
+        MfmText("@abc@.aaa"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `disallow period in tail of hostname`() {
+      val input = "@abc@aaa."
+      val output = listOf(
+        MfmMention("abc", "aaa", "@abc@aaa"),
+        MfmText("."),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `disallow "-" in head of hostname`() {
+      val input = "@abc@-aaa"
+      val output = listOf(
+        MfmText("@abc@-aaa"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `disallow "-" in tail of hostname`() {
+      val input = "@abc@aaa-"
+      val output = listOf(
+        MfmMention("abc", "aaa", "@abc@aaa"),
+        MfmText("-"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+  }
 }
