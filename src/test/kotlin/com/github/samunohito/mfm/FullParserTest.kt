@@ -1710,4 +1710,29 @@ class FullParserTest {
       assertMfmNodeEquals(output, Mfm.parse(input))
     }
   }
+
+  @Nested
+  inner class PlainTag {
+    @Test
+    fun multipleLine() {
+      val input = "a\n<plain>\n**Hello**\nworld\n</plain>\nb"
+      val output = listOf(
+        MfmText("a\n"),
+        MfmPlain("**Hello**\nworld"),
+        MfmText("\nb"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun singleLine() {
+      val input = "a\n<plain>**Hello** world</plain>\nb"
+      val output = listOf(
+        MfmText("a\n"),
+        MfmPlain("**Hello** world"),
+        MfmText("\nb"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+  }
 }
