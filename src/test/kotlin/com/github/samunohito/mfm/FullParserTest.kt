@@ -1036,4 +1036,239 @@ class FullParserTest {
       assertMfmNodeEquals(output, Mfm.parse(input))
     }
   }
+
+  @Nested
+  inner class Hashtag {
+    @Test
+    fun basic() {
+      val input = "#abc"
+      val output = listOf(
+        MfmHashtag("abc"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun basic2() {
+      val input = "before #abc after"
+      val output = listOf(
+        MfmText("before "),
+        MfmHashtag("abc"),
+        MfmText(" after"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    @Disabled("TODO: fix")
+    fun `with keycap number sign`() {
+      val input = "#️⃣abc123 #abc"
+      val output = listOf(
+        MfmUnicodeEmoji("#️⃣"),
+        MfmText("abc123 "),
+        MfmHashtag("abc"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    @Disabled("TODO: fix")
+    fun `with keycap number sign 2`() {
+      val input = "abc\n#️⃣123"
+      val output = listOf(
+        MfmText("abc\n"),
+        MfmUnicodeEmoji("#️⃣"),
+        MfmText("abc"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `ignore a hashtag if the before char is neither a space nor an LF nor ^a-z0-9i`() {
+      val f1 = {
+        val input = "abc#abc"
+        val output = listOf(
+          MfmText("abc#abc"),
+        )
+        assertMfmNodeEquals(output, Mfm.parse(input))
+      }
+
+      val f2 = {
+        val input = "あいう#abc"
+        val output = listOf(
+          MfmText("あいう"),
+          MfmHashtag("abc"),
+        )
+        assertMfmNodeEquals(output, Mfm.parse(input))
+      }
+
+      f1.invoke()
+      f2.invoke()
+    }
+
+    @Test
+    fun `ignore comma and period`() {
+      val input = "Foo #bar, baz #piyo."
+      val output = listOf(
+        MfmText("Foo "),
+        MfmHashtag("bar"),
+        MfmText(", baz "),
+        MfmHashtag("piyo"),
+        MfmText("."),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `ignore exclamation mark`() {
+      val input = "#Foo!"
+      val output = listOf(
+        MfmHashtag("Foo"),
+        MfmText("!"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `ignore colon`() {
+      val input = "#Foo:"
+      val output = listOf(
+        MfmHashtag("Foo"),
+        MfmText(":"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `ignore single quote`() {
+      val input = "#Foo'"
+      val output = listOf(
+        MfmHashtag("Foo"),
+        MfmText("'"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `ignore double quote`() {
+      val input = "#Foo\""
+      val output = listOf(
+        MfmHashtag("Foo"),
+        MfmText("\""),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `ignore square bracket`() {
+      val input = "#Foo]"
+      val output = listOf(
+        MfmHashtag("Foo"),
+        MfmText("]"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `ignore slash`() {
+      val input = "#Foo/bar"
+      val output = listOf(
+        MfmHashtag("Foo"),
+        MfmText("/bar"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `ignore angle bracket`() {
+      val input = "#Foo<bar>"
+      val output = listOf(
+        MfmHashtag("Foo"),
+        MfmText("<bar>"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `allow including number`() {
+      val input = "#foo123"
+      val output = listOf(
+        MfmHashtag("foo123"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `with brackets "()"`() {
+      val input = "(#foo)"
+      val output = listOf(
+        MfmText("("),
+        MfmHashtag("foo"),
+        MfmText(")"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `with brackets "「」"`() {
+      val input = "「#foo」"
+      val output = listOf(
+        MfmText("「"),
+        MfmHashtag("foo"),
+        MfmText("」"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `mixed brackets`() {
+      val input = "「#foo(bar)」"
+      val output = listOf(
+        MfmText("「"),
+        MfmHashtag("foo(bar)"),
+        MfmText("」"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `with brackets "()" (space before)`() {
+      val input = "(bar #foo)"
+      val output = listOf(
+        MfmText("(bar "),
+        MfmHashtag("foo"),
+        MfmText(")"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `with brackets "「」" (space before)`() {
+      val input = "「bar #foo」"
+      val output = listOf(
+        MfmText("「bar "),
+        MfmHashtag("foo"),
+        MfmText("」"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `disallow number only`() {
+      val input = "#123"
+      val output = listOf(
+        MfmText("#123"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `disallow number only (with brackets)`() {
+      val input = "(#123)"
+      val output = listOf(
+        MfmText("(#123)"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+  }
 }

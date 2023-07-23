@@ -26,7 +26,7 @@ class HashtagFinder : ISubstringFinder {
           closeRegexBracket,
         ),
         // このパターンに合致する文字が登場するまでを繰り返し検索する
-        AlternateScanFinder.ofWhile(
+        AlternateScanFinder.ofUntil(
           SpaceFinder,
           NewLineFinder,
           RegexFinder(Regex("[ \\u3000\\t.,!?'\"#:/\\[\\]【】()「」（）<>]")),
