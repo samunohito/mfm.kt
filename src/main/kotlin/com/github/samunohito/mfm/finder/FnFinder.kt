@@ -70,7 +70,8 @@ class FnFinder : ISubstringFinder {
       if (it.range.isEmpty()) {
         SubstringFoundInfo.EMPTY
       } else {
-        it
+        // 先頭要素は関数名との区切りに使っているピリオドなので不要
+        it[1]
       }
     }
     val content = result.foundInfo[4]

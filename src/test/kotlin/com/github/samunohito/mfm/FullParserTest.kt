@@ -1271,4 +1271,443 @@ class FullParserTest {
       assertMfmNodeEquals(output, Mfm.parse(input))
     }
   }
+
+  @Nested
+  inner class Url {
+    @Test
+    fun basic() {
+      val input = "https://example.com/@ai"
+      val output = listOf(
+        MfmUrl("https://example.com/@ai", false),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `with other texts`() {
+      val input = "official instance: https://example.com/@ai"
+      val output = listOf(
+        MfmText("official instance: "),
+        MfmUrl("https://example.com/@ai", false),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `ignore trailing period`() {
+      val input = "https://example.com/@ai."
+      val output = listOf(
+        MfmUrl("https://example.com/@ai", false),
+        MfmText("."),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `disallow period only`() {
+      val input = "https://."
+      val output = listOf(
+        MfmText("https://."),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `ignore trailing periods`() {
+      val input = "https://example.com/@ai..."
+      val output = listOf(
+        MfmUrl("https://example.com/@ai", false),
+        MfmText("..."),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `with comma`() {
+      val input = "https://example.com/foo?bar=a,b"
+      val output = listOf(
+        MfmUrl("https://example.com/foo?bar=a,b", false),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `ignore trailing comma`() {
+      val input = "https://example.com/foo, bar"
+      val output = listOf(
+        MfmUrl("https://example.com/foo", false),
+        MfmText(", bar"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `with brackets`() {
+      val input = "https://example.com/foo(bar)"
+      val output = listOf(
+        MfmUrl("https://example.com/foo(bar)", false),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `ignore parent brackets`() {
+      val input = "(https://example.com/foo)"
+      val output = listOf(
+        MfmText("("),
+        MfmUrl("https://example.com/foo", false),
+        MfmText(")"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `ignore parent brackets (2)`() {
+      val input = "(foo https://example.com/foo)"
+      val output = listOf(
+        MfmText("(foo "),
+        MfmUrl("https://example.com/foo", false),
+        MfmText(")"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `ignore parent brackets with internal brackets`() {
+      val input = "(https://example.com/foo(bar))"
+      val output = listOf(
+        MfmText("("),
+        MfmUrl("https://example.com/foo(bar)", false),
+        MfmText(")"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `ignore parent square brackets`() {
+      val input = "foo [https://example.com/foo] bar"
+      val output = listOf(
+        MfmText("foo ["),
+        MfmUrl("https://example.com/foo", false),
+        MfmText("] bar"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `ignore non-ascii characters contained url without angle brackets`() {
+      val input = "https://本日は晴天なり.example.com"
+      val output = listOf(
+        MfmText("https://本日は晴天なり.example.com"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `match non-ascii characters contained url with angle brackets`() {
+      val input = "<https://本日は晴天なり.example.com>"
+      val output = listOf(
+        MfmUrl("https://本日は晴天なり.example.com", true),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `prevent xss`() {
+      val input = "javascript:foo"
+      val output = listOf(
+        MfmText("javascript:foo"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+  }
+
+  @Nested
+  inner class Link {
+    @Test
+    fun basic() {
+      val input = "[official instance](https://example.com/@ai)."
+      val output = listOf(
+        MfmLink(
+          false,
+          "https://example.com/@ai",
+          MfmText("official instance")
+        ),
+        MfmText("."),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `silent flag`() {
+      val input = "?[official instance](https://example.com/@ai)."
+      val output = listOf(
+        MfmLink(
+          true,
+          "https://example.com/@ai",
+          MfmText("official instance")
+        ),
+        MfmText("."),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `with angle brackets url`() {
+      val input = "[official instance](<https://example.com/@ai>)."
+      val output = listOf(
+        MfmLink(
+          false,
+          "https://example.com/@ai",
+          MfmText("official instance")
+        ),
+        MfmText("."),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `prevent xss`() {
+      val input = "[click here](javascript:foo)"
+      val output = listOf(
+        MfmText("[click here](javascript:foo)"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Nested
+    @DisplayName("cannot nest a url in a link label")
+    inner class Nested1 {
+      @Test
+      fun basic() {
+        val input = "official instance: [https://example.com/@ai](https://example.com/@ue)."
+        val output = listOf(
+          MfmText("official instance: "),
+          MfmLink(
+            false,
+            "https://example.com/@ue",
+            MfmText("https://example.com/@ai")
+          ),
+          MfmText("."),
+        )
+        assertMfmNodeEquals(output, Mfm.parse(input))
+      }
+
+      @Test
+      fun nested() {
+        val input = "official instance: [https://example.com/@ai**https://example.com/@ue**](https://example.com/@o)."
+        val output = listOf(
+          MfmText("official instance: "),
+          MfmLink(
+            false,
+            "https://example.com/@o",
+            listOf(
+              MfmText("https://example.com/@ai"),
+              MfmBold(
+                MfmText("https://example.com/@ue")
+              )
+            )
+          ),
+          MfmText("."),
+        )
+        assertMfmNodeEquals(output, Mfm.parse(input))
+      }
+    }
+
+    @Nested
+    @DisplayName("cannot nest a link in a link label")
+    inner class Nested2 {
+      @Test
+      fun basic() {
+        val input = "official instance: [[https://example.com/@ai](https://example.com/@ue)](https://example.com/@o)."
+        val output = listOf(
+          MfmText("official instance: "),
+          MfmLink(
+            false,
+            "https://example.com/@ue",
+            MfmText("[https://example.com/@ai"),
+          ),
+          MfmText("]("),
+          MfmUrl("https://example.com/@o", false),
+          MfmText(")."),
+        )
+        assertMfmNodeEquals(output, Mfm.parse(input))
+      }
+
+      @Test
+      fun nested() {
+        val input =
+          "official instance: [**[https://example.com/@ai](https://example.com/@ue)**](https://example.com/@o)."
+        val output = listOf(
+          MfmText("official instance: "),
+          MfmLink(
+            false,
+            "https://example.com/@o",
+            MfmBold(
+              MfmText("[https://example.com/@ai](https://example.com/@ue)")
+            ),
+          ),
+        )
+        assertMfmNodeEquals(output, Mfm.parse(input))
+      }
+    }
+
+    @Nested
+    @DisplayName("cannot nest a mention in a link label")
+    inner class Nested3 {
+      @Test
+      fun basic() {
+        val input = "[@example](https://example.com)"
+        val output = listOf(
+          MfmLink(
+            false,
+            "https://example.com",
+            MfmText("@example"),
+          ),
+        )
+        assertMfmNodeEquals(output, Mfm.parse(input))
+      }
+
+      @Test
+      fun nested() {
+        val input = "[@example**@example**](https://example.com)"
+        val output = listOf(
+          MfmLink(
+            false,
+            "https://example.com",
+            listOf(
+              MfmText("@example"),
+              MfmBold(
+                MfmText("@example"),
+              ),
+            )
+          ),
+        )
+        assertMfmNodeEquals(output, Mfm.parse(input))
+      }
+    }
+
+    @Test
+    fun `with brackets`() {
+      val input = "[foo](https://example.com/foo(bar))"
+      val output = listOf(
+        MfmLink(
+          false,
+          "https://example.com/foo(bar)",
+          MfmText("foo")
+        ),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `with parent brackets`() {
+      val input = "([foo](https://example.com/foo(bar)))"
+      val output = listOf(
+        MfmText("("),
+        MfmLink(
+          false,
+          "https://example.com/foo(bar)",
+          MfmText("foo")
+        ),
+        MfmText(")"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `with brackets before`() {
+      val input = "[test] foo [bar](https://example.com)"
+      val output = listOf(
+        MfmText("[test] foo "),
+        MfmLink(
+          false,
+          "https://example.com",
+          MfmText("bar")
+        ),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+  }
+
+  @Nested
+  inner class Fn {
+    @Test
+    fun basic() {
+      val input = "$[tada abc]"
+      val output = listOf(
+        MfmFn(
+          "tada",
+          mapOf(),
+          MfmText("abc"),
+        ),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `with a string argument`() {
+      val input = "$[spin.speed=1.1s a]"
+      val output = listOf(
+        MfmFn(
+          "spin",
+          mapOf("speed" to "1.1s"),
+          MfmText("a"),
+        ),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `with a string argument 2`() {
+      val input = "$[position.x=-3 a]"
+      val output = listOf(
+        MfmFn(
+          "position",
+          mapOf("x" to "-3"),
+          MfmText("a"),
+        ),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `with a string argument 3`() {
+      val input = "$[position.x=-3,y=4 abc]"
+      val output = listOf(
+        MfmFn(
+          "position",
+          mapOf("x" to "-3", "y" to "4"),
+          MfmText("abc"),
+        ),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun `invalid fn name`() {
+      val input = "$[関数 text]"
+      val output = listOf(
+        MfmText("$[関数 text]"),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+
+    @Test
+    fun nest() {
+      val input = "$[spin.speed=1.1s $[shake a]]"
+      val output = listOf(
+        MfmFn(
+          "spin",
+          mapOf("speed" to "1.1s"),
+          MfmFn(
+            "shake",
+            mapOf(),
+            MfmText("a"),
+          ),
+        ),
+      )
+      assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+  }
 }

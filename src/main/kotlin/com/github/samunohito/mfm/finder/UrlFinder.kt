@@ -89,6 +89,6 @@ class UrlFinder : ISubstringFinder {
 
     // finderResultの段階でuntilされているので、ここではやらない（多重にやると範囲がおかしくなる）
     val modifyRange = foundInfo.range.first..foundInfo.range.last - matched.value.length
-    return success(FoundType.Url, modifyRange, foundInfo.next)
+    return success(FoundType.Url, modifyRange, modifyRange.next())
   }
 }

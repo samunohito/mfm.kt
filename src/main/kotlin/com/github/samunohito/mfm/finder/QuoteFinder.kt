@@ -3,7 +3,6 @@ package com.github.samunohito.mfm.finder
 import com.github.samunohito.mfm.finder.core.FoundType
 import com.github.samunohito.mfm.finder.core.SequentialFinder
 import com.github.samunohito.mfm.finder.core.StringFinder
-import com.github.samunohito.mfm.finder.core.charsequence.AlternateScanFinder
 import com.github.samunohito.mfm.finder.core.charsequence.SequentialScanFinder
 import com.github.samunohito.mfm.finder.core.fixed.NewLineFinder
 import com.github.samunohito.mfm.finder.core.fixed.SpaceFinder

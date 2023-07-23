@@ -90,7 +90,7 @@ class MentionFinder : ISubstringFinder {
         return failure()
       }
 
-      val mentionRange = usernameResult.foundInfo.range.first .. hostnameResult.foundInfo.range.last
+      val mentionRange = usernameResult.foundInfo.range.first..hostnameResult.foundInfo.range.last
       return success(
         FoundType.Mention,
         mentionRange,

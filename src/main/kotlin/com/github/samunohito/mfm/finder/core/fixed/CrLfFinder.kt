@@ -2,7 +2,6 @@ package com.github.samunohito.mfm.finder.core.fixed
 
 import com.github.samunohito.mfm.finder.ISubstringFinder
 import com.github.samunohito.mfm.finder.ISubstringFinderResult
-import com.github.samunohito.mfm.finder.core.RegexFinder
 import com.github.samunohito.mfm.finder.core.StringFinder
 
 object CrLfFinder : ISubstringFinder {

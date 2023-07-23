@@ -1,8 +1,6 @@
 package com.github.samunohito.mfm.finder
 
-import com.github.samunohito.mfm.finder.core.AlternateFinder
 import com.github.samunohito.mfm.finder.core.FoundType
-import com.github.samunohito.mfm.finder.core.fixed.LineEndFinder
 import com.github.samunohito.mfm.utils.merge
 import com.github.samunohito.mfm.utils.next
 
@@ -10,7 +8,6 @@ abstract class RecursiveFinderBase(
   private val terminateFinder: ISubstringFinder,
   private val callback: Callback = Callback.impl
 ) : ISubstringFinder {
-//  private val terminateFinder = AlternateFinder(terminateFinder, LineEndFinder)
   protected abstract val finders: List<ISubstringFinder>
   protected abstract val foundType: FoundType
 
