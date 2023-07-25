@@ -1,5 +1,9 @@
 package com.github.samunohito.mfm
 
+import com.github.samunohito.mfm.node.MfmEmojiCode
+import com.github.samunohito.mfm.node.MfmMention
+import com.github.samunohito.mfm.node.MfmNodeType
+import com.github.samunohito.mfm.node.MfmText
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -172,6 +176,58 @@ class ApiTest {
 
       val input2 = "<https://github.com/syuilo/ai>"
       assertEquals(input2, MfmUtils.stringify(Mfm.parse(input2)))
+    }
+  }
+
+  @Nested
+  inner class Inspect {
+    @Test
+    fun replaceText() {
+      val input = "good morning $[tada everynyan!]"
+      val result = Mfm.parse(input)
+      MfmUtils.inspect(result) {
+        if (it is MfmText) {
+          it.props.text = it.props.text.replace("good morning", "hello")
+        }
+      }
+      assertEquals("hello $[tada everynyan!]", MfmUtils.stringify(result))
+    }
+
+    @Test
+    fun replaceTextOneItem() {
+      val input = "good morning $[tada everyone!]"
+      val result = Mfm.parse(input)
+      MfmUtils.inspect(result[1]) {
+        if (it is MfmText) {
+          it.props.text = it.props.text.replace("one", "nyan")
+        }
+      }
+      assertEquals("good morning $[tada everynyan!]", MfmUtils.stringify(result))
+    }
+  }
+
+  @Nested
+  inner class Extract {
+    @Test
+    fun basic() {
+      val nodes = Mfm.parse("@hoge @piyo @bebeyo")
+      val expect = listOf(
+        MfmMention("hoge", null),
+        MfmMention("piyo", null),
+        MfmMention("bebeyo", null),
+      )
+      assertEquals(expect, MfmUtils.extract(nodes) { it.type == MfmNodeType.Mention })
+    }
+
+    @Test
+    fun nested() {
+      val nodes = Mfm.parse("abc:hoge:\$[tada 123 @hoge :foo:]:piyo:")
+      val expect = listOf(
+        MfmEmojiCode("hoge"),
+        MfmEmojiCode("foo"),
+        MfmEmojiCode("piyo"),
+      )
+      assertEquals(expect, MfmUtils.extract(nodes) { it.type == MfmNodeType.EmojiCode })
     }
   }
 }

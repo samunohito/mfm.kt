@@ -25,6 +25,6 @@ class MentionNodeFactory : SimpleNodeFactoryBase<MfmMention>() {
       "@$username"
     }
 
-    return success(MfmMention(username, hostname, acct), foundInfo)
+    return success(MfmMention(username, hostname), foundInfo)
   }
 }

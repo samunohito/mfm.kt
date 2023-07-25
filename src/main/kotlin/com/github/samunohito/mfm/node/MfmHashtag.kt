@@ -9,5 +9,5 @@ class MfmHashtag(override val props: Props) : MfmNodeBase(), IMfmNode, IMfmNodeP
 
   override val type = MfmNodeType.HashTag
 
-  data class Props(val hashtag: String) : IMfmProps
+  data class Props(var hashtag: String) : IMfmProps
 }

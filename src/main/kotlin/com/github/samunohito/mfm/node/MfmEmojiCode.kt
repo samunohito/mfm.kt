@@ -9,5 +9,5 @@ class MfmEmojiCode(override val props: Props) : MfmNodeBase(), IMfmNode, IMfmNod
     return ":${props.name}:"
   }
 
-  data class Props(val name: String) : IMfmProps
+  data class Props(var name: String) : IMfmProps
 }

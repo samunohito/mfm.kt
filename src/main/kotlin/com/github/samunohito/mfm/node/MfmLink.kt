@@ -22,5 +22,5 @@ class MfmLink(
     return "${prefix}[${MfmUtils.stringify(children)}](${props.url})"
   }
 
-  data class Props(val silent: Boolean, val url: String) : IMfmProps
+  data class Props(var silent: Boolean, var url: String) : IMfmProps
 }

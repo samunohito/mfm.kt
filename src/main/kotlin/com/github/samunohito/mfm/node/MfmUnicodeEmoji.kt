@@ -11,5 +11,5 @@ class MfmUnicodeEmoji(
     return props.emoji
   }
 
-  data class Props(val emoji: String) : IMfmProps
+  data class Props(var emoji: String) : IMfmProps
 }

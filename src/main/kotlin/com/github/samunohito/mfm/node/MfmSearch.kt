@@ -9,5 +9,5 @@ class MfmSearch(override val props: Props) : MfmNodeBase(), IMfmNode, IMfmNodePr
     return props.content
   }
 
-  data class Props(val query: String, val content: String) : IMfmProps
+  data class Props(var query: String, var content: String) : IMfmProps
 }

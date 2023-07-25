@@ -68,3 +68,32 @@ object MfmUtils {
     return result
   }
 }
+
+/**
+ * Inspects the MfmNode tree.
+ */
+fun IMfmNode.inspect(action: (IMfmNode) -> Unit) {
+  MfmUtils.inspect(this, action)
+}
+
+/**
+ * Inspects the MfmNode tree.
+ */
+fun Iterable<IMfmNode>.inspect(action: (IMfmNode) -> Unit) {
+  MfmUtils.inspect(this, action)
+}
+
+/**
+ * Inspects the MfmNode tree and returns as an array the nodes that match the conditions
+ * of the predicate function.
+ */
+fun Iterable<IMfmNode>.extract(predicate: (IMfmNode) -> Boolean): List<IMfmNode> {
+  return MfmUtils.extract(this, predicate)
+}
+
+/**
+ * Generates MFM string from the MfmNode tree.
+ */
+fun Iterable<IMfmNode>.stringify(): String {
+  return MfmUtils.stringify(this)
+}

@@ -9,5 +9,5 @@ class MfmInlineCode(override val props: Props) : MfmNodeBase(), IMfmNode, IMfmNo
     return "`${props.code}`"
   }
 
-  data class Props(val code: String) : IMfmProps
+  data class Props(var code: String) : IMfmProps
 }

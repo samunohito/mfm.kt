@@ -13,5 +13,5 @@ class MfmUrl(override val props: Props) : MfmNodeBase(), IMfmNode, IMfmNodePrope
     }
   }
 
-  data class Props(val url: String, val brackets: Boolean?) : IMfmProps
+  data class Props(var url: String, var brackets: Boolean?) : IMfmProps
 }

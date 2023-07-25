@@ -89,7 +89,7 @@ class FullParserTest {
         MfmQuote(
           MfmCenter(
             MfmText("I'm "),
-            MfmMention("ai", "example.com", "@ai@example.com"),
+            MfmMention("ai", "example.com"),
             MfmText(", An bot of misskey!"),
           )
         )
@@ -384,7 +384,7 @@ class FullParserTest {
       val output = listOf(
         MfmCenter(
           MfmText("I'm "),
-          MfmMention("ai", "example.com", "@ai@example.com"),
+          MfmMention("ai", "example.com"),
           MfmText(", An bot of misskey!"),
         )
       )
@@ -405,24 +405,15 @@ class FullParserTest {
     }
 
     @Test
-    @DisplayName("コロンの直前が半角英数だった場合は絵文字コードとして解釈されない")
-    fun beforeAlphaAndNumeric() {
-      val input = "a:abc:"
+    @DisplayName("コロンの両端が半角英数だった場合は絵文字コードとして解釈されない")
+    fun beforeAfterAlphaAndNumeric() {
+      val input = "a:abc:1"
       val output = listOf(
-        MfmText("a:abc:")
+        MfmText("a:abc:1")
       )
       assertMfmNodeEquals(output, Mfm.parse(input))
     }
 
-    @Test
-    @DisplayName("コロンの直後が半角英数だった場合は絵文字コードとして解釈されない")
-    fun afterAlphaAndNumeric() {
-      val input = ":abc:1"
-      val output = listOf(
-        MfmText(":abc:1")
-      )
-      assertMfmNodeEquals(output, Mfm.parse(input))
-    }
   }
 
   @Nested
@@ -886,7 +877,7 @@ class FullParserTest {
     fun basic() {
       val input = "@abc"
       val output = listOf(
-        MfmMention("abc", null, "@abc")
+        MfmMention("abc", null)
       )
       assertMfmNodeEquals(output, Mfm.parse(input))
     }
@@ -896,7 +887,7 @@ class FullParserTest {
       val input = "before @abc after"
       val output = listOf(
         MfmText("before "),
-        MfmMention("abc", null, "@abc"),
+        MfmMention("abc", null),
         MfmText(" after"),
       )
       assertMfmNodeEquals(output, Mfm.parse(input))
@@ -906,7 +897,7 @@ class FullParserTest {
     fun basicRemote() {
       val input = "@abc@example.com"
       val output = listOf(
-        MfmMention("abc", "example.com", "@abc@example.com")
+        MfmMention("abc", "example.com")
       )
       assertMfmNodeEquals(output, Mfm.parse(input))
     }
@@ -916,7 +907,7 @@ class FullParserTest {
       val input = "before @abc@example.com after"
       val output = listOf(
         MfmText("before "),
-        MfmMention("abc", "example.com", "@abc@example.com"),
+        MfmMention("abc", "example.com"),
         MfmText(" after"),
       )
       assertMfmNodeEquals(output, Mfm.parse(input))
@@ -927,7 +918,7 @@ class FullParserTest {
       val input = "before\n@abc@example.com\nafter"
       val output = listOf(
         MfmText("before\n"),
-        MfmMention("abc", "example.com", "@abc@example.com"),
+        MfmMention("abc", "example.com"),
         MfmText("\nafter"),
       )
       assertMfmNodeEquals(output, Mfm.parse(input))
@@ -947,7 +938,7 @@ class FullParserTest {
       val input = "あいう@abc"
       val output = listOf(
         MfmText("あいう"),
-        MfmMention("abc", null, "@abc"),
+        MfmMention("abc", null),
       )
       assertMfmNodeEquals(output, Mfm.parse(input))
     }
@@ -974,7 +965,7 @@ class FullParserTest {
     fun `allow "-" in username`() {
       val input = "@abc-d"
       val output = listOf(
-        MfmMention("abc-d", null, "@abc-d"),
+        MfmMention("abc-d", null),
       )
       assertMfmNodeEquals(output, Mfm.parse(input))
     }
@@ -992,7 +983,7 @@ class FullParserTest {
     fun `disallow "-" in tail of username`() {
       val input = "@abc-"
       val output = listOf(
-        MfmMention("abc", null, "@abc"),
+        MfmMention("abc", null),
         MfmText("-"),
       )
       assertMfmNodeEquals(output, Mfm.parse(input))
@@ -1011,7 +1002,7 @@ class FullParserTest {
     fun `disallow period in tail of hostname`() {
       val input = "@abc@aaa."
       val output = listOf(
-        MfmMention("abc", "aaa", "@abc@aaa"),
+        MfmMention("abc", "aaa"),
         MfmText("."),
       )
       assertMfmNodeEquals(output, Mfm.parse(input))
@@ -1030,7 +1021,7 @@ class FullParserTest {
     fun `disallow "-" in tail of hostname`() {
       val input = "@abc@aaa-"
       val output = listOf(
-        MfmMention("abc", "aaa", "@abc@aaa"),
+        MfmMention("abc", "aaa"),
         MfmText("-"),
       )
       assertMfmNodeEquals(output, Mfm.parse(input))

@@ -9,5 +9,5 @@ class MfmMathBlock(override val props: Props) : MfmNodeBase(), IMfmNode, IMfmNod
     return "\\[\n${props.formula}\n\\]"
   }
 
-  data class Props(val formula: String) : IMfmProps
+  data class Props(var formula: String) : IMfmProps
 }

@@ -1,7 +1,7 @@
 package com.github.samunohito.mfm.node
 
 class MfmMention(override val props: Props) : MfmNodeBase(), IMfmNode, IMfmNodePropertyHolder<MfmMention.Props> {
-  constructor(username: String, host: String?, acct: String) : this(Props(username, host, acct))
+  constructor(username: String, host: String?) : this(Props(username, host))
 
   override val type = MfmNodeType.Mention
 
@@ -9,5 +9,12 @@ class MfmMention(override val props: Props) : MfmNodeBase(), IMfmNode, IMfmNodeP
     return props.acct
   }
 
-  data class Props(val username: String, val host: String?, val acct: String) : IMfmProps
+  data class Props(var username: String, var host: String?) : IMfmProps {
+    val acct: String
+      get() = if (host == null) {
+        "@$username"
+      } else {
+        "@$username@$host"
+      }
+  }
 }

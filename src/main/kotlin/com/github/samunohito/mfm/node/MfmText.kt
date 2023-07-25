@@ -8,5 +8,5 @@ class MfmText(override val props: Props) : MfmNodeBase(), IMfmNode, IMfmNodeProp
     return props.text
   }
 
-  data class Props(val text: String) : IMfmProps
+  data class Props(var text: String) : IMfmProps
 }

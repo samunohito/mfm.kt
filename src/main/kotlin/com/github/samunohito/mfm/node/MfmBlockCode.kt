@@ -9,5 +9,5 @@ class MfmBlockCode(override val props: Props) : MfmNodeBase(), IMfmNode, IMfmNod
     return "```${props.lang ?: ""}\n${props.code}\n```"
   }
 
-  data class Props(val code: String, val lang: String?) : IMfmProps
+  data class Props(var code: String, var lang: String?) : IMfmProps
 }

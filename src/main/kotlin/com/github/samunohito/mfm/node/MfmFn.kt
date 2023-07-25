@@ -30,5 +30,5 @@ class MfmFn(
     return "$[${props.name}${args} ${MfmUtils.stringify(children)}]"
   }
 
-  data class Props(val name: String, val args: Map<String, Any>) : IMfmProps
+  data class Props(var name: String, var args: Map<String, Any>) : IMfmProps
 }
