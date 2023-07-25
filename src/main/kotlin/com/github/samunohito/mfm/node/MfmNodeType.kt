@@ -1,6 +1,7 @@
 package com.github.samunohito.mfm.node
 
 enum class MfmNodeType(val attributes: Set<MfmNodeAttribute>) {
+  None(setOf(MfmNodeAttribute.Virtuality)),
   Quote(setOf(MfmNodeAttribute.Block)),
   Search(setOf(MfmNodeAttribute.Block)),
   BlockCode(setOf(MfmNodeAttribute.Block)),

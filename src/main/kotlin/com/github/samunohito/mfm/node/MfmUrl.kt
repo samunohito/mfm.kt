@@ -5,5 +5,13 @@ class MfmUrl(override val props: Props) : MfmNodeBase(), IMfmNode, IMfmNodePrope
 
   constructor(url: String, brackets: Boolean?) : this(Props(url, brackets))
 
+  override fun stringify(): String {
+    return if (props.brackets == true) {
+      "<${props.url}>"
+    } else {
+      props.url
+    }
+  }
+
   data class Props(val url: String, val brackets: Boolean?) : IMfmProps
 }

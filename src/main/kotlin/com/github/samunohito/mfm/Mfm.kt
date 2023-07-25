@@ -8,6 +8,9 @@ import com.github.samunohito.mfm.node.MfmNodeAttribute
 import com.github.samunohito.mfm.node.factory.utils.NodeFactoryUtils
 
 object Mfm {
+  /**
+   * Generates a MfmNode tree from the MFM string.
+   */
   @JvmStatic
   fun parse(input: String, startAt: Int = 0): List<IMfmNode> {
     val findResult = FullFinder().find(input, startAt)
@@ -18,16 +21,9 @@ object Mfm {
     return NodeFactoryUtils.createNodes(input, findResult.foundInfo.sub, MfmNodeAttribute.setOfAll)
   }
 
-  @JvmStatic
-  fun parseInline(input: String, startAt: Int): List<IMfmNode> {
-    val findResult = InlineFinder().find(input, startAt)
-    if (!findResult.success) {
-      return listOf()
-    }
-
-    return NodeFactoryUtils.createNodes(input, findResult.foundInfo.sub, MfmNodeAttribute.setOfInline)
-  }
-
+  /**
+   * Generates a MfmSimpleNode tree from the MFM string.
+   */
   @JvmStatic
   fun parseSimple(input: String, startAt: Int = 0): List<IMfmNode> {
     val findResult = SimpleFinder().find(input, startAt)

@@ -5,5 +5,9 @@ class MfmEmojiCode(override val props: Props) : MfmNodeBase(), IMfmNode, IMfmNod
 
   override val type = MfmNodeType.EmojiCode
 
+  override fun stringify(): String {
+    return ":${props.name}:"
+  }
+
   data class Props(val name: String) : IMfmProps
 }

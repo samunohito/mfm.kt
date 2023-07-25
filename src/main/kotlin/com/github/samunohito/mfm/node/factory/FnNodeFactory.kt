@@ -34,7 +34,13 @@ class FnNodeFactory : SimpleNodeFactoryBase<MfmFn>() {
     return args.sub.asSequence()
       .map { input.substring(it.range) }
       .map { it.split("=") }
-      .associate { (key, value) -> key to value }
+      .associate {
+        if (it.size == 1) {
+          it[0] to Unit
+        } else {
+          it[0] to it[1]
+        }
+      }
   }
 
   private fun sliceContent(input: String, foundInfo: SubstringFoundInfo): List<IMfmNode> {

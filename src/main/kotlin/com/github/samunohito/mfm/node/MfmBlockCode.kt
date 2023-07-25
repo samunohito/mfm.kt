@@ -1,9 +1,13 @@
 package com.github.samunohito.mfm.node
 
 class MfmBlockCode(override val props: Props) : MfmNodeBase(), IMfmNode, IMfmNodePropertyHolder<MfmBlockCode.Props> {
+  constructor(code: String, lang: String? = null) : this(Props(code, lang))
+
   override val type = MfmNodeType.BlockCode
 
-  constructor(code: String, lang: String? = null) : this(Props(code, lang))
+  override fun stringify(): String {
+    return "```${props.lang ?: ""}\n${props.code}\n```"
+  }
 
   data class Props(val code: String, val lang: String?) : IMfmProps
 }
