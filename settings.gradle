@@ -1,3 +1,5 @@
 
 rootProject.name = 'mfm.kt'
+include 'api'
+include 'cli'
 

@@ -1,0 +1,13 @@
+package com.github.samunohito.mfm.api.node.factory
+
+import com.github.samunohito.mfm.api.finder.SubstringFoundInfo
+import com.github.samunohito.mfm.api.finder.core.FoundType
+import com.github.samunohito.mfm.api.node.MfmUrl
+
+class UrlNodeFactory : SimpleNodeFactoryBase<MfmUrl>() {
+  override val supportFoundTypes: Set<FoundType> = setOf(FoundType.Url)
+
+  override fun doCreate(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<MfmUrl> {
+    return success(MfmUrl(input.substring(foundInfo.range), false), foundInfo)
+  }
+}
