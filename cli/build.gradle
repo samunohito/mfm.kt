@@ -1,5 +1,6 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.7.20'
+    id 'com.github.johnrengelman.shadow' version '7.+'
 }
 
 group = 'com.github.samunohito'
@@ -10,10 +11,16 @@ repositories {
 }
 
 dependencies {
-    implementation 'ch.qos.logback:logback-classic:1.4.8'
-    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    implementation project(":api")
+    implementation("com.google.code.gson:gson:2.10.1")
 }
 
 test {
     useJUnitPlatform()
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.github.samunohito.mfm.cli.MainKt'
+    }
 }
