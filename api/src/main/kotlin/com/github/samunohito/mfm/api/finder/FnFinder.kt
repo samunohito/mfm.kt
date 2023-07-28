@@ -7,7 +7,7 @@ import com.github.samunohito.mfm.api.finder.core.StringFinder
 import com.github.samunohito.mfm.api.utils.merge
 import com.github.samunohito.mfm.api.utils.next
 
-class FnFinder : ISubstringFinder {
+class FnFinder(private val context: IRecursiveFinderContext) : ISubstringFinder  {
   companion object {
     private val open = StringFinder("$[")
     private val close = StringFinder("]")
@@ -15,14 +15,6 @@ class FnFinder : ISubstringFinder {
     private val argsFinder = SequentialFinder(
       StringFinder("."),
       ArgsFinder,
-    )
-    private val funcFinder = SequentialFinder(
-      open,
-      nameFinder,
-      argsFinder.optional(),
-      StringFinder(" "),
-      InlineFinder(close),
-      close,
     )
 
     private object ArgsFinder : ISubstringFinder {
@@ -58,6 +50,15 @@ class FnFinder : ISubstringFinder {
       }
     }
   }
+
+  private val funcFinder = SequentialFinder(
+    open,
+    nameFinder,
+    argsFinder.optional(),
+    StringFinder(" "),
+    InlineFinder(close, context),
+    close,
+  )
 
   override fun find(input: String, startAt: Int): ISubstringFinderResult {
     val result = funcFinder.find(input, startAt)

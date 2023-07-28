@@ -1540,6 +1540,7 @@ class FullParserTest {
               MfmText("[https://example.com/@ai](https://example.com/@ue)")
             ),
           ),
+          MfmText("."),
         )
         assertMfmNodeEquals(output, Mfm.parse(input))
       }

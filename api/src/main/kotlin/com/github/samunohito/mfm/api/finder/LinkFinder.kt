@@ -4,40 +4,34 @@ import com.github.samunohito.mfm.api.finder.core.*
 import com.github.samunohito.mfm.api.finder.core.fixed.NewLineFinder
 import com.github.samunohito.mfm.api.utils.next
 
-class LinkFinder : ISubstringFinder {
+class LinkFinder(private val context: IRecursiveFinderContext) : ISubstringFinder {
   companion object {
     private val squareOpen = RegexFinder(Regex("\\??\\["))
     private val squareClose = StringFinder("]")
     private val roundOpen = StringFinder("(")
     private val roundClose = StringFinder(")")
     private val terminateFinder = AlternateFinder(squareClose, NewLineFinder)
-    private val linkFinder = SequentialFinder(
-      squareOpen,
-      InlineFinder(terminateFinder, InlineFinderCallback),
-      squareClose,
-      roundOpen,
-      AlternateFinder(UrlAltFinder(), UrlFinder()),
-      roundClose,
-    )
-
-    private object InlineFinderCallback : RecursiveFinderBase.Callback {
-      override fun needProcess(input: String, startAt: Int, finder: ISubstringFinder): Boolean {
-        return when (finder) {
-          is HashtagFinder,
-          is LinkFinder,
-          is MentionFinder,
-          is UrlFinder,
-          is UrlAltFinder -> {
-            false
-          }
-
-          else -> {
-            true
-          }
-        }
-      }
-    }
   }
+
+  private val linkFinder = SequentialFinder(
+    squareOpen,
+    InlineFinder(
+      terminateFinder,
+      context.renew(
+        excludeFinders = setOf(
+          HashtagFinder::class.java,
+          LinkFinder::class.java,
+          MentionFinder::class.java,
+          UrlFinder::class.java,
+          UrlAltFinder::class.java,
+        )
+      )
+    ),
+    squareClose,
+    roundOpen,
+    AlternateFinder(UrlAltFinder(), UrlFinder()),
+    roundClose,
+  )
 
   override fun find(input: String, startAt: Int): ISubstringFinderResult {
     val result = linkFinder.find(input, startAt)

@@ -1,6 +1,7 @@
 package com.github.samunohito.mfm.api.node.factory
 
 import com.github.samunohito.mfm.api.finder.FullFinder
+import com.github.samunohito.mfm.api.finder.IRecursiveFinderContext
 import com.github.samunohito.mfm.api.finder.SubstringFoundInfo
 import com.github.samunohito.mfm.api.finder.core.FoundType
 import com.github.samunohito.mfm.api.node.MfmQuote
@@ -19,7 +20,7 @@ class QuoteNodeFactory : SimpleNodeFactoryBase<MfmQuote>() {
 
     // parse inner content
     val contentText = contentLines.joinToString("\n")
-    val contentFindResult = FullFinder().find(contentText)
+    val contentFindResult = FullFinder(context = IRecursiveFinderContext.Impl()).find(contentText)
     if (!contentFindResult.success) {
       return failure()
     }

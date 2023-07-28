@@ -1,6 +1,7 @@
 package com.github.samunohito.mfm.api
 
 import com.github.samunohito.mfm.api.finder.FullFinder
+import com.github.samunohito.mfm.api.finder.IRecursiveFinderContext
 import com.github.samunohito.mfm.api.finder.SimpleFinder
 import com.github.samunohito.mfm.api.node.IMfmNode
 import com.github.samunohito.mfm.api.node.MfmNodeAttribute
@@ -12,7 +13,7 @@ object Mfm {
    */
   @JvmStatic
   fun parse(input: String, startAt: Int = 0): List<IMfmNode> {
-    val findResult = FullFinder().find(input, startAt)
+    val findResult = FullFinder(context = IRecursiveFinderContext.Impl()).find(input, startAt)
     if (!findResult.success) {
       return listOf()
     }
@@ -25,7 +26,7 @@ object Mfm {
    */
   @JvmStatic
   fun parseSimple(input: String, startAt: Int = 0): List<IMfmNode> {
-    val findResult = SimpleFinder().find(input, startAt)
+    val findResult = SimpleFinder(context = IRecursiveFinderContext.Impl()).find(input, startAt)
     if (!findResult.success) {
       return listOf()
     }

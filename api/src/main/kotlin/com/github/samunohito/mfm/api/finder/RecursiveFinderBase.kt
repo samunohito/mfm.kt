@@ -6,12 +6,12 @@ import com.github.samunohito.mfm.api.utils.next
 
 abstract class RecursiveFinderBase(
   private val terminateFinder: ISubstringFinder,
-  private val callback: Callback = Callback.impl
-) : ISubstringFinder {
+  private val context: IRecursiveFinderContext,
+) : NestedFinderBase(context) {
   protected abstract val finders: List<ISubstringFinder>
   protected abstract val foundType: FoundType
 
-  override fun find(input: String, startAt: Int): ISubstringFinderResult {
+  override fun doFind(input: String, startAt: Int): ISubstringFinderResult {
     var textNodeStartAt = startAt
     var latestIndex = startAt
     val foundInfos = mutableListOf<SubstringFoundInfo>()
@@ -42,17 +42,21 @@ abstract class RecursiveFinderBase(
       }
 
       val range = foundInfos.map { it.range }.merge()
-      success(foundType, range, range.next(), foundInfos)
+      success(foundType, range, latestIndex, foundInfos)
     }
   }
 
   private fun shouldTerminate(input: String, latestIndex: Int): Boolean {
+    if (input.length < latestIndex) {
+      return true
+    }
+
     return terminateFinder.find(input, latestIndex).success
   }
 
   private fun findWithFactories(input: String, latestIndex: Int): ISubstringFinderResult {
     for (finder in finders) {
-      if (callback.needProcess(input, latestIndex, finder)) {
+      if (!context.excludeFinders.contains(finder::class.java)) {
         val result = finder.find(input, latestIndex)
         if (result.success) {
           return result
@@ -60,17 +64,5 @@ abstract class RecursiveFinderBase(
       }
     }
     return failure()
-  }
-
-  interface Callback {
-    fun needProcess(input: String, startAt: Int, finder: ISubstringFinder): Boolean
-
-    companion object {
-      val impl = object : Callback {
-        override fun needProcess(input: String, startAt: Int, finder: ISubstringFinder): Boolean {
-          return true
-        }
-      }
-    }
   }
 }
