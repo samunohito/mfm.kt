@@ -9,8 +9,12 @@ import com.github.samunohito.mfm.api.node.factory.utils.NodeFactoryUtils
 class BoldAstaNodeFactory : SimpleNodeFactoryBase<MfmBold>() {
   override val supportFoundTypes: Set<FoundType> = setOf(FoundType.BoldAsta)
 
-  override fun doCreate(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<MfmBold> {
-    val result = NodeFactoryUtils.createNodes(input, foundInfo.sub, MfmNodeAttribute.setOfInline)
+  override fun doCreate(
+    input: String,
+    foundInfo: SubstringFoundInfo,
+    context: INodeFactoryContext
+  ): IFactoryResult<MfmBold> {
+    val result = NodeFactoryUtils.createNodes(input, foundInfo.sub, MfmNodeAttribute.setOfInline, context)
     if (result.isEmpty()) {
       return failure()
     }

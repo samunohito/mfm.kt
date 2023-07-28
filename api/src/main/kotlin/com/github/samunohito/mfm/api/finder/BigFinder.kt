@@ -4,14 +4,14 @@ import com.github.samunohito.mfm.api.finder.core.FoundType
 import com.github.samunohito.mfm.api.finder.core.SequentialFinder
 import com.github.samunohito.mfm.api.finder.core.StringFinder
 
-class BigFinder(private val context: IRecursiveFinderContext) : ISubstringFinder {
+class BigFinder : ISubstringFinder {
   companion object {
     private val mark = StringFinder("***")
   }
 
   private val finder = SequentialFinder(
     mark,
-    InlineFinder(mark, context),
+    InlineFinder(mark),
     mark
   )
 
@@ -24,7 +24,8 @@ class BigFinder(private val context: IRecursiveFinderContext) : ISubstringFinder
     val contents = result.foundInfo.sub[1]
     return success(
       FoundType.Big,
-      contents.range,
+      result.foundInfo.fullRange,
+      contents.contentRange,
       result.foundInfo.next,
       contents.sub
     )

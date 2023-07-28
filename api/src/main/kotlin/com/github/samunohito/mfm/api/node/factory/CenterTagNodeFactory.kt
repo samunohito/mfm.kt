@@ -9,8 +9,12 @@ import com.github.samunohito.mfm.api.node.factory.utils.NodeFactoryUtils
 class CenterTagNodeFactory : SimpleNodeFactoryBase<MfmCenter>() {
   override val supportFoundTypes: Set<FoundType> = setOf(FoundType.CenterTag)
 
-  override fun doCreate(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<MfmCenter> {
-    val result = NodeFactoryUtils.createNodes(input, foundInfo.sub, MfmNodeAttribute.setOfInline)
+  override fun doCreate(
+    input: String,
+    foundInfo: SubstringFoundInfo,
+    context: INodeFactoryContext
+  ): IFactoryResult<MfmCenter> {
+    val result = NodeFactoryUtils.createNodes(input, foundInfo.sub, MfmNodeAttribute.setOfInline, context)
     if (result.isEmpty()) {
       return failure()
     }

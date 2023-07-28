@@ -5,13 +5,12 @@ import com.github.samunohito.mfm.api.utils.merge
 import com.github.samunohito.mfm.api.utils.next
 
 abstract class RecursiveFinderBase(
-  private val terminateFinder: ISubstringFinder,
-  private val context: IRecursiveFinderContext,
-) : NestedFinderBase(context) {
+  private val terminateFinder: ISubstringFinder
+) : ISubstringFinder {
   protected abstract val finders: List<ISubstringFinder>
   protected abstract val foundType: FoundType
 
-  override fun doFind(input: String, startAt: Int): ISubstringFinderResult {
+  override fun find(input: String, startAt: Int): ISubstringFinderResult {
     var textNodeStartAt = startAt
     var latestIndex = startAt
     val foundInfos = mutableListOf<SubstringFoundInfo>()
@@ -21,7 +20,7 @@ abstract class RecursiveFinderBase(
       if (findResult.success) {
         if (textNodeStartAt != latestIndex) {
           val range = textNodeStartAt until latestIndex
-          foundInfos.add(SubstringFoundInfo(FoundType.Text, range, range.last + 1))
+          foundInfos.add(SubstringFoundInfo(FoundType.Text, range, range, range.last + 1))
         }
         foundInfos.add(findResult.foundInfo)
 
@@ -38,11 +37,12 @@ abstract class RecursiveFinderBase(
       if (textNodeStartAt != latestIndex) {
         // ここに来てprevとlatestに差がある場合、リストに登録してないTextが存在するということ
         val range = textNodeStartAt until latestIndex
-        foundInfos.add(SubstringFoundInfo(FoundType.Text, range, range.last + 1))
+        foundInfos.add(SubstringFoundInfo(FoundType.Text, range, range, range.last + 1))
       }
 
-      val range = foundInfos.map { it.range }.merge()
-      success(foundType, range, latestIndex, foundInfos)
+      val fullRange = startAt until latestIndex
+      val contentRange = foundInfos.map { it.contentRange }.merge()
+      success(foundType, fullRange, contentRange, fullRange.next(), foundInfos)
     }
   }
 
@@ -56,11 +56,9 @@ abstract class RecursiveFinderBase(
 
   private fun findWithFactories(input: String, latestIndex: Int): ISubstringFinderResult {
     for (finder in finders) {
-      if (!context.excludeFinders.contains(finder::class.java)) {
-        val result = finder.find(input, latestIndex)
-        if (result.success) {
-          return result
-        }
+      val result = finder.find(input, latestIndex)
+      if (result.success) {
+        return result
       }
     }
     return failure()

@@ -5,8 +5,7 @@ import com.github.samunohito.mfm.api.finder.core.fixed.CharSequenceTerminateFind
 
 class SimpleFinder(
   terminateFinder: ISubstringFinder = CharSequenceTerminateFinder,
-  context: IRecursiveFinderContext,
-) : RecursiveFinderBase(terminateFinder, context) {
+) : RecursiveFinderBase(terminateFinder) {
   override val finders: List<ISubstringFinder> = listOf(
     UnicodeEmojiFinder(),
     EmojiCodeFinder(),

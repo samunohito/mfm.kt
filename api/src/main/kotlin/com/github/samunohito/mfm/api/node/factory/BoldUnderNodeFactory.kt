@@ -10,8 +10,12 @@ import com.github.samunohito.mfm.api.node.MfmText
 class BoldUnderNodeFactory : SimpleNodeFactoryBase<MfmBold>() {
   override val supportFoundTypes: Set<FoundType> = setOf(FoundType.BoldUnder)
 
-  override fun doCreate(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<MfmBold> {
-    val contents = input.substring(foundInfo.range)
+  override fun doCreate(
+    input: String,
+    foundInfo: SubstringFoundInfo,
+    context: INodeFactoryContext
+  ): IFactoryResult<MfmBold> {
+    val contents = input.substring(foundInfo.contentRange)
     val textNode = MfmText(contents)
     return success(MfmBold(listOf(textNode)), foundInfo)
   }

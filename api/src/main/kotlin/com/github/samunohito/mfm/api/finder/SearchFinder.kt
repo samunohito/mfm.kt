@@ -8,6 +8,7 @@ import com.github.samunohito.mfm.api.finder.core.fixed.LineEndFinder
 import com.github.samunohito.mfm.api.finder.core.fixed.NewLineFinder
 import com.github.samunohito.mfm.api.finder.core.fixed.SpaceFinder
 import com.github.samunohito.mfm.api.utils.merge
+import com.github.samunohito.mfm.api.utils.next
 
 class SearchFinder : ISubstringFinder {
   companion object {
@@ -38,7 +39,7 @@ class SearchFinder : ISubstringFinder {
           if (result.success) {
             // 削除ボタンの検出が成功したらクエリの範囲がわかるので、それを返す
             val queryRange = startAt until i
-            return success(FoundType.Search, queryRange, queryRange.last + 1)
+            return success(FoundType.Search, queryRange, queryRange, queryRange.next())
           }
         }
 
@@ -61,7 +62,8 @@ class SearchFinder : ISubstringFinder {
     val sub = listOf(query, space, button)
     val info = SubstringFoundInfo(
       FoundType.Search,
-      sub.map { it.range }.merge(),
+      result.foundInfo.fullRange,
+      sub.map { it.contentRange }.merge(),
       result.foundInfo.next,
       sub
     )

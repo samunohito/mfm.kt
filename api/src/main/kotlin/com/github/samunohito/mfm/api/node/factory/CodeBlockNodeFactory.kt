@@ -8,13 +8,17 @@ import com.github.samunohito.mfm.api.node.MfmBlockCode
 class CodeBlockNodeFactory : SimpleNodeFactoryBase<MfmBlockCode>() {
   override val supportFoundTypes: Set<FoundType> = setOf(FoundType.CodeBlock)
 
-  override fun doCreate(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<MfmBlockCode> {
+  override fun doCreate(
+    input: String,
+    foundInfo: SubstringFoundInfo,
+    context: INodeFactoryContext
+  ): IFactoryResult<MfmBlockCode> {
     val langResult = foundInfo[CodeBlockFinder.SubIndex.Lang]
     val codeResult = foundInfo[CodeBlockFinder.SubIndex.Code]
 
-    val code = input.substring(codeResult.range)
+    val code = input.substring(codeResult.contentRange)
     val node = if (langResult != SubstringFoundInfo.EMPTY) {
-      MfmBlockCode(code, input.substring(langResult.range))
+      MfmBlockCode(code, input.substring(langResult.contentRange))
     } else {
       MfmBlockCode(code)
     }

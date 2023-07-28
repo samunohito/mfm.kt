@@ -4,14 +4,14 @@ import com.github.samunohito.mfm.api.finder.core.FoundType
 import com.github.samunohito.mfm.api.finder.core.SequentialFinder
 import com.github.samunohito.mfm.api.finder.core.StringFinder
 
-class BoldAstaFinder(private val context: IRecursiveFinderContext) : ISubstringFinder  {
+class BoldAstaFinder : ISubstringFinder {
   companion object {
     private val mark = StringFinder("**")
   }
 
   private val boldAstaFinder = SequentialFinder(
     mark,
-    InlineFinder(mark, context),
+    InlineFinder(mark),
     mark,
   )
 
@@ -24,7 +24,8 @@ class BoldAstaFinder(private val context: IRecursiveFinderContext) : ISubstringF
     val contents = result.foundInfo.sub[1]
     return success(
       FoundType.BoldAsta,
-      contents.range,
+      result.foundInfo.fullRange,
+      contents.contentRange,
       result.foundInfo.next,
       contents.sub
     )

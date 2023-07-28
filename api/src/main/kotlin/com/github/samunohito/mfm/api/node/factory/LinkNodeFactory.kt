@@ -10,14 +10,18 @@ import com.github.samunohito.mfm.api.node.factory.utils.NodeFactoryUtils
 class LinkNodeFactory : SimpleNodeFactoryBase<MfmLink>() {
   override val supportFoundTypes: Set<FoundType> = setOf(FoundType.Link)
 
-  override fun doCreate(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<MfmLink> {
+  override fun doCreate(
+    input: String,
+    foundInfo: SubstringFoundInfo,
+    context: INodeFactoryContext
+  ): IFactoryResult<MfmLink> {
     val squareOpen = foundInfo[LinkFinder.SubIndex.SquareOpen]
     val label = foundInfo[LinkFinder.SubIndex.Label]
     val url = foundInfo[LinkFinder.SubIndex.Url]
 
-    val isSilent = (input.substring(squareOpen.range) == "?[")
-    val urlText = input.substring(url.range)
-    val labelContents = NodeFactoryUtils.createNodes(input, label.sub, MfmNodeAttribute.setOfInline)
+    val isSilent = (input.substring(squareOpen.contentRange) == "?[")
+    val urlText = input.substring(url.contentRange)
+    val labelContents = NodeFactoryUtils.createNodes(input, label.sub, MfmNodeAttribute.setOfInline, context)
     if (labelContents.isEmpty()) {
       return failure()
     }

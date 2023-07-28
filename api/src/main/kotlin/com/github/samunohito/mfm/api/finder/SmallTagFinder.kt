@@ -4,7 +4,7 @@ import com.github.samunohito.mfm.api.finder.core.FoundType
 import com.github.samunohito.mfm.api.finder.core.SequentialFinder
 import com.github.samunohito.mfm.api.finder.core.StringFinder
 
-class SmallTagFinder(private val context: IRecursiveFinderContext) : ISubstringFinder {
+class SmallTagFinder : ISubstringFinder {
   companion object {
     private val open = StringFinder("<small>")
     private val close = StringFinder("</small>")
@@ -12,7 +12,7 @@ class SmallTagFinder(private val context: IRecursiveFinderContext) : ISubstringF
 
   private val finder = SequentialFinder(
     open,
-    InlineFinder(close, context),
+    InlineFinder(close),
     close
   )
 
@@ -23,6 +23,12 @@ class SmallTagFinder(private val context: IRecursiveFinderContext) : ISubstringF
     }
 
     val contents = result.foundInfo.sub[1]
-    return success(FoundType.SmallTag, contents.range, result.foundInfo.next, contents.sub)
+    return success(
+      FoundType.SmallTag,
+      result.foundInfo.fullRange,
+      contents.contentRange,
+      result.foundInfo.next,
+      contents.sub
+    )
   }
 }

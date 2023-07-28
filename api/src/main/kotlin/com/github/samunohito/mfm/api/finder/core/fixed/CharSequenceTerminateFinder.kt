@@ -9,7 +9,7 @@ import com.github.samunohito.mfm.api.finder.success
 object CharSequenceTerminateFinder : ISubstringFinder {
   override fun find(input: String, startAt: Int): ISubstringFinderResult {
     return if (input.length <= startAt) {
-      success(FoundType.Core, IntRange.EMPTY, startAt)
+      success(FoundType.Core, IntRange.EMPTY, IntRange.EMPTY, startAt)
     } else {
       failure()
     }

@@ -7,7 +7,11 @@ import com.github.samunohito.mfm.api.node.MfmMathInline
 class MathInlineNodeFactory : SimpleNodeFactoryBase<MfmMathInline>() {
   override val supportFoundTypes: Set<FoundType> = setOf(FoundType.MathInline)
 
-  override fun doCreate(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<MfmMathInline> {
-    return success(MfmMathInline(input.substring(foundInfo.range)), foundInfo)
+  override fun doCreate(
+    input: String,
+    foundInfo: SubstringFoundInfo,
+    context: INodeFactoryContext
+  ): IFactoryResult<MfmMathInline> {
+    return success(MfmMathInline(input.substring(foundInfo.contentRange)), foundInfo)
   }
 }

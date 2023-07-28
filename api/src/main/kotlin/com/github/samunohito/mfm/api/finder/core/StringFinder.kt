@@ -14,7 +14,7 @@ class StringFinder(private val word: String) : ISubstringFinder {
     } else if (input.substring(resultRange) != word) {
       failure()
     } else {
-      success(FoundType.Core, resultRange, resultRange.next())
+      success(FoundType.Core, resultRange, resultRange, resultRange.next())
     }
   }
 }

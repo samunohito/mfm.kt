@@ -7,7 +7,7 @@ import com.github.samunohito.mfm.api.finder.core.StringFinder
 import com.github.samunohito.mfm.api.utils.merge
 import com.github.samunohito.mfm.api.utils.next
 
-class FnFinder(private val context: IRecursiveFinderContext) : ISubstringFinder  {
+class FnFinder : ISubstringFinder {
   companion object {
     private val open = StringFinder("$[")
     private val close = StringFinder("]")
@@ -45,8 +45,9 @@ class FnFinder(private val context: IRecursiveFinderContext) : ISubstringFinder 
           }
         }
 
-        val range = args.map { it.range }.merge()
-        return success(FoundType.Fn, range, range.next(), args)
+        val fullRange = startAt until latestIndex
+        val contentRange = args.map { it.contentRange }.merge()
+        return success(FoundType.Fn, fullRange, contentRange, fullRange.next(), args)
       }
     }
   }
@@ -56,7 +57,7 @@ class FnFinder(private val context: IRecursiveFinderContext) : ISubstringFinder 
     nameFinder,
     argsFinder.optional(),
     StringFinder(" "),
-    InlineFinder(close, context),
+    InlineFinder(close),
     close,
   )
 
@@ -68,7 +69,7 @@ class FnFinder(private val context: IRecursiveFinderContext) : ISubstringFinder 
 
     val name = result.foundInfo[1]
     val args = result.foundInfo[2].let {
-      if (it.range.isEmpty()) {
+      if (it.contentRange.isEmpty()) {
         SubstringFoundInfo.EMPTY
       } else {
         // 先頭要素は関数名との区切りに使っているピリオドなので不要
@@ -79,7 +80,8 @@ class FnFinder(private val context: IRecursiveFinderContext) : ISubstringFinder 
 
     return success(
       FoundType.Fn,
-      result.foundInfo.range,
+      result.foundInfo.fullRange,
+      result.foundInfo.contentRange,
       result.foundInfo.next,
       listOf(name, args, content)
     )

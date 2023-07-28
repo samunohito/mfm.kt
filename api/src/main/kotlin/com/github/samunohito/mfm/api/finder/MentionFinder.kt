@@ -24,7 +24,7 @@ class MentionFinder : ISubstringFinder {
 
       // 末尾がハイフンで終わっているかを調べる(ハイフンがない場合は除外の必要なしなのでそのまま返す)
       val hyphenTailMatch = regexHyphenTail.find(username)
-        ?: return success(FoundType.Mention, usernameRange, usernameRange.next())
+        ?: return success(FoundType.Mention, usernameRange, usernameRange, usernameRange.next())
 
       // ハイフンしか無い場合はユーザー名として認識しない
       val modifiedUsername = username.substring(0 until hyphenTailMatch.range.first)
@@ -33,7 +33,7 @@ class MentionFinder : ISubstringFinder {
       }
 
       val modifiedUsernameRange = usernameRange.first until usernameRange.first + modifiedUsername.length
-      return success(FoundType.Mention, modifiedUsernameRange, modifiedUsernameRange.next())
+      return success(FoundType.Mention, modifiedUsernameRange, modifiedUsernameRange, modifiedUsernameRange.next())
     }
 
     private fun findHostnameRange(input: String, hostnameRange: IntRange): ISubstringFinderResult {
@@ -46,7 +46,7 @@ class MentionFinder : ISubstringFinder {
 
       // ドットまたはハイフンで終わっているかを調べる(ドットまたはハイフンがない場合は除外の必要なしなのでそのまま返す)
       val dotHyphenTailMatch = regexDotHyphenTail.find(hostname)
-        ?: return success(FoundType.Mention, hostnameRange, hostnameRange.next())
+        ?: return success(FoundType.Mention, hostnameRange, hostnameRange, hostnameRange.next())
 
       // ドットまたはハイフンしか無い場合はホスト名として認識しない
       val modifiedHostname = hostname.substring(0 until dotHyphenTailMatch.range.first)
@@ -55,7 +55,7 @@ class MentionFinder : ISubstringFinder {
       }
 
       val modifiedHostnameRange = hostnameRange.first until hostnameRange.first + modifiedHostname.length
-      return success(FoundType.Mention, modifiedHostnameRange, modifiedHostnameRange.next())
+      return success(FoundType.Mention, modifiedHostnameRange, modifiedHostnameRange, modifiedHostnameRange.next())
     }
   }
 
@@ -83,21 +83,32 @@ class MentionFinder : ISubstringFinder {
       }
 
       val usernameResult = findUsernameRange(input, usernameRange)
-      if (!usernameResult.success || usernameResult.foundInfo.range != usernameRange) {
+      if (!usernameResult.success || usernameResult.foundInfo.contentRange != usernameRange) {
         // 範囲が変わっている＝ハイフンのぶんを切り詰められたということ
         // ホスト名が存在するときは、ユーザ名の後ろのハイフンを切り捨てられない。
         // （切り捨ててTextとして認識させたいが、ホスト名がある時にそれをやるとホスト名までText扱いになってしまうので）
         return failure()
       }
 
-      val mentionRange = usernameResult.foundInfo.range.first..hostnameResult.foundInfo.range.last
+      val mentionRange = usernameResult.foundInfo.contentRange.first..hostnameResult.foundInfo.contentRange.last
       return success(
         FoundType.Mention,
         mentionRange,
+        mentionRange,
         mentionRange.next(),
         listOf(
-          SubstringFoundInfo(FoundType.Mention, usernameResult.foundInfo.range, usernameResult.foundInfo.range.next()),
-          SubstringFoundInfo(FoundType.Mention, hostnameResult.foundInfo.range, hostnameResult.foundInfo.range.next())
+          SubstringFoundInfo(
+            FoundType.Mention,
+            usernameResult.foundInfo.fullRange,
+            usernameResult.foundInfo.contentRange,
+            usernameResult.foundInfo.contentRange.next()
+          ),
+          SubstringFoundInfo(
+            FoundType.Mention,
+            hostnameResult.foundInfo.fullRange,
+            hostnameResult.foundInfo.contentRange,
+            hostnameResult.foundInfo.contentRange.next()
+          )
         )
       )
     } else {
@@ -108,10 +119,16 @@ class MentionFinder : ISubstringFinder {
 
       return success(
         FoundType.Mention,
-        usernameResult.foundInfo.range,
-        usernameResult.foundInfo.range.next(),
+        usernameResult.foundInfo.fullRange,
+        usernameResult.foundInfo.contentRange,
+        usernameResult.foundInfo.contentRange.next(),
         listOf(
-          SubstringFoundInfo(FoundType.Mention, usernameResult.foundInfo.range, usernameResult.foundInfo.range.next()),
+          SubstringFoundInfo(
+            FoundType.Mention,
+            usernameResult.foundInfo.fullRange,
+            usernameResult.foundInfo.contentRange,
+            usernameResult.foundInfo.contentRange.next()
+          ),
           SubstringFoundInfo.EMPTY,
         )
       )

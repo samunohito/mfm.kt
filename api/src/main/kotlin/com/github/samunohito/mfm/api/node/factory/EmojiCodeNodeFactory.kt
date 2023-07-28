@@ -7,7 +7,11 @@ import com.github.samunohito.mfm.api.node.MfmEmojiCode
 class EmojiCodeNodeFactory : SimpleNodeFactoryBase<MfmEmojiCode>() {
   override val supportFoundTypes: Set<FoundType> = setOf(FoundType.EmojiCode)
 
-  override fun doCreate(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<MfmEmojiCode> {
-    return success(MfmEmojiCode(input.substring(foundInfo.range)), foundInfo)
+  override fun doCreate(
+    input: String,
+    foundInfo: SubstringFoundInfo,
+    context: INodeFactoryContext
+  ): IFactoryResult<MfmEmojiCode> {
+    return success(MfmEmojiCode(input.substring(foundInfo.contentRange)), foundInfo)
   }
 }

@@ -39,22 +39,25 @@ class CodeBlockFinder : ISubstringFinder {
     val codeResult = result.foundInfo.sub[5]
     return success(
       FoundType.CodeBlock,
-      result.foundInfo.range,
-      result.foundInfo.range.next(),
+      result.foundInfo.fullRange,
+      result.foundInfo.contentRange,
+      result.foundInfo.fullRange.next(),
       listOf(
-        if (langResult.range.isEmpty()) {
-          SubstringFoundInfo.Companion.EMPTY
+        if (langResult.contentRange.isEmpty()) {
+          SubstringFoundInfo.EMPTY
         } else {
           SubstringFoundInfo(
             FoundType.CodeBlock,
-            langResult.range,
-            langResult.range.next()
+            langResult.fullRange,
+            langResult.contentRange,
+            langResult.contentRange.next()
           )
         },
         SubstringFoundInfo(
           FoundType.CodeBlock,
-          codeResult.range,
-          codeResult.range.next()
+          codeResult.fullRange,
+          codeResult.contentRange,
+          codeResult.contentRange.next()
         )
       )
     )

@@ -25,7 +25,7 @@ abstract class ScanFinderBase : ISubstringFinder {
       failure()
     } else {
       val range = startAt until latestIndex
-      success(FoundType.Core, range, range.next())
+      success(FoundType.Core, range, range, range.next())
     }
   }
 

@@ -19,7 +19,7 @@ interface ISubstringFinder {
       return if (result.success) {
         result
       } else {
-        success(FoundType.Core, IntRange.EMPTY, startAt)
+        success(FoundType.Core, IntRange.EMPTY, IntRange.EMPTY, startAt)
       }
     }
   }

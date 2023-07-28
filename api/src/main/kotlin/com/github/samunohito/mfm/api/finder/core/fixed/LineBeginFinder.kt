@@ -17,7 +17,7 @@ object LineBeginFinder : ISubstringFinder {
     }
 
     return if (result) {
-      success(FoundType.Core, IntRange.EMPTY, startAt)
+      success(FoundType.Core, IntRange.EMPTY, IntRange.EMPTY, startAt)
     } else {
       failure()
     }

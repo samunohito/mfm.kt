@@ -51,8 +51,9 @@ class HashtagFinder : ISubstringFinder {
           return failure()
         }
 
-        val range = foundInfos.map { it.range }.merge()
-        return success(FoundType.Hashtag, range, range.next(), foundInfos)
+        val fullRange = startAt until latestIndex
+        val contentRange = foundInfos.map { it.contentRange }.merge()
+        return success(FoundType.Hashtag, fullRange, contentRange, fullRange.next(), foundInfos)
       }
     }
   }
@@ -71,11 +72,11 @@ class HashtagFinder : ISubstringFinder {
 
     // 検出された文字が数値のみの場合はハッシュタグではない
     val hashtagNameResult = result.foundInfo.sub[1]
-    val hashtagName = input.substring(hashtagNameResult.range)
+    val hashtagName = input.substring(hashtagNameResult.contentRange)
     if (regexNumericOnly.containsMatchIn(hashtagName)) {
       return failure()
     }
 
-    return success(FoundType.Hashtag, hashtagNameResult.range, result.foundInfo.next)
+    return success(FoundType.Hashtag, result.foundInfo.fullRange, hashtagNameResult.contentRange, result.foundInfo.next)
   }
 }

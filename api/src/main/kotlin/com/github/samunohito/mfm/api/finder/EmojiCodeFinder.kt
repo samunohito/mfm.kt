@@ -32,7 +32,7 @@ class EmojiCodeFinder : ISubstringFinder {
     }
 
     val contents = result.foundInfo.sub[2]
-    return success(FoundType.EmojiCode, contents.range, result.foundInfo.next)
+    return success(FoundType.EmojiCode, result.foundInfo.fullRange, contents.contentRange, result.foundInfo.next)
   }
 
   private fun validateBeforeSide(
@@ -42,7 +42,7 @@ class EmojiCodeFinder : ISubstringFinder {
   ): Boolean {
     // コロンの直前が半角英数の場合は絵文字コードとして認識しない
     if (startAt >= 1) {
-      val idx = foundInfo.range.first
+      val idx = foundInfo.contentRange.first
       val beforeStr = input.substring(idx - 1, idx)
       if (regexSide.containsMatchIn(beforeStr)) {
         return false
@@ -57,9 +57,9 @@ class EmojiCodeFinder : ISubstringFinder {
     foundInfo: SubstringFoundInfo
   ): Boolean {
     // コロンの直後が半角英数の場合は絵文字コードとして認識しない
-    if ((input.length - 1) >= foundInfo.range.last + 1) {
+    if ((input.length - 1) >= foundInfo.contentRange.last + 1) {
       // 範囲を外れた次の1文字目を取りたいので+1している
-      val idx = foundInfo.range.last + 1
+      val idx = foundInfo.contentRange.last + 1
       val afterStr = input.substring(idx, idx + 1)
       if (regexSide.containsMatchIn(afterStr)) {
         return false

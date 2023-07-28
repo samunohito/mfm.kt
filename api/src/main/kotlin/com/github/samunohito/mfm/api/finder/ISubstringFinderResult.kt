@@ -30,19 +30,12 @@ fun success(result: SubstringFoundInfo): ISubstringFinderResult {
 
 fun success(
   foundType: FoundType,
-  range: IntRange,
-  next: Int,
-): ISubstringFinderResult {
-  return Impl.ofSuccess(SubstringFoundInfo(foundType, range, next, listOf()))
-}
-
-fun success(
-  foundType: FoundType,
-  range: IntRange,
+  fullRange: IntRange,
+  contentRange: IntRange,
   next: Int,
   sub: List<SubstringFoundInfo> = listOf()
 ): ISubstringFinderResult {
-  return Impl.ofSuccess(SubstringFoundInfo(foundType, range, next, sub))
+  return Impl.ofSuccess(SubstringFoundInfo(foundType, fullRange, contentRange, next, sub))
 }
 
 fun success(foundType: FoundType, result: ISubstringFinderResult): ISubstringFinderResult {

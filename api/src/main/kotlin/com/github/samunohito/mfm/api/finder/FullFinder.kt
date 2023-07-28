@@ -5,8 +5,7 @@ import com.github.samunohito.mfm.api.finder.core.fixed.CharSequenceTerminateFind
 
 class FullFinder(
   terminateFinder: ISubstringFinder = CharSequenceTerminateFinder,
-  context: IRecursiveFinderContext,
-) : RecursiveFinderBase(terminateFinder, context) {
+) : RecursiveFinderBase(terminateFinder) {
   override val finders: List<ISubstringFinder>
     get() = lazyFinders.value
   override val foundType = FoundType.Full
@@ -14,15 +13,15 @@ class FullFinder(
   private val lazyFinders = lazy {
     listOf(
       UnicodeEmojiFinder(),
-      CenterTagFinder(context),
-      SmallTagFinder(context),
+      CenterTagFinder(),
+      SmallTagFinder(),
       PlainTagFinder(),
-      BoldTagFinder(context),
-      ItalicTagFinder(context),
-      StrikeTagFinder(context),
+      BoldTagFinder(),
+      ItalicTagFinder(),
+      StrikeTagFinder(),
       UrlAltFinder(),
-      BigFinder(context),
-      BoldAstaFinder(context),
+      BigFinder(),
+      BoldAstaFinder(),
       ItalicAstaFinder(),
       BoldUnderFinder(),
       ItalicUnderFinder(),
@@ -31,12 +30,12 @@ class FullFinder(
       QuoteFinder(),
       MathBlockFinder(),
       MathInlineFinder(),
-      StrikeWaveFinder(context),
-      FnFinder(context),
+      StrikeWaveFinder(),
+      FnFinder(),
       MentionFinder(),
       HashtagFinder(),
       EmojiCodeFinder(),
-      LinkFinder(context),
+      LinkFinder(),
       UrlFinder(),
       SearchFinder(),
     )

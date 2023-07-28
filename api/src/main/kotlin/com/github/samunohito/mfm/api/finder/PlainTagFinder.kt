@@ -26,6 +26,6 @@ class PlainTagFinder : ISubstringFinder {
     }
 
     val contents = result.foundInfo.sub[2]
-    return success(FoundType.PlainTag, contents.range, result.foundInfo.next)
+    return success(FoundType.PlainTag, result.foundInfo.fullRange, contents.contentRange, result.foundInfo.next)
   }
 }

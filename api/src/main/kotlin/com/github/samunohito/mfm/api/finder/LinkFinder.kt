@@ -4,7 +4,7 @@ import com.github.samunohito.mfm.api.finder.core.*
 import com.github.samunohito.mfm.api.finder.core.fixed.NewLineFinder
 import com.github.samunohito.mfm.api.utils.next
 
-class LinkFinder(private val context: IRecursiveFinderContext) : ISubstringFinder {
+class LinkFinder : ISubstringFinder {
   companion object {
     private val squareOpen = RegexFinder(Regex("\\??\\["))
     private val squareClose = StringFinder("]")
@@ -15,18 +15,7 @@ class LinkFinder(private val context: IRecursiveFinderContext) : ISubstringFinde
 
   private val linkFinder = SequentialFinder(
     squareOpen,
-    InlineFinder(
-      terminateFinder,
-      context.renew(
-        excludeFinders = setOf(
-          HashtagFinder::class.java,
-          LinkFinder::class.java,
-          MentionFinder::class.java,
-          UrlFinder::class.java,
-          UrlAltFinder::class.java,
-        )
-      )
-    ),
+    InlineFinder(terminateFinder),
     squareClose,
     roundOpen,
     AlternateFinder(UrlAltFinder(), UrlFinder()),
@@ -45,8 +34,9 @@ class LinkFinder(private val context: IRecursiveFinderContext) : ISubstringFinde
 
     return success(
       FoundType.Link,
-      result.foundInfo.range,
-      result.foundInfo.range.next(),
+      result.foundInfo.fullRange,
+      result.foundInfo.contentRange,
+      result.foundInfo.fullRange.next(),
       listOf(squareOpen, label, url)
     )
   }

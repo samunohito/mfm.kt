@@ -9,8 +9,12 @@ import com.github.samunohito.mfm.api.node.factory.utils.NodeFactoryUtils
 class BigNodeFactory : SimpleNodeFactoryBase<MfmFn>() {
   override val supportFoundTypes: Set<FoundType> = setOf(FoundType.Big)
 
-  override fun doCreate(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<MfmFn> {
-    val result = NodeFactoryUtils.createNodes(input, foundInfo.sub, MfmNodeAttribute.setOfInline)
+  override fun doCreate(
+    input: String,
+    foundInfo: SubstringFoundInfo,
+    context: INodeFactoryContext
+  ): IFactoryResult<MfmFn> {
+    val result = NodeFactoryUtils.createNodes(input, foundInfo.sub, MfmNodeAttribute.setOfInline, context)
     if (result.isEmpty()) {
       return failure()
     }

@@ -9,8 +9,12 @@ import com.github.samunohito.mfm.api.node.factory.utils.NodeFactoryUtils
 class StrikeWaveNodeFactory : SimpleNodeFactoryBase<MfmStrike>() {
   override val supportFoundTypes: Set<FoundType> = setOf(FoundType.StrikeWave)
 
-  override fun doCreate(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<MfmStrike> {
-    val result = NodeFactoryUtils.createNodes(input, foundInfo.sub, MfmNodeAttribute.setOfInline)
+  override fun doCreate(
+    input: String,
+    foundInfo: SubstringFoundInfo,
+    context: INodeFactoryContext
+  ): IFactoryResult<MfmStrike> {
+    val result = NodeFactoryUtils.createNodes(input, foundInfo.sub, MfmNodeAttribute.setOfInline, context)
     if (result.isEmpty()) {
       return failure()
     }

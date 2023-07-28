@@ -1,4 +1,4 @@
-@file:Suppress("DANGEROUS_CHARACTERS")
+@file:Suppress("DANGEROUS_CHARACTERS", "NonAsciiCharacters")
 
 package com.github.samunohito.mfm.api
 
@@ -1727,6 +1727,221 @@ class FullParserTest {
         MfmText("\nb"),
       )
       assertMfmNodeEquals(output, Mfm.parse(input))
+    }
+  }
+
+  @Nested
+  inner class NestingLimit {
+    @Nested
+    inner class Quote {
+      @Test
+      fun basic() {
+        val input = ">>> abc"
+        val output = listOf(
+          MfmQuote(
+            MfmQuote(
+              MfmText("> abc")
+            )
+          ),
+        )
+
+        assertMfmNodeEquals(output, Mfm.parse(input, maxNestLevel = 2))
+      }
+
+      @Test
+      fun basic2() {
+        val input = ">> **abc**"
+        val output = listOf(
+          MfmQuote(
+            MfmQuote(
+              MfmText("**abc**")
+            )
+          ),
+        )
+
+        assertMfmNodeEquals(output, Mfm.parse(input, maxNestLevel = 2))
+      }
+    }
+
+    @Nested
+    inner class Big {
+      @Test
+      fun basic() {
+        val input = "<b><b>***abc***</b></b>"
+        val output = listOf(
+          MfmBold(
+            MfmBold(
+              MfmText("***abc***")
+            )
+          ),
+        )
+
+        assertMfmNodeEquals(output, Mfm.parse(input, maxNestLevel = 2))
+      }
+    }
+
+    @Nested
+    inner class Bold {
+      @Test
+      fun basic() {
+        val input = "<i><i>**abc**</i></i>"
+        val output = listOf(
+          MfmItalic(
+            MfmItalic(
+              MfmText("**abc**")
+            )
+          ),
+        )
+
+        assertMfmNodeEquals(output, Mfm.parse(input, maxNestLevel = 2))
+      }
+
+      @Test
+      fun tag() {
+        val input = "<i><i><b>abc</b></i></i>"
+        val output = listOf(
+          MfmItalic(
+            MfmItalic(
+              MfmText("<b>abc</b>")
+            )
+          ),
+        )
+
+        assertMfmNodeEquals(output, Mfm.parse(input, maxNestLevel = 2))
+      }
+    }
+
+    @Nested
+    inner class Small {
+      @Test
+      fun basic() {
+        val input = "<i><i><small>abc</small></i></i>"
+        val output = listOf(
+          MfmItalic(
+            MfmItalic(
+              MfmText("<small>abc</small>")
+            )
+          ),
+        )
+
+        assertMfmNodeEquals(output, Mfm.parse(input, maxNestLevel = 2))
+      }
+    }
+
+    @Nested
+    inner class Italic {
+      @Test
+      fun basic() {
+        val input = "<b><b><i>abc</i></b></b>"
+        val output = listOf(
+          MfmBold(
+            MfmBold(
+              MfmText("<i>abc</i>")
+            )
+          ),
+        )
+
+        assertMfmNodeEquals(output, Mfm.parse(input, maxNestLevel = 2))
+      }
+    }
+
+    @Nested
+    inner class Strike {
+      @Test
+      fun basic() {
+        val input = "<b><b>~~abc~~</b></b>"
+        val output = listOf(
+          MfmBold(
+            MfmBold(
+              MfmText("~~abc~~")
+            )
+          ),
+        )
+
+        assertMfmNodeEquals(output, Mfm.parse(input, maxNestLevel = 2))
+      }
+
+      @Test
+      fun tag() {
+        val input = "<b><b><s>abc</s></b></b>"
+        val output = listOf(
+          MfmBold(
+            MfmBold(
+              MfmText("<s>abc</s>")
+            )
+          ),
+        )
+
+        assertMfmNodeEquals(output, Mfm.parse(input, maxNestLevel = 2))
+      }
+    }
+
+    @Nested
+    inner class Hashtag {
+      @Test
+      fun `outside ()`() {
+        val input = "(#abc)"
+        val output = listOf(
+          MfmText("("),
+          MfmHashtag("abc"),
+          MfmText(")"),
+        )
+
+        assertMfmNodeEquals(output, Mfm.parse(input))
+      }
+
+      @Test
+      fun `outside square brackets`() {
+        val input = "[#abc]"
+        val output = listOf(
+          MfmText("["),
+          MfmHashtag("abc"),
+          MfmText("]"),
+        )
+
+        assertMfmNodeEquals(output, Mfm.parse(input))
+      }
+
+      @Test
+      fun `outside 「」`() {
+        val input = "「#abc」"
+        val output = listOf(
+          MfmText("「"),
+          MfmHashtag("abc"),
+          MfmText("」"),
+        )
+
+        assertMfmNodeEquals(output, Mfm.parse(input))
+      }
+
+      @Test
+      fun `outside （）`() {
+        val input = "（#abc）"
+        val output = listOf(
+          MfmText("（"),
+          MfmHashtag("abc"),
+          MfmText("）"),
+        )
+
+        assertMfmNodeEquals(output, Mfm.parse(input))
+      }
+    }
+
+    @Nested
+    inner class Fn {
+      @Test
+      fun basic() {
+        val input = "<b><b>\$[a b]</b></b>"
+        val output = listOf(
+          MfmBold(
+            MfmBold(
+              MfmText("\$[a b]")
+            )
+          ),
+        )
+
+        assertMfmNodeEquals(output, Mfm.parse(input, maxNestLevel = 2))
+      }
     }
   }
 }

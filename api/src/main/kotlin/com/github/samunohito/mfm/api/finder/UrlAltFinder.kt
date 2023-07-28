@@ -24,7 +24,7 @@ class UrlAltFinder : ISubstringFinder {
 
     val schema = scanResult.foundInfo.sub[1]
     val body = scanResult.foundInfo.sub[2]
-    val urlRange = listOf(schema.range, body.range).merge()
-    return success(FoundType.UrlAlt, urlRange, scanResult.foundInfo.next)
+    val urlRange = listOf(schema.contentRange, body.contentRange).merge()
+    return success(FoundType.UrlAlt, scanResult.foundInfo.fullRange, urlRange, scanResult.foundInfo.next)
   }
 }

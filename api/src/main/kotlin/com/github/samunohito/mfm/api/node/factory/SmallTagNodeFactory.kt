@@ -9,8 +9,12 @@ import com.github.samunohito.mfm.api.node.factory.utils.NodeFactoryUtils
 class SmallTagNodeFactory : SimpleNodeFactoryBase<MfmSmall>() {
   override val supportFoundTypes: Set<FoundType> = setOf(FoundType.SmallTag)
 
-  override fun doCreate(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<MfmSmall> {
-    val result = NodeFactoryUtils.createNodes(input, foundInfo.sub, MfmNodeAttribute.setOfInline)
+  override fun doCreate(
+    input: String,
+    foundInfo: SubstringFoundInfo,
+    context: INodeFactoryContext
+  ): IFactoryResult<MfmSmall> {
+    val result = NodeFactoryUtils.createNodes(input, foundInfo.sub, MfmNodeAttribute.setOfInline, context)
     if (result.isEmpty()) {
       return failure()
     }

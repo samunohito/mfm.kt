@@ -23,6 +23,7 @@ object SubstringFinderUtils {
     return success(
       FoundType.Core,
       resultRange,
+      resultRange,
       resultRange.next(),
       results
     )

@@ -15,7 +15,7 @@ class RegexFinder(regex: Regex) : ISubstringFinder {
       failure()
     } else {
       val resultRange = startAt until (startAt + result.value.length)
-      success(FoundType.Core, resultRange, resultRange.last + 1)
+      success(FoundType.Core, resultRange, resultRange, resultRange.last + 1)
     }
   }
 }

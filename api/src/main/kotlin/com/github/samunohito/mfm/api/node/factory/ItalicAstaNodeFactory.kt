@@ -10,7 +10,11 @@ import com.github.samunohito.mfm.api.node.MfmText
 class ItalicAstaNodeFactory : SimpleNodeFactoryBase<MfmItalic>() {
   override val supportFoundTypes: Set<FoundType> = setOf(FoundType.ItalicAsta)
 
-  override fun doCreate(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<MfmItalic> {
-    return success(MfmItalic(listOf(MfmText(input.substring(foundInfo.range)))), foundInfo)
+  override fun doCreate(
+    input: String,
+    foundInfo: SubstringFoundInfo,
+    context: INodeFactoryContext
+  ): IFactoryResult<MfmItalic> {
+    return success(MfmItalic(listOf(MfmText(input.substring(foundInfo.contentRange)))), foundInfo)
   }
 }

@@ -48,8 +48,9 @@ class UrlFinder : ISubstringFinder {
           return failure()
         }
 
-        val resultRange = foundInfos.map { it.range }.merge()
-        return success(FoundType.Url, resultRange, resultRange.next(), foundInfos)
+        val fullRange = startAt until latestIndex
+        val resultRange = foundInfos.map { it.contentRange }.merge()
+        return success(FoundType.Url, fullRange, resultRange, fullRange.next(), foundInfos)
       }
     }
   }
@@ -65,7 +66,13 @@ class UrlFinder : ISubstringFinder {
       return failure()
     }
 
-    return success(FoundType.Url, proceedResult)
+    return success(
+      FoundType.Url,
+      proceedResult.foundInfo.fullRange,
+      proceedResult.foundInfo.contentRange,
+      proceedResult.foundInfo.next,
+      proceedResult.foundInfo.sub
+    )
   }
 
   /**
@@ -77,7 +84,7 @@ class UrlFinder : ISubstringFinder {
   ): ISubstringFinderResult {
     val foundInfo = finderResult.foundInfo
     val body = foundInfo.sub[1]
-    val extractUrlBody = input.substring(body.range)
+    val extractUrlBody = input.substring(body.contentRange)
     val matched = regexCommaAndPeriodTail.find(extractUrlBody)
       ?: // 末尾にピリオドやカンマがない場合はそのまま返す
       return finderResult
@@ -88,7 +95,12 @@ class UrlFinder : ISubstringFinder {
     }
 
     // finderResultの段階でuntilされているので、ここではやらない（多重にやると範囲がおかしくなる）
-    val modifyRange = foundInfo.range.first..foundInfo.range.last - matched.value.length
-    return success(FoundType.Url, modifyRange, modifyRange.next())
+    val modifyRange = foundInfo.contentRange.first..foundInfo.contentRange.last - matched.value.length
+    return success(FoundType.Url, modifyRange, modifyRange, modifyRange.next())
+  }
+
+  enum class SubIndex(override val index: Int) : ISubIndex {
+    Scheme(0),
+    Body(1),
   }
 }

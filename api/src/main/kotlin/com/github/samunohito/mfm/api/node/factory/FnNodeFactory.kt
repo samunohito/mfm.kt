@@ -11,8 +11,12 @@ import com.github.samunohito.mfm.api.node.factory.utils.NodeFactoryUtils
 class FnNodeFactory : SimpleNodeFactoryBase<MfmFn>() {
   override val supportFoundTypes: Set<FoundType> = setOf(FoundType.Fn)
 
-  override fun doCreate(input: String, foundInfo: SubstringFoundInfo): IFactoryResult<MfmFn> {
-    val contents = sliceContent(input, foundInfo)
+  override fun doCreate(
+    input: String,
+    foundInfo: SubstringFoundInfo,
+    context: INodeFactoryContext
+  ): IFactoryResult<MfmFn> {
+    val contents = sliceContent(input, foundInfo, context)
     if (contents.isEmpty()) {
       return failure()
     }
@@ -26,13 +30,13 @@ class FnNodeFactory : SimpleNodeFactoryBase<MfmFn>() {
 
   private fun sliceName(input: String, foundInfo: SubstringFoundInfo): String {
     val name = foundInfo[FnFinder.SubIndex.Name]
-    return input.substring(name.range)
+    return input.substring(name.contentRange)
   }
 
   private fun sliceArgs(input: String, foundInfo: SubstringFoundInfo): Map<String, Any> {
     val args = foundInfo[FnFinder.SubIndex.Args]
     return args.sub.asSequence()
-      .map { input.substring(it.range) }
+      .map { input.substring(it.contentRange) }
       .map { it.split("=") }
       .associate {
         if (it.size == 1) {
@@ -43,8 +47,8 @@ class FnNodeFactory : SimpleNodeFactoryBase<MfmFn>() {
       }
   }
 
-  private fun sliceContent(input: String, foundInfo: SubstringFoundInfo): List<IMfmNode> {
+  private fun sliceContent(input: String, foundInfo: SubstringFoundInfo, context: INodeFactoryContext): List<IMfmNode> {
     val content = foundInfo[FnFinder.SubIndex.Content]
-    return NodeFactoryUtils.createNodes(input, content.sub, MfmNodeAttribute.setOfInline)
+    return NodeFactoryUtils.createNodes(input, content.sub, MfmNodeAttribute.setOfInline, context)
   }
 }

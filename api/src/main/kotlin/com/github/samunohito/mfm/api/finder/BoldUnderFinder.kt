@@ -24,6 +24,6 @@ class BoldUnderFinder : ISubstringFinder {
     }
 
     val contents = result.foundInfo.sub[1]
-    return success(FoundType.BoldUnder, contents.range, result.foundInfo.next)
+    return success(FoundType.BoldUnder, result.foundInfo.fullRange, contents.contentRange, result.foundInfo.next)
   }
 }
