@@ -24,6 +24,11 @@ object PlainTagFinder : ISubstringFinder {
     }
 
     val contents = result.foundInfo.nestedInfos[2]
-    return success(FoundType.PlainTag, result.foundInfo.overallRange, contents.contentRange, result.foundInfo.resumeIndex)
+    return success(
+      FoundType.PlainTag,
+      result.foundInfo.overallRange,
+      contents.contentRange,
+      result.foundInfo.resumeIndex
+    )
   }
 }

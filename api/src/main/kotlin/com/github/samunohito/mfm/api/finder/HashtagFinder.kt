@@ -75,6 +75,11 @@ object HashtagFinder : ISubstringFinder {
       return failure()
     }
 
-    return success(FoundType.Hashtag, result.foundInfo.overallRange, hashtagNameResult.contentRange, result.foundInfo.resumeIndex)
+    return success(
+      FoundType.Hashtag,
+      result.foundInfo.overallRange,
+      hashtagNameResult.contentRange,
+      result.foundInfo.resumeIndex
+    )
   }
 }

@@ -30,6 +30,11 @@ object MathBlockFinder : ISubstringFinder {
     }
 
     val contents = result.foundInfo.nestedInfos[4]
-    return success(FoundType.MathBlock, result.foundInfo.overallRange, contents.contentRange, result.foundInfo.resumeIndex)
+    return success(
+      FoundType.MathBlock,
+      result.foundInfo.overallRange,
+      contents.contentRange,
+      result.foundInfo.resumeIndex
+    )
   }
 }

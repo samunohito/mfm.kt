@@ -20,7 +20,7 @@ data class SubstringFoundInfo(
 ) {
   companion object {
     /**
-     * An empty [SubstringFoundInfo] object.
+     * A [SubstringFoundInfo] object to treat as empty
      */
     val EMPTY = SubstringFoundInfo(
       FoundType.Empty,
@@ -33,9 +33,6 @@ data class SubstringFoundInfo(
 
   /**
    * Creates a new [SubstringFoundInfo] object with the specified parameters.
-   *
-   * @param type The type of the found substring.
-   * @param info The existing [SubstringFoundInfo] object to copy the properties from.
    */
   constructor(type: FoundType, info: SubstringFoundInfo) : this(
     type,

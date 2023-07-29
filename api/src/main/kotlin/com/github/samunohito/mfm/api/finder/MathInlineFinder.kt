@@ -22,6 +22,11 @@ object MathInlineFinder : ISubstringFinder {
     }
 
     val contents = result.foundInfo.nestedInfos[1]
-    return success(FoundType.MathInline, result.foundInfo.overallRange, contents.contentRange, result.foundInfo.resumeIndex)
+    return success(
+      FoundType.MathInline,
+      result.foundInfo.overallRange,
+      contents.contentRange,
+      result.foundInfo.resumeIndex
+    )
   }
 }

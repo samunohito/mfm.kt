@@ -30,7 +30,12 @@ object EmojiCodeFinder : ISubstringFinder {
     }
 
     val contents = result.foundInfo.nestedInfos[2]
-    return success(FoundType.EmojiCode, result.foundInfo.overallRange, contents.contentRange, result.foundInfo.resumeIndex)
+    return success(
+      FoundType.EmojiCode,
+      result.foundInfo.overallRange,
+      contents.contentRange,
+      result.foundInfo.resumeIndex
+    )
   }
 
   private fun validateBeforeSide(
