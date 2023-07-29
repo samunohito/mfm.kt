@@ -15,7 +15,7 @@ object SubstringFinderUtils {
         return failure()
       }
 
-      latestIndex = result.foundInfo.next
+      latestIndex = result.foundInfo.resumeIndex
       results.add(result.foundInfo)
     }
 

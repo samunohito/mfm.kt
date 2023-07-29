@@ -53,16 +53,16 @@ object SearchFinder : ISubstringFinder {
       return failure()
     }
 
-    val query = result.foundInfo.sub[2]
-    val space = result.foundInfo.sub[3]
-    val button = result.foundInfo.sub[4]
+    val query = result.foundInfo.nestedInfos[2]
+    val space = result.foundInfo.nestedInfos[3]
+    val button = result.foundInfo.nestedInfos[4]
 
     val sub = listOf(query, space, button)
     val info = SubstringFoundInfo(
       FoundType.Search,
-      result.foundInfo.fullRange,
+      result.foundInfo.overallRange,
       sub.map { it.contentRange }.merge(),
-      result.foundInfo.next,
+      result.foundInfo.resumeIndex,
       sub
     )
 

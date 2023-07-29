@@ -43,7 +43,7 @@ object HashtagFinder : ISubstringFinder {
         }
 
         foundInfos.add(result.foundInfo)
-        latestIndex = result.foundInfo.next
+        latestIndex = result.foundInfo.resumeIndex
       }
 
       if (foundInfos.isEmpty()) {
@@ -69,12 +69,12 @@ object HashtagFinder : ISubstringFinder {
     }
 
     // 検出された文字が数値のみの場合はハッシュタグではない
-    val hashtagNameResult = result.foundInfo.sub[1]
+    val hashtagNameResult = result.foundInfo.nestedInfos[1]
     val hashtagName = input.substring(hashtagNameResult.contentRange)
     if (regexNumericOnly.containsMatchIn(hashtagName)) {
       return failure()
     }
 
-    return success(FoundType.Hashtag, result.foundInfo.fullRange, hashtagNameResult.contentRange, result.foundInfo.next)
+    return success(FoundType.Hashtag, result.foundInfo.overallRange, hashtagNameResult.contentRange, result.foundInfo.resumeIndex)
   }
 }

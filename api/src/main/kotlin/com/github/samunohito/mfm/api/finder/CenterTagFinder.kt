@@ -28,13 +28,13 @@ object CenterTagFinder : ISubstringFinder {
       return failure()
     }
 
-    val contents = result.foundInfo.sub[4]
+    val contents = result.foundInfo.nestedInfos[4]
     return success(
       FoundType.CenterTag,
-      result.foundInfo.fullRange,
+      result.foundInfo.overallRange,
       contents.contentRange,
-      result.foundInfo.next,
-      contents.sub
+      result.foundInfo.resumeIndex,
+      contents.nestedInfos
     )
   }
 }

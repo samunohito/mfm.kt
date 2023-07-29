@@ -36,7 +36,7 @@ object QuoteFinder : ISubstringFinder {
           break
         }
 
-        latestIndex = result.foundInfo.next
+        latestIndex = result.foundInfo.resumeIndex
 
         // 引用符を省いた本文部分だけを蓄積したい
         lines.add(result.foundInfo[2])
@@ -66,10 +66,10 @@ object QuoteFinder : ISubstringFinder {
     val contents = result.foundInfo[3]
     return success(
       FoundType.Quote,
-      result.foundInfo.fullRange,
+      result.foundInfo.overallRange,
       contents.contentRange,
-      result.foundInfo.next,
-      contents.sub
+      result.foundInfo.resumeIndex,
+      contents.nestedInfos
     )
   }
 }

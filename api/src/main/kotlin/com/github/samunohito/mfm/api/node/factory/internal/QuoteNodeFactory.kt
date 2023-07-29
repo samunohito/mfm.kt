@@ -15,7 +15,7 @@ object QuoteNodeFactory : SimpleNodeFactoryBase<MfmQuote>() {
     foundInfo: SubstringFoundInfo,
     context: INodeFactoryContext
   ): IFactoryResult<MfmQuote> {
-    val contentLines = foundInfo.sub.map { input.substring(it.contentRange) }
+    val contentLines = foundInfo.nestedInfos.map { input.substring(it.contentRange) }
 
     if (contentLines.isEmpty() || (contentLines.size == 1 && contentLines[0].isEmpty())) {
       // disallow empty content if single line
@@ -31,7 +31,7 @@ object QuoteNodeFactory : SimpleNodeFactoryBase<MfmQuote>() {
 
     val result = NodeFactory.createNodes(
       contentText,
-      contentFindResult.foundInfo.sub,
+      contentFindResult.foundInfo.nestedInfos,
       MfmNodeAttribute.setOfAll,
       context
     )

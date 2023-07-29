@@ -25,15 +25,15 @@ object LinkFinder : ISubstringFinder {
       return failure()
     }
 
-    val squareOpen = result.foundInfo.sub[0]
-    val label = result.foundInfo.sub[1]
-    val url = result.foundInfo.sub[4]
+    val squareOpen = result.foundInfo.nestedInfos[0]
+    val label = result.foundInfo.nestedInfos[1]
+    val url = result.foundInfo.nestedInfos[4]
 
     return success(
       FoundType.Link,
-      result.foundInfo.fullRange,
+      result.foundInfo.overallRange,
       result.foundInfo.contentRange,
-      result.foundInfo.fullRange.next(),
+      result.foundInfo.overallRange.next(),
       listOf(squareOpen, label, url)
     )
   }

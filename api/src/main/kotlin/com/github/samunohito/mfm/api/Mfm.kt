@@ -19,7 +19,7 @@ object Mfm {
     }
 
     val context = INodeFactoryContext.Impl(maximumNestLevel = maxNestLevel)
-    return NodeFactory.createNodes(input, findResult.foundInfo.sub, MfmNodeAttribute.setOfAll, context)
+    return NodeFactory.createNodes(input, findResult.foundInfo.nestedInfos, MfmNodeAttribute.setOfAll, context)
   }
 
   /**
@@ -33,6 +33,6 @@ object Mfm {
     }
 
     val context = INodeFactoryContext.Impl(maximumNestLevel = maxNestLevel)
-    return NodeFactory.createNodes(input, findResult.foundInfo.sub, MfmNodeAttribute.setOfSimple, context)
+    return NodeFactory.createNodes(input, findResult.foundInfo.nestedInfos, MfmNodeAttribute.setOfSimple, context)
   }
 }

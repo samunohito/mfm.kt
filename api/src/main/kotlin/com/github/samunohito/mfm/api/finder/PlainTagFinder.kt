@@ -23,7 +23,7 @@ object PlainTagFinder : ISubstringFinder {
       return failure()
     }
 
-    val contents = result.foundInfo.sub[2]
-    return success(FoundType.PlainTag, result.foundInfo.fullRange, contents.contentRange, result.foundInfo.next)
+    val contents = result.foundInfo.nestedInfos[2]
+    return success(FoundType.PlainTag, result.foundInfo.overallRange, contents.contentRange, result.foundInfo.resumeIndex)
   }
 }

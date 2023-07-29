@@ -29,7 +29,7 @@ object ItalicAstaFinder : ISubstringFinder {
       return failure()
     }
 
-    val contents = result.foundInfo.sub[1]
-    return success(FoundType.ItalicAsta, result.foundInfo.fullRange, contents.contentRange, result.foundInfo.next)
+    val contents = result.foundInfo.nestedInfos[1]
+    return success(FoundType.ItalicAsta, result.foundInfo.overallRange, contents.contentRange, result.foundInfo.resumeIndex)
   }
 }

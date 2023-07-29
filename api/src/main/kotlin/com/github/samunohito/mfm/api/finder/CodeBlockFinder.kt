@@ -30,27 +30,27 @@ object CodeBlockFinder : ISubstringFinder {
       return failure()
     }
 
-    val langResult = result.foundInfo.sub[3]
-    val codeResult = result.foundInfo.sub[5]
+    val langResult = result.foundInfo.nestedInfos[3]
+    val codeResult = result.foundInfo.nestedInfos[5]
     return success(
       FoundType.CodeBlock,
-      result.foundInfo.fullRange,
+      result.foundInfo.overallRange,
       result.foundInfo.contentRange,
-      result.foundInfo.fullRange.next(),
+      result.foundInfo.overallRange.next(),
       listOf(
         if (langResult.contentRange.isEmpty()) {
           SubstringFoundInfo.EMPTY
         } else {
           SubstringFoundInfo(
             FoundType.CodeBlock,
-            langResult.fullRange,
+            langResult.overallRange,
             langResult.contentRange,
             langResult.contentRange.next()
           )
         },
         SubstringFoundInfo(
           FoundType.CodeBlock,
-          codeResult.fullRange,
+          codeResult.overallRange,
           codeResult.contentRange,
           codeResult.contentRange.next()
         )

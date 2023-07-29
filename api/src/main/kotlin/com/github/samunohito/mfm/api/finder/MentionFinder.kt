@@ -97,13 +97,13 @@ object MentionFinder : ISubstringFinder {
         listOf(
           SubstringFoundInfo(
             FoundType.Mention,
-            usernameResult.foundInfo.fullRange,
+            usernameResult.foundInfo.overallRange,
             usernameResult.foundInfo.contentRange,
             usernameResult.foundInfo.contentRange.next()
           ),
           SubstringFoundInfo(
             FoundType.Mention,
-            hostnameResult.foundInfo.fullRange,
+            hostnameResult.foundInfo.overallRange,
             hostnameResult.foundInfo.contentRange,
             hostnameResult.foundInfo.contentRange.next()
           )
@@ -117,13 +117,13 @@ object MentionFinder : ISubstringFinder {
 
       return success(
         FoundType.Mention,
-        usernameResult.foundInfo.fullRange,
+        usernameResult.foundInfo.overallRange,
         usernameResult.foundInfo.contentRange,
         usernameResult.foundInfo.contentRange.next(),
         listOf(
           SubstringFoundInfo(
             FoundType.Mention,
-            usernameResult.foundInfo.fullRange,
+            usernameResult.foundInfo.overallRange,
             usernameResult.foundInfo.contentRange,
             usernameResult.foundInfo.contentRange.next()
           ),

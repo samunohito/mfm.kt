@@ -30,12 +30,12 @@ object NodeFactory {
   ): IFactoryResult<IMfmNode> {
     // ネストが上限に達している場合は入力をそのままMfmTextとして扱い、これ以上ネストさせない
     if (context.nestLevel >= context.maximumNestLevel) {
-      return success(MfmText(input.substring(foundInfo.fullRange)), foundInfo)
+      return success(MfmText(input.substring(foundInfo.overallRange)), foundInfo)
     }
 
     when (val foundType = foundInfo.type) {
       FoundType.Simple, FoundType.Inline, FoundType.Full -> {
-        val results = foundInfo.sub.map { createNodes(input, it, allowNodeAttribute, context) }
+        val results = foundInfo.nestedInfos.map { createNodes(input, it, allowNodeAttribute, context) }
         if (results.any { !it.success }) {
           return failure()
         }

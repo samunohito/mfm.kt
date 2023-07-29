@@ -21,7 +21,7 @@ object LinkNodeFactory : SimpleNodeFactoryBase<MfmLink>() {
 
     val isSilent = (input.substring(squareOpen.contentRange) == "?[")
     val urlText = input.substring(url.contentRange)
-    val labelContents = NodeFactory.createNodes(input, label.sub, MfmNodeAttribute.setOfInline, context)
+    val labelContents = NodeFactory.createNodes(input, label.nestedInfos, MfmNodeAttribute.setOfInline, context)
     if (labelContents.isEmpty()) {
       return failure()
     }

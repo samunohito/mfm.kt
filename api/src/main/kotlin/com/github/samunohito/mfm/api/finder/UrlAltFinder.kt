@@ -20,9 +20,9 @@ object UrlAltFinder : ISubstringFinder {
       return failure()
     }
 
-    val schema = scanResult.foundInfo.sub[1]
-    val body = scanResult.foundInfo.sub[2]
+    val schema = scanResult.foundInfo.nestedInfos[1]
+    val body = scanResult.foundInfo.nestedInfos[2]
     val urlRange = listOf(schema.contentRange, body.contentRange).merge()
-    return success(FoundType.UrlAlt, scanResult.foundInfo.fullRange, urlRange, scanResult.foundInfo.next)
+    return success(FoundType.UrlAlt, scanResult.foundInfo.overallRange, urlRange, scanResult.foundInfo.resumeIndex)
   }
 }

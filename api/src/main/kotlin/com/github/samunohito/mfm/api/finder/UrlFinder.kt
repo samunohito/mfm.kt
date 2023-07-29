@@ -40,7 +40,7 @@ object UrlFinder : ISubstringFinder {
         }
 
         foundInfos.add(result.foundInfo)
-        latestIndex = result.foundInfo.next
+        latestIndex = result.foundInfo.resumeIndex
       }
 
       if (foundInfos.isEmpty()) {
@@ -66,10 +66,10 @@ object UrlFinder : ISubstringFinder {
 
     return success(
       FoundType.Url,
-      proceedResult.foundInfo.fullRange,
+      proceedResult.foundInfo.overallRange,
       proceedResult.foundInfo.contentRange,
-      proceedResult.foundInfo.next,
-      proceedResult.foundInfo.sub
+      proceedResult.foundInfo.resumeIndex,
+      proceedResult.foundInfo.nestedInfos
     )
   }
 
@@ -81,7 +81,7 @@ object UrlFinder : ISubstringFinder {
     finderResult: ISubstringFinderResult
   ): ISubstringFinderResult {
     val foundInfo = finderResult.foundInfo
-    val body = foundInfo.sub[1]
+    val body = foundInfo.nestedInfos[1]
     val extractUrlBody = input.substring(body.contentRange)
     val matched = regexCommaAndPeriodTail.find(extractUrlBody)
       ?: // 末尾にピリオドやカンマがない場合はそのまま返す

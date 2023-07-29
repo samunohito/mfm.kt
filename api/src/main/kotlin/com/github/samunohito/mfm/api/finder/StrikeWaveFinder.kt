@@ -20,13 +20,13 @@ object StrikeWaveFinder : ISubstringFinder {
       return failure()
     }
 
-    val contents = result.foundInfo.sub[1]
+    val contents = result.foundInfo.nestedInfos[1]
     return success(
       FoundType.StrikeWave,
-      result.foundInfo.fullRange,
+      result.foundInfo.overallRange,
       contents.contentRange,
-      result.foundInfo.next,
-      contents.sub
+      result.foundInfo.resumeIndex,
+      contents.nestedInfos
     )
   }
 }

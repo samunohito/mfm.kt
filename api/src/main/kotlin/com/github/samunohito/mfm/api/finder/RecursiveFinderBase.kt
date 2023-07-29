@@ -25,8 +25,8 @@ abstract class RecursiveFinderBase(
         }
         foundInfos.add(findResult.foundInfo)
 
-        textNodeStartAt = findResult.foundInfo.next
-        latestIndex = findResult.foundInfo.next
+        textNodeStartAt = findResult.foundInfo.resumeIndex
+        latestIndex = findResult.foundInfo.resumeIndex
       } else {
         latestIndex++
       }

@@ -35,7 +35,7 @@ object FnNodeFactory : SimpleNodeFactoryBase<MfmFn>() {
 
   private fun sliceArgs(input: String, foundInfo: SubstringFoundInfo): Map<String, Any> {
     val args = foundInfo[FnFinder.SubIndex.Args]
-    return args.sub.asSequence()
+    return args.nestedInfos.asSequence()
       .map { input.substring(it.contentRange) }
       .map { it.split("=") }
       .associate {
@@ -49,6 +49,6 @@ object FnNodeFactory : SimpleNodeFactoryBase<MfmFn>() {
 
   private fun sliceContent(input: String, foundInfo: SubstringFoundInfo, context: INodeFactoryContext): List<IMfmNode> {
     val content = foundInfo[FnFinder.SubIndex.Content]
-    return NodeFactory.createNodes(input, content.sub, MfmNodeAttribute.setOfInline, context)
+    return NodeFactory.createNodes(input, content.nestedInfos, MfmNodeAttribute.setOfInline, context)
   }
 }

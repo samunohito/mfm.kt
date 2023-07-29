@@ -29,7 +29,7 @@ object MathBlockFinder : ISubstringFinder {
       return failure()
     }
 
-    val contents = result.foundInfo.sub[4]
-    return success(FoundType.MathBlock, result.foundInfo.fullRange, contents.contentRange, result.foundInfo.next)
+    val contents = result.foundInfo.nestedInfos[4]
+    return success(FoundType.MathBlock, result.foundInfo.overallRange, contents.contentRange, result.foundInfo.resumeIndex)
   }
 }

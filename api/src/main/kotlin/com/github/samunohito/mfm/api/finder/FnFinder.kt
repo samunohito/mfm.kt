@@ -38,11 +38,11 @@ object FnFinder : ISubstringFinder {
         val argResult = argFinder.find(input, latestIndex)
         if (argResult.success) {
           args.add(argResult.foundInfo)
-          latestIndex = argResult.foundInfo.next
+          latestIndex = argResult.foundInfo.resumeIndex
         } else {
           val separatorResult = argSeparator.find(input, latestIndex)
           if (separatorResult.success) {
-            latestIndex = separatorResult.foundInfo.next
+            latestIndex = separatorResult.foundInfo.resumeIndex
           } else {
             break
           }
@@ -74,9 +74,9 @@ object FnFinder : ISubstringFinder {
 
     return success(
       FoundType.Fn,
-      result.foundInfo.fullRange,
+      result.foundInfo.overallRange,
       result.foundInfo.contentRange,
-      result.foundInfo.next,
+      result.foundInfo.resumeIndex,
       listOf(name, args, content)
     )
   }
