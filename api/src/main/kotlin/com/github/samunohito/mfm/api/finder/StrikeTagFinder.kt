@@ -4,12 +4,9 @@ import com.github.samunohito.mfm.api.finder.core.FoundType
 import com.github.samunohito.mfm.api.finder.core.SequentialFinder
 import com.github.samunohito.mfm.api.finder.core.StringFinder
 
-class StrikeTagFinder : ISubstringFinder {
-  companion object {
-    private val open = StringFinder("<s>")
-    private val close = StringFinder("</s>")
-  }
-
+object StrikeTagFinder : ISubstringFinder {
+  private val open = StringFinder("<s>")
+  private val close = StringFinder("</s>")
   private val finder = SequentialFinder(
     open,
     InlineFinder(close),

@@ -4,11 +4,8 @@ import com.github.samunohito.mfm.api.finder.core.FoundType
 import com.github.samunohito.mfm.api.finder.core.SequentialFinder
 import com.github.samunohito.mfm.api.finder.core.StringFinder
 
-class BigFinder : ISubstringFinder {
-  companion object {
-    private val mark = StringFinder("***")
-  }
-
+object BigFinder : ISubstringFinder {
+  private val mark = StringFinder("***")
   private val finder = SequentialFinder(
     mark,
     InlineFinder(mark),

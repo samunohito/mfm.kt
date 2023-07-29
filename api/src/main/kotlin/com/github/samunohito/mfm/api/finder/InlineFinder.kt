@@ -7,32 +7,32 @@ class InlineFinder(
   terminateFinder: ISubstringFinder = CharSequenceTerminateFinder,
 ) : RecursiveFinderBase(terminateFinder) {
   override val finders: List<ISubstringFinder>
-    get() = lazyFinders.value
+    get() = _finders
   override val foundType = FoundType.Inline
 
-  private val lazyFinders = lazy {
-    listOf(
-      UnicodeEmojiFinder(),
-      SmallTagFinder(),
-      PlainTagFinder(),
-      BoldTagFinder(),
-      ItalicTagFinder(),
-      StrikeTagFinder(),
-      UrlAltFinder(),
-      BigFinder(),
-      BoldAstaFinder(),
-      ItalicAstaFinder(),
-      BoldUnderFinder(),
-      ItalicUnderFinder(),
-      InlineCodeFinder(),
-      MathInlineFinder(),
-      StrikeWaveFinder(),
-      FnFinder(),
-      MentionFinder(),
-      HashtagFinder(),
-      EmojiCodeFinder(),
-      LinkFinder(),
-      UrlFinder(),
+  companion object {
+    private val _finders = listOf(
+      UnicodeEmojiFinder,
+      SmallTagFinder,
+      PlainTagFinder,
+      BoldTagFinder,
+      ItalicTagFinder,
+      StrikeTagFinder,
+      UrlAltFinder,
+      BigFinder,
+      BoldAstaFinder,
+      ItalicAstaFinder,
+      BoldUnderFinder,
+      ItalicUnderFinder,
+      InlineCodeFinder,
+      MathInlineFinder,
+      StrikeWaveFinder,
+      FnFinder,
+      MentionFinder,
+      HashtagFinder,
+      EmojiCodeFinder,
+      LinkFinder,
+      UrlFinder,
     )
   }
 }

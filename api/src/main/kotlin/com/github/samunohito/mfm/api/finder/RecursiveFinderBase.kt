@@ -16,9 +16,10 @@ abstract class RecursiveFinderBase(
     val foundInfos = mutableListOf<SubstringFoundInfo>()
 
     while (!shouldTerminate(input, latestIndex)) {
-      val findResult = findWithFactories(input, latestIndex)
+      val findResult = findWithFinders(input, latestIndex)
       if (findResult.success) {
         if (textNodeStartAt != latestIndex) {
+          // 前回見つかったノードと今回見つかったノードの間にある文字たちをTextノードとして登録する
           val range = textNodeStartAt until latestIndex
           foundInfos.add(SubstringFoundInfo(FoundType.Text, range, range, range.last + 1))
         }
@@ -54,7 +55,7 @@ abstract class RecursiveFinderBase(
     return terminateFinder.find(input, latestIndex).success
   }
 
-  private fun findWithFactories(input: String, latestIndex: Int): ISubstringFinderResult {
+  private fun findWithFinders(input: String, latestIndex: Int): ISubstringFinderResult {
     for (finder in finders) {
       val result = finder.find(input, latestIndex)
       if (result.success) {

@@ -4,21 +4,18 @@ import com.github.samunohito.mfm.api.finder.core.*
 import com.github.samunohito.mfm.api.finder.core.fixed.NewLineFinder
 import com.github.samunohito.mfm.api.utils.next
 
-class LinkFinder : ISubstringFinder {
-  companion object {
-    private val squareOpen = RegexFinder(Regex("\\??\\["))
-    private val squareClose = StringFinder("]")
-    private val roundOpen = StringFinder("(")
-    private val roundClose = StringFinder(")")
-    private val terminateFinder = AlternateFinder(squareClose, NewLineFinder)
-  }
-
+object LinkFinder : ISubstringFinder {
+  private val squareOpen = RegexFinder(Regex("\\??\\["))
+  private val squareClose = StringFinder("]")
+  private val roundOpen = StringFinder("(")
+  private val roundClose = StringFinder(")")
+  private val terminateFinder = AlternateFinder(squareClose, NewLineFinder)
   private val linkFinder = SequentialFinder(
     squareOpen,
     InlineFinder(terminateFinder),
     squareClose,
     roundOpen,
-    AlternateFinder(UrlAltFinder(), UrlFinder()),
+    AlternateFinder(UrlAltFinder, UrlFinder),
     roundClose,
   )
 

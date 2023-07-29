@@ -4,59 +4,57 @@ import com.github.samunohito.mfm.api.finder.core.FoundType
 import com.github.samunohito.mfm.api.utils.next
 import com.github.samunohito.mfm.api.utils.offset
 
-class MentionFinder : ISubstringFinder {
-  companion object {
-    private const val regexGroupUserName = "username"
-    private const val regexGroupHostName = "hostname"
-    private val regexMention = Regex("^@(?<$regexGroupUserName>[a-zA-Z0-9_-]+)(@(?<$regexGroupHostName>[a-z0-9_.-]+))?")
-    private val regexAlphaNumericTail = Regex("[0-9a-z]", RegexOption.IGNORE_CASE)
-    private val regexDotHyphenTail = Regex("[.-]+$")
-    private val regexDotHyphenHead = Regex("^[.-]")
-    private val regexHyphenTail = Regex("-+$")
+object MentionFinder : ISubstringFinder {
+  private const val regexGroupUserName = "username"
+  private const val regexGroupHostName = "hostname"
+  private val regexMention = Regex("^@(?<$regexGroupUserName>[a-zA-Z0-9_-]+)(@(?<$regexGroupHostName>[a-z0-9_.-]+))?")
+  private val regexAlphaNumericTail = Regex("[0-9a-z]", RegexOption.IGNORE_CASE)
+  private val regexDotHyphenTail = Regex("[.-]+$")
+  private val regexDotHyphenHead = Regex("^[.-]")
+  private val regexHyphenTail = Regex("-+$")
 
-    private fun findUsernameRange(input: String, usernameRange: IntRange): ISubstringFinderResult {
-      val username = input.substring(usernameRange)
+  private fun findUsernameRange(input: String, usernameRange: IntRange): ISubstringFinderResult {
+    val username = input.substring(usernameRange)
 
-      // 先頭がハイフンで始まることを許容しない
-      if (username[0] == '-') {
-        return failure()
-      }
-
-      // 末尾がハイフンで終わっているかを調べる(ハイフンがない場合は除外の必要なしなのでそのまま返す)
-      val hyphenTailMatch = regexHyphenTail.find(username)
-        ?: return success(FoundType.Mention, usernameRange, usernameRange, usernameRange.next())
-
-      // ハイフンしか無い場合はユーザー名として認識しない
-      val modifiedUsername = username.substring(0 until hyphenTailMatch.range.first)
-      if (modifiedUsername.isEmpty()) {
-        return failure()
-      }
-
-      val modifiedUsernameRange = usernameRange.first until usernameRange.first + modifiedUsername.length
-      return success(FoundType.Mention, modifiedUsernameRange, modifiedUsernameRange, modifiedUsernameRange.next())
+    // 先頭がハイフンで始まることを許容しない
+    if (username[0] == '-') {
+      return failure()
     }
 
-    private fun findHostnameRange(input: String, hostnameRange: IntRange): ISubstringFinderResult {
-      val hostname = input.substring(hostnameRange)
+    // 末尾がハイフンで終わっているかを調べる(ハイフンがない場合は除外の必要なしなのでそのまま返す)
+    val hyphenTailMatch = regexHyphenTail.find(username)
+      ?: return success(FoundType.Mention, usernameRange, usernameRange, usernameRange.next())
 
-      // ドットまたはハイフンで始まっている場合は、ホスト名として認識しない
-      if (regexDotHyphenHead.containsMatchIn(hostname)) {
-        return failure()
-      }
-
-      // ドットまたはハイフンで終わっているかを調べる(ドットまたはハイフンがない場合は除外の必要なしなのでそのまま返す)
-      val dotHyphenTailMatch = regexDotHyphenTail.find(hostname)
-        ?: return success(FoundType.Mention, hostnameRange, hostnameRange, hostnameRange.next())
-
-      // ドットまたはハイフンしか無い場合はホスト名として認識しない
-      val modifiedHostname = hostname.substring(0 until dotHyphenTailMatch.range.first)
-      if (modifiedHostname.isEmpty()) {
-        return failure()
-      }
-
-      val modifiedHostnameRange = hostnameRange.first until hostnameRange.first + modifiedHostname.length
-      return success(FoundType.Mention, modifiedHostnameRange, modifiedHostnameRange, modifiedHostnameRange.next())
+    // ハイフンしか無い場合はユーザー名として認識しない
+    val modifiedUsername = username.substring(0 until hyphenTailMatch.range.first)
+    if (modifiedUsername.isEmpty()) {
+      return failure()
     }
+
+    val modifiedUsernameRange = usernameRange.first until usernameRange.first + modifiedUsername.length
+    return success(FoundType.Mention, modifiedUsernameRange, modifiedUsernameRange, modifiedUsernameRange.next())
+  }
+
+  private fun findHostnameRange(input: String, hostnameRange: IntRange): ISubstringFinderResult {
+    val hostname = input.substring(hostnameRange)
+
+    // ドットまたはハイフンで始まっている場合は、ホスト名として認識しない
+    if (regexDotHyphenHead.containsMatchIn(hostname)) {
+      return failure()
+    }
+
+    // ドットまたはハイフンで終わっているかを調べる(ドットまたはハイフンがない場合は除外の必要なしなのでそのまま返す)
+    val dotHyphenTailMatch = regexDotHyphenTail.find(hostname)
+      ?: return success(FoundType.Mention, hostnameRange, hostnameRange, hostnameRange.next())
+
+    // ドットまたはハイフンしか無い場合はホスト名として認識しない
+    val modifiedHostname = hostname.substring(0 until dotHyphenTailMatch.range.first)
+    if (modifiedHostname.isEmpty()) {
+      return failure()
+    }
+
+    val modifiedHostnameRange = hostnameRange.first until hostnameRange.first + modifiedHostname.length
+    return success(FoundType.Mention, modifiedHostnameRange, modifiedHostnameRange, modifiedHostnameRange.next())
   }
 
   override fun find(input: String, startAt: Int): ISubstringFinderResult {

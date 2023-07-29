@@ -7,18 +7,16 @@ import com.github.samunohito.mfm.api.finder.core.StringFinder
 import com.github.samunohito.mfm.api.finder.core.fixed.LineBeginFinder
 import com.github.samunohito.mfm.api.finder.core.fixed.LineEndFinder
 
-class EmojiCodeFinder : ISubstringFinder {
-  companion object {
-    private val regexSide = Regex("[a-z0-9]", RegexOption.IGNORE_CASE)
-    private val mark = StringFinder(":")
-    private val emojiCodeFinder = SequentialFinder(
-      LineBeginFinder.optional(),
-      mark,
-      SequentialFinder(RegexFinder(Regex("[a-z0-9_+-]+", RegexOption.IGNORE_CASE))),
-      mark,
-      LineEndFinder.optional(),
-    )
-  }
+object EmojiCodeFinder : ISubstringFinder {
+  private val regexSide = Regex("[a-z0-9]", RegexOption.IGNORE_CASE)
+  private val mark = StringFinder(":")
+  private val emojiCodeFinder = SequentialFinder(
+    LineBeginFinder.optional(),
+    mark,
+    SequentialFinder(RegexFinder(Regex("[a-z0-9_+-]+", RegexOption.IGNORE_CASE))),
+    mark,
+    LineEndFinder.optional(),
+  )
 
   override fun find(input: String, startAt: Int): ISubstringFinderResult {
     val result = emojiCodeFinder.find(input, startAt)

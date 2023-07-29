@@ -7,15 +7,13 @@ import com.github.samunohito.mfm.api.finder.core.StringFinder
 import com.github.samunohito.mfm.api.finder.core.charsequence.AlternateScanFinder
 import com.github.samunohito.mfm.api.finder.core.fixed.SpaceFinder
 
-class BoldUnderFinder : ISubstringFinder {
-  companion object {
-    private val mark = StringFinder("__")
-    private val boldUnderFinder = SequentialFinder(
-      mark,
-      AlternateScanFinder.ofWhile(RegexFinder(Regex("[a-z0-9]", RegexOption.IGNORE_CASE)), SpaceFinder),
-      mark
-    )
-  }
+object BoldUnderFinder : ISubstringFinder {
+  private val mark = StringFinder("__")
+  private val boldUnderFinder = SequentialFinder(
+    mark,
+    AlternateScanFinder.ofWhile(RegexFinder(Regex("[a-z0-9]", RegexOption.IGNORE_CASE)), SpaceFinder),
+    mark
+  )
 
   override fun find(input: String, startAt: Int): ISubstringFinderResult {
     val result = boldUnderFinder.find(input, startAt)

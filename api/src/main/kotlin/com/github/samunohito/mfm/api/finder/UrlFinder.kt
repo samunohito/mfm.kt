@@ -7,51 +7,49 @@ import com.github.samunohito.mfm.api.finder.core.SequentialFinder
 import com.github.samunohito.mfm.api.utils.merge
 import com.github.samunohito.mfm.api.utils.next
 
-class UrlFinder : ISubstringFinder {
-  companion object {
-    private val regexCommaAndPeriodTail = Regex("[.,]+$")
-    private val urlFinder = SequentialFinder(
-      RegexFinder(Regex("https?://")),
-      UrlBodyFinder
+object UrlFinder : ISubstringFinder {
+  private val regexCommaAndPeriodTail = Regex("[.,]+$")
+  private val urlFinder = SequentialFinder(
+    RegexFinder(Regex("https?://")),
+    UrlBodyFinder
+  )
+
+  private object UrlBodyFinder : ISubstringFinder {
+    private val openRegexBracket = RegexFinder(Regex("([(\\[])"))
+    private val closeRegexBracket = RegexFinder(Regex("([)\\]])"))
+    private val nestableFinder = AlternateFinder(
+      // パターンにカッコを含めると、終了カッコのみを誤検出してしまう。
+      // …ので、サポートされている種類の開始・終了カッコが揃っている場合は、その中身を再帰的に検索する
+      SequentialFinder(
+        openRegexBracket,
+        UrlBodyFinder,
+        closeRegexBracket,
+      ),
+      // このパターンに合致する文字が登場するまでを繰り返し検索する
+      RegexFinder(Regex("[.,a-z0-9_/:%#@\\\\$&?!~=+\\-]+")),
     )
 
-    private object UrlBodyFinder : ISubstringFinder {
-      private val openRegexBracket = RegexFinder(Regex("([(\\[])"))
-      private val closeRegexBracket = RegexFinder(Regex("([)\\]])"))
-      private val nestableFinder = AlternateFinder(
-        // パターンにカッコを含めると、終了カッコのみを誤検出してしまう。
-        // …ので、サポートされている種類の開始・終了カッコが揃っている場合は、その中身を再帰的に検索する
-        SequentialFinder(
-          openRegexBracket,
-          UrlBodyFinder,
-          closeRegexBracket,
-        ),
-        // このパターンに合致する文字が登場するまでを繰り返し検索する
-        RegexFinder(Regex("[.,a-z0-9_/:%#@\\\\$&?!~=+\\-]+")),
-      )
+    override fun find(input: String, startAt: Int): ISubstringFinderResult {
+      var latestIndex = startAt
+      val foundInfos = mutableListOf<SubstringFoundInfo>()
 
-      override fun find(input: String, startAt: Int): ISubstringFinderResult {
-        var latestIndex = startAt
-        val foundInfos = mutableListOf<SubstringFoundInfo>()
-
-        while (true) {
-          val result = nestableFinder.find(input, latestIndex)
-          if (!result.success) {
-            break
-          }
-
-          foundInfos.add(result.foundInfo)
-          latestIndex = result.foundInfo.next
+      while (true) {
+        val result = nestableFinder.find(input, latestIndex)
+        if (!result.success) {
+          break
         }
 
-        if (foundInfos.isEmpty()) {
-          return failure()
-        }
-
-        val fullRange = startAt until latestIndex
-        val resultRange = foundInfos.map { it.contentRange }.merge()
-        return success(FoundType.Url, fullRange, resultRange, fullRange.next(), foundInfos)
+        foundInfos.add(result.foundInfo)
+        latestIndex = result.foundInfo.next
       }
+
+      if (foundInfos.isEmpty()) {
+        return failure()
+      }
+
+      val fullRange = startAt until latestIndex
+      val resultRange = foundInfos.map { it.contentRange }.merge()
+      return success(FoundType.Url, fullRange, resultRange, fullRange.next(), foundInfos)
     }
   }
 

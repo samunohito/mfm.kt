@@ -7,37 +7,37 @@ class FullFinder(
   terminateFinder: ISubstringFinder = CharSequenceTerminateFinder,
 ) : RecursiveFinderBase(terminateFinder) {
   override val finders: List<ISubstringFinder>
-    get() = lazyFinders.value
+    get() = _finders
   override val foundType = FoundType.Full
 
-  private val lazyFinders = lazy {
-    listOf(
-      UnicodeEmojiFinder(),
-      CenterTagFinder(),
-      SmallTagFinder(),
-      PlainTagFinder(),
-      BoldTagFinder(),
-      ItalicTagFinder(),
-      StrikeTagFinder(),
-      UrlAltFinder(),
-      BigFinder(),
-      BoldAstaFinder(),
-      ItalicAstaFinder(),
-      BoldUnderFinder(),
-      ItalicUnderFinder(),
-      CodeBlockFinder(),
-      InlineCodeFinder(),
-      QuoteFinder(),
-      MathBlockFinder(),
-      MathInlineFinder(),
-      StrikeWaveFinder(),
-      FnFinder(),
-      MentionFinder(),
-      HashtagFinder(),
-      EmojiCodeFinder(),
-      LinkFinder(),
-      UrlFinder(),
-      SearchFinder(),
+  companion object {
+    private val _finders = listOf(
+      UnicodeEmojiFinder,
+      CenterTagFinder,
+      SmallTagFinder,
+      PlainTagFinder,
+      BoldTagFinder,
+      ItalicTagFinder,
+      StrikeTagFinder,
+      UrlAltFinder,
+      BigFinder,
+      BoldAstaFinder,
+      ItalicAstaFinder,
+      BoldUnderFinder,
+      ItalicUnderFinder,
+      CodeBlockFinder,
+      InlineCodeFinder,
+      QuoteFinder,
+      MathBlockFinder,
+      MathInlineFinder,
+      StrikeWaveFinder,
+      FnFinder,
+      MentionFinder,
+      HashtagFinder,
+      EmojiCodeFinder,
+      LinkFinder,
+      UrlFinder,
+      SearchFinder,
     )
   }
 }

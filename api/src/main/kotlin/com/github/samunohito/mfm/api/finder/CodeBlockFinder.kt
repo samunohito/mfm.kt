@@ -9,25 +9,20 @@ import com.github.samunohito.mfm.api.finder.core.fixed.LineEndFinder
 import com.github.samunohito.mfm.api.finder.core.fixed.NewLineFinder
 import com.github.samunohito.mfm.api.utils.next
 
-class CodeBlockFinder : ISubstringFinder {
-  companion object {
-    private val mark = StringFinder("```")
-    private val codeBlockFinder = SequentialFinder(
-      NewLineFinder.optional(),
-      LineBeginFinder,
-      mark,
-      SequentialScanFinder.ofUntil(NewLineFinder).optional(),
-      NewLineFinder,
-      SequentialScanFinder.ofUntil(
-        NewLineFinder,
-        mark, LineEndFinder
-      ),
-      NewLineFinder,
-      mark,
-      LineEndFinder,
-      NewLineFinder.optional()
-    )
-  }
+object CodeBlockFinder : ISubstringFinder {
+  private val mark = StringFinder("```")
+  private val codeBlockFinder = SequentialFinder(
+    NewLineFinder.optional(),
+    LineBeginFinder,
+    mark,
+    SequentialScanFinder.ofUntil(NewLineFinder).optional(),
+    NewLineFinder,
+    SequentialScanFinder.ofUntil(NewLineFinder, mark, LineEndFinder),
+    NewLineFinder,
+    mark,
+    LineEndFinder,
+    NewLineFinder.optional()
+  )
 
   override fun find(input: String, startAt: Int): ISubstringFinderResult {
     val result = codeBlockFinder.find(input, startAt)

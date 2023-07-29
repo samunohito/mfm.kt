@@ -7,12 +7,9 @@ import com.github.samunohito.mfm.api.finder.core.fixed.LineBeginFinder
 import com.github.samunohito.mfm.api.finder.core.fixed.LineEndFinder
 import com.github.samunohito.mfm.api.finder.core.fixed.NewLineFinder
 
-class CenterTagFinder : ISubstringFinder {
-  companion object {
-    private val open = StringFinder("<center>")
-    private val close = StringFinder("</center>")
-  }
-
+object CenterTagFinder : ISubstringFinder {
+  private val open = StringFinder("<center>")
+  private val close = StringFinder("</center>")
   private val finder = SequentialFinder(
     NewLineFinder.optional(),
     LineBeginFinder,

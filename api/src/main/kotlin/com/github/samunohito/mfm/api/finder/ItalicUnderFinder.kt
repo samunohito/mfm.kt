@@ -8,16 +8,14 @@ import com.github.samunohito.mfm.api.finder.core.charsequence.AlternateScanFinde
 import com.github.samunohito.mfm.api.finder.core.fixed.SpaceFinder
 
 @Suppress("DuplicatedCode")
-class ItalicUnderFinder : ISubstringFinder {
-  companion object {
-    private val regexAlphaAndNumericTail = Regex("[a-z0-9]$", RegexOption.IGNORE_CASE)
-    private val markFinder = StringFinder("_")
-    private val italicUnderFinder = SequentialFinder(
-      markFinder,
-      AlternateScanFinder.ofWhile(RegexFinder(Regex("[a-z0-9]", RegexOption.IGNORE_CASE)), SpaceFinder),
-      markFinder
-    )
-  }
+object ItalicUnderFinder : ISubstringFinder {
+  private val regexAlphaAndNumericTail = Regex("[a-z0-9]$", RegexOption.IGNORE_CASE)
+  private val markFinder = StringFinder("_")
+  private val italicUnderFinder = SequentialFinder(
+    markFinder,
+    AlternateScanFinder.ofWhile(RegexFinder(Regex("[a-z0-9]", RegexOption.IGNORE_CASE)), SpaceFinder),
+    markFinder
+  )
 
   override fun find(input: String, startAt: Int): ISubstringFinderResult {
     val result = italicUnderFinder.find(input, startAt)

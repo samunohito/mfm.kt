@@ -4,8 +4,8 @@ import com.github.samunohito.mfm.api.finder.FullFinder
 import com.github.samunohito.mfm.api.finder.SimpleFinder
 import com.github.samunohito.mfm.api.node.IMfmNode
 import com.github.samunohito.mfm.api.node.MfmNodeAttribute
-import com.github.samunohito.mfm.api.node.factory.INodeFactoryContext
-import com.github.samunohito.mfm.api.node.factory.utils.NodeFactoryUtils
+import com.github.samunohito.mfm.api.node.factory.NodeFactory
+import com.github.samunohito.mfm.api.node.factory.internal.INodeFactoryContext
 
 object Mfm {
   /**
@@ -19,7 +19,7 @@ object Mfm {
     }
 
     val context = INodeFactoryContext.Impl(maximumNestLevel = maxNestLevel)
-    return NodeFactoryUtils.createNodes(input, findResult.foundInfo.sub, MfmNodeAttribute.setOfAll, context)
+    return NodeFactory.createNodes(input, findResult.foundInfo.sub, MfmNodeAttribute.setOfAll, context)
   }
 
   /**
@@ -33,6 +33,6 @@ object Mfm {
     }
 
     val context = INodeFactoryContext.Impl(maximumNestLevel = maxNestLevel)
-    return NodeFactoryUtils.createNodes(input, findResult.foundInfo.sub, MfmNodeAttribute.setOfSimple, context)
+    return NodeFactory.createNodes(input, findResult.foundInfo.sub, MfmNodeAttribute.setOfSimple, context)
   }
 }

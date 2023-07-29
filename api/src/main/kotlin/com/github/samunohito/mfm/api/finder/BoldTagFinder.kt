@@ -4,12 +4,9 @@ import com.github.samunohito.mfm.api.finder.core.FoundType
 import com.github.samunohito.mfm.api.finder.core.SequentialFinder
 import com.github.samunohito.mfm.api.finder.core.StringFinder
 
-class BoldTagFinder : ISubstringFinder {
-  companion object {
-    private val open = StringFinder("<b>")
-    private val close = StringFinder("</b>")
-  }
-
+object BoldTagFinder : ISubstringFinder {
+  private val open = StringFinder("<b>")
+  private val close = StringFinder("</b>")
   private val finder = SequentialFinder(
     open,
     InlineFinder(close),

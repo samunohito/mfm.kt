@@ -6,11 +6,8 @@ import com.github.samunohito.mfm.api.finder.core.SequentialFinder
 import com.github.samunohito.mfm.api.finder.core.StringFinder
 import com.github.samunohito.mfm.api.finder.core.fixed.NewLineFinder
 
-class StrikeWaveFinder : ISubstringFinder {
-  companion object {
-    private val mark = StringFinder("~~")
-  }
-
+object StrikeWaveFinder : ISubstringFinder {
+  private val mark = StringFinder("~~")
   private val finder = SequentialFinder(
     mark,
     InlineFinder(AlternateFinder(mark, NewLineFinder)),

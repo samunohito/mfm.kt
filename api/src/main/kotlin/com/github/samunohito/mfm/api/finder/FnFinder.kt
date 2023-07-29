@@ -7,51 +7,11 @@ import com.github.samunohito.mfm.api.finder.core.StringFinder
 import com.github.samunohito.mfm.api.utils.merge
 import com.github.samunohito.mfm.api.utils.next
 
-class FnFinder : ISubstringFinder {
-  companion object {
-    private val open = StringFinder("$[")
-    private val close = StringFinder("]")
-    private val nameFinder = RegexFinder(Regex("[a-z0-9_]+", RegexOption.IGNORE_CASE))
-    private val argsFinder = SequentialFinder(
-      StringFinder("."),
-      ArgsFinder,
-    )
-
-    private object ArgsFinder : ISubstringFinder {
-      private val argFinder = SequentialFinder(
-        RegexFinder(Regex("[a-z0-9_]+", RegexOption.IGNORE_CASE)),
-        SequentialFinder(
-          StringFinder("="),
-          RegexFinder(Regex("[a-z0-9_.-]+", RegexOption.IGNORE_CASE)),
-        ).optional()
-      )
-      private val argSeparator = StringFinder(",")
-
-      override fun find(input: String, startAt: Int): ISubstringFinderResult {
-        var latestIndex = startAt
-        val args = mutableListOf<SubstringFoundInfo>()
-        while (true) {
-          val argResult = argFinder.find(input, latestIndex)
-          if (argResult.success) {
-            args.add(argResult.foundInfo)
-            latestIndex = argResult.foundInfo.next
-          } else {
-            val separatorResult = argSeparator.find(input, latestIndex)
-            if (separatorResult.success) {
-              latestIndex = separatorResult.foundInfo.next
-            } else {
-              break
-            }
-          }
-        }
-
-        val fullRange = startAt until latestIndex
-        val contentRange = args.map { it.contentRange }.merge()
-        return success(FoundType.Fn, fullRange, contentRange, fullRange.next(), args)
-      }
-    }
-  }
-
+object FnFinder : ISubstringFinder {
+  private val open = StringFinder("$[")
+  private val close = StringFinder("]")
+  private val nameFinder = RegexFinder(Regex("[a-z0-9_]+", RegexOption.IGNORE_CASE))
+  private val argsFinder = SequentialFinder(StringFinder("."), ArgsFinder)
   private val funcFinder = SequentialFinder(
     open,
     nameFinder,
@@ -60,6 +20,40 @@ class FnFinder : ISubstringFinder {
     InlineFinder(close),
     close,
   )
+
+  private object ArgsFinder : ISubstringFinder {
+    private val argFinder = SequentialFinder(
+      RegexFinder(Regex("[a-z0-9_]+", RegexOption.IGNORE_CASE)),
+      SequentialFinder(
+        StringFinder("="),
+        RegexFinder(Regex("[a-z0-9_.-]+", RegexOption.IGNORE_CASE)),
+      ).optional()
+    )
+    private val argSeparator = StringFinder(",")
+
+    override fun find(input: String, startAt: Int): ISubstringFinderResult {
+      var latestIndex = startAt
+      val args = mutableListOf<SubstringFoundInfo>()
+      while (true) {
+        val argResult = argFinder.find(input, latestIndex)
+        if (argResult.success) {
+          args.add(argResult.foundInfo)
+          latestIndex = argResult.foundInfo.next
+        } else {
+          val separatorResult = argSeparator.find(input, latestIndex)
+          if (separatorResult.success) {
+            latestIndex = separatorResult.foundInfo.next
+          } else {
+            break
+          }
+        }
+      }
+
+      val fullRange = startAt until latestIndex
+      val contentRange = args.map { it.contentRange }.merge()
+      return success(FoundType.Fn, fullRange, contentRange, fullRange.next(), args)
+    }
+  }
 
   override fun find(input: String, startAt: Int): ISubstringFinderResult {
     val result = funcFinder.find(input, startAt)
