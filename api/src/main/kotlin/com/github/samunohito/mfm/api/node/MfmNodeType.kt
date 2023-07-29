@@ -24,11 +24,4 @@ enum class MfmNodeType(val attributes: Set<MfmNodeAttribute>) {
   Text(setOf(MfmNodeAttribute.Inline, MfmNodeAttribute.Simple)),
   Nest(setOf(MfmNodeAttribute.Virtuality)),
   ;
-
-  companion object {
-    val blockTypes = values().filter { it.attributes.contains(MfmNodeAttribute.Block) }.toSet()
-    val inlineTypes = values().filter { it.attributes.contains(MfmNodeAttribute.Inline) }.toSet()
-    val simpleTypes = values().filter { it.attributes.contains(MfmNodeAttribute.Simple) }.toSet()
-    val virtualTypes = values().filter { it.attributes.contains(MfmNodeAttribute.Virtuality) }.toSet()
-  }
 }
