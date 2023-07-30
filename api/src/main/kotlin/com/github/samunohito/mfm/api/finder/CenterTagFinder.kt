@@ -7,6 +7,15 @@ import com.github.samunohito.mfm.api.finder.core.fixed.LineBeginFinder
 import com.github.samunohito.mfm.api.finder.core.fixed.LineEndFinder
 import com.github.samunohito.mfm.api.finder.core.fixed.NewLineFinder
 
+/**
+ * An [ISubstringFinder] implementation for detecting "center" syntax.
+ * The string enclosed by <center> tags will be the search result.
+ *
+ * ### Notes
+ * - Apply [InlineFinder] to the content again to recursively detect inline syntax.
+ * - <center> must be the beginning of the line.
+ * - </center> must be the end of the line.
+ */
 object CenterTagFinder : ISubstringFinder {
   private val open = StringFinder("<center>")
   private val close = StringFinder("</center>")

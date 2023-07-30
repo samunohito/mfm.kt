@@ -7,6 +7,14 @@ import com.github.samunohito.mfm.api.finder.core.StringFinder
 import com.github.samunohito.mfm.api.finder.core.charsequence.AlternateScanFinder
 import com.github.samunohito.mfm.api.finder.core.fixed.SpaceFinder
 
+/**
+ * An [ISubstringFinder] implementation for detecting "bold" syntax.
+ * The string enclosed by "__" will be the search result.
+ *
+ * ### Notes
+ * - Only allow characters matching the regex pattern of [a-z0-9 \t] (case insensitive)
+ * - The Content cannot be left empty.
+ */
 object BoldUnderFinder : ISubstringFinder {
   private val mark = StringFinder("__")
   private val boldUnderFinder = SequentialFinder(

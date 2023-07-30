@@ -9,6 +9,14 @@ import com.github.samunohito.mfm.api.finder.core.fixed.LineEndFinder
 import com.github.samunohito.mfm.api.finder.core.fixed.NewLineFinder
 import com.github.samunohito.mfm.api.utils.next
 
+/**
+ * An [ISubstringFinder] implementation for detecting "code block" syntax.
+ * The string enclosed by "```" will be the search result.
+ *
+ * ### Notes
+ * - Nesting of MFM syntax is not possible. All content is interpreted as text.
+ * - "```" must be the beginning of the line.
+ */
 object CodeBlockFinder : ISubstringFinder {
   private val mark = StringFinder("```")
   private val codeBlockFinder = SequentialFinder(

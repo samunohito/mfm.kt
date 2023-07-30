@@ -7,6 +7,14 @@ import com.github.samunohito.mfm.api.finder.core.StringFinder
 import com.github.samunohito.mfm.api.finder.core.fixed.LineBeginFinder
 import com.github.samunohito.mfm.api.finder.core.fixed.LineEndFinder
 
+/**
+ * An [ISubstringFinder] implementation for detecting "emoji code" syntax.
+ * The string enclosed by ":" will be the search result.
+ *
+ * ### Notes
+ * - Only allow characters matching the regex pattern of [a-z0-9_+-] (case insensitive)
+ * - The Content cannot be left empty.
+ */
 object EmojiCodeFinder : ISubstringFinder {
   private val regexSide = Regex("[a-z0-9]", RegexOption.IGNORE_CASE)
   private val mark = StringFinder(":")

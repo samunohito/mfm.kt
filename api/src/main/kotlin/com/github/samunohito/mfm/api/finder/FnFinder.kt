@@ -7,6 +7,15 @@ import com.github.samunohito.mfm.api.finder.core.StringFinder
 import com.github.samunohito.mfm.api.utils.merge
 import com.github.samunohito.mfm.api.utils.next
 
+/**
+ * An [ISubstringFinder] implementation for detecting "function" syntax.
+ * Strings that match the pattern "$\[functionName.arg1=value,arg2=value contents]" will be the search results.
+ *
+ * ### Notes
+ * - Apply [InlineFinder] to the content again to recursively detect inline syntax.
+ * - Any character and newline can be used in the content.
+ * - The content cannot be left empty.
+ */
 object FnFinder : ISubstringFinder {
   private val open = StringFinder("$[")
   private val close = StringFinder("]")
