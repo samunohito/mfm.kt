@@ -3,9 +3,6 @@ plugins {
     id 'maven-publish'
 }
 
-group = 'com.github.samunohito'
-version = '0.0.1'
-
 repositories {
     mavenCentral()
 }
@@ -18,7 +15,19 @@ test {
     useJUnitPlatform()
 }
 
+
+def group = rootProject.group as String
+def name = rootProject.name
+def version = rootProject.version
 publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = group
+            artifactId = name
+            version = version
+            from components.kotlin
+        }
+    }
     repositories {
         maven {
             name = "mfm.kt"
