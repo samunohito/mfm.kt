@@ -1,10 +1,10 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.7.20'
-    id 'org.jetbrains.kotlin.plugin.serialization' version '1.7.20' apply false
+    id 'org.jetbrains.dokka' version "1.+"
 }
 
 group = 'com.github.samunohito'
-version = '1.0-SNAPSHOT'
+version = '0.0.1'
 
 repositories {
     mavenCentral()
@@ -25,4 +25,31 @@ compileKotlin {
 
 compileTestKotlin {
     kotlinOptions.jvmTarget = '1.8'
+}
+
+
+dokkaHtml.configure {
+    String dokkaBaseConfiguration = """
+    {
+      "projectName": "mfm.kt",
+      "footerMessage": "(c) 2023 samunohito"
+    }
+    """
+    pluginsMapConfiguration.set(
+            // fully qualified plugin name to json configuration
+            ["org.jetbrains.dokka.base.DokkaBase": dokkaBaseConfiguration]
+    )
+
+    outputDirectory.set(file("$rootDir/docs"))
+    dokkaSourceSets {
+        configureEach {
+            sourceRoots.from(file("api/src/main/kotlin"))
+            documentedVisibilities.set(
+                    setOf(
+                            Visibility.PUBLIC,
+                            Visibility.PROTECTED,
+                    )
+            )
+        }
+    }
 }
