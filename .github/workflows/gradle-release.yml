@@ -33,14 +33,8 @@ jobs:
         with:
           arguments: incrementSemanticVersion
 
-      - name: output version
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: printVersion
-
       - name: load version
-        run: |
-          echo "VERSION=$(cat ./build/version.txt)" >> $GITHUB_ENV
+        run: echo "VERSION=$(cat ./version.properties | grep -oP 'version=\K[\d.]+')" >> $GITHUB_ENV
 
       - name: build
         uses: gradle/gradle-build-action@v2
