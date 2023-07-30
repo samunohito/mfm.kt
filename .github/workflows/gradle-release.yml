@@ -2,8 +2,8 @@ name: Release
 
 on:
   push:
-    branches:
-      - master
+    tags:
+      - v*
 
 jobs:
   build:
@@ -28,13 +28,11 @@ jobs:
           server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
           settings-path: ${{ github.workspace }} # location for the settings.xml file
 
-      - name: increment version
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: incrementSemanticVersion
-
-      - name: load version
-        run: echo "VERSION=$(cat ./version.properties | grep -oP 'version=\K[\d.]+')" >> $GITHUB_ENV
+      - name: apply version to properties and envs
+        run: |
+          export version=$(echo ${GITHUB_REF##*/} | sed 's/^v//')
+          echo "version=$version" > ./version.properties
+          echo "VERSION=$version" >> $GITHUB_ENV
 
       - name: build
         uses: gradle/gradle-build-action@v2
