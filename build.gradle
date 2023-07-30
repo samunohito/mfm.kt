@@ -27,6 +27,14 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = '1.8'
 }
 
+tasks.register('printVersion') {
+    it.group = "versioning"
+    doLast {
+        def version = "${semanticVersion.version.get()}"
+        file("build/version.txt").write(version.toString())
+    }
+}
+
 
 dokkaHtml.configure {
     String dokkaBaseConfiguration = """

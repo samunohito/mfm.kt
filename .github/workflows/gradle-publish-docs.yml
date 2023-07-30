@@ -34,7 +34,9 @@ jobs:
           settings-path: ${{ github.workspace }} # location for the settings.xml file
 
       - name: generate docs
-        run: ./gradlew dokkaHtml
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: dokkaHtml
 
       - name: upload artifact
         uses: actions/upload-pages-artifact@v2

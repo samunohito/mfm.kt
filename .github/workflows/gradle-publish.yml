@@ -27,15 +27,15 @@ jobs:
           server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
           settings-path: ${{ github.workspace }} # location for the settings.xml file
 
-      - name: increment version
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: incrementSemanticVersion
-
       - name: build
         uses: gradle/gradle-build-action@v2
         with:
           arguments: :api:build
+
+      - name: out version
+        run: gradle/gradle-build-action@v2
+        with:
+          arguments: printVersion
 
       - name: publish
         uses: gradle/gradle-build-action@v2
@@ -44,11 +44,3 @@ jobs:
         env:
           USERNAME: ${{ github.actor }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: apply version to repository
-        run: |
-          git config user.name ${{ github.actor }}
-          git config user.email ${{ github.actor }}@users.noreply.github.com
-          git add ./version.properties
-          git commit -m "Apply version to repository"
-          git push

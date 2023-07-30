@@ -15,6 +15,10 @@ test {
     useJUnitPlatform()
 }
 
+jar {
+    archiveBaseName.convention("mfm")
+    archiveBaseName.set("mfm")
+}
 
 def group = rootProject.group as String
 def name = rootProject.name
