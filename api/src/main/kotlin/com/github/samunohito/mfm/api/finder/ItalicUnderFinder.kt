@@ -7,6 +7,15 @@ import com.github.samunohito.mfm.api.finder.core.StringFinder
 import com.github.samunohito.mfm.api.finder.core.charsequence.AlternateScanFinder
 import com.github.samunohito.mfm.api.finder.core.fixed.SpaceFinder
 
+/**
+ * An [ISubstringFinder] implementation for detecting "italic" syntax.
+ * The string enclosed by "_" will be the search result.
+ *
+ * ### Notes
+ * - Only allow characters matching the regex pattern of [a-z0-9 \t] (case insensitive)
+ * - If the character before the starting symbol (the first "*") matches [a-z0-9] (case insensitive), it is not recognized as italic formatting.
+ * - The content cannot be left empty.
+ */
 @Suppress("DuplicatedCode")
 object ItalicUnderFinder : ISubstringFinder {
   private val regexAlphaAndNumericTail = Regex("[a-z0-9]$", RegexOption.IGNORE_CASE)

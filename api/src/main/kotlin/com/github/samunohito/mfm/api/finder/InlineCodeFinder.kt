@@ -6,6 +6,16 @@ import com.github.samunohito.mfm.api.finder.core.StringFinder
 import com.github.samunohito.mfm.api.finder.core.charsequence.AlternateScanFinder
 import com.github.samunohito.mfm.api.finder.core.fixed.NewLineFinder
 
+/**
+ * An [ISubstringFinder] implementation for detecting "inline code" syntax.
+ * The string enclosed by "`" will be the search result.
+ *
+ * ### Notes
+ * - Nesting of MFM syntax is not possible. All content is interpreted as text.
+ * - Any character and newline can be used in the content.
+ * - The content cannot be left empty.
+ * - The content cannot contain the character "`".
+ */
 object InlineCodeFinder : ISubstringFinder {
   private val mark = StringFinder("`")
   private val mark2 = StringFinder("´")

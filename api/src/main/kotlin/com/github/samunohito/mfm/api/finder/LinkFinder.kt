@@ -4,6 +4,16 @@ import com.github.samunohito.mfm.api.finder.core.*
 import com.github.samunohito.mfm.api.finder.core.fixed.NewLineFinder
 import com.github.samunohito.mfm.api.utils.next
 
+/**
+ * An [ISubstringFinder] implementation for detecting "link" syntax.
+ * Strings that match the pattern "[linkText](https://example.com/)" will be the search results.
+ *
+ * ### Notes
+ * - Apply [InlineFinder] to the content again to recursively detect inline syntax.
+ * - URLs, links, and mentions are not allowed in the display text (the part enclosed in "[]").
+ * - Any character and newline can be used in the content.
+ * - The content cannot be left empty.
+ */
 object LinkFinder : ISubstringFinder {
   private val squareOpen = RegexFinder(Regex("\\??\\["))
   private val squareClose = StringFinder("]")

@@ -7,6 +7,18 @@ import com.github.samunohito.mfm.api.finder.core.fixed.SpaceFinder
 import com.github.samunohito.mfm.api.utils.merge
 import com.github.samunohito.mfm.api.utils.next
 
+/**
+ * An [ISubstringFinder] implementation for detecting "hashtag" syntax.
+ * Strings starting with "#" will be search results.
+ *
+ * ### Notes
+ * - The content cannot be left empty.
+ * - The content cannot contain half-width spaces, full-width spaces, newlines, or tab characters.
+ * - The content cannot include . , ! ? ' " # : / 【 】 < > 【 】 ( ) 「 」 （ ）.
+ * - Parentheses can only be included in the content when they come in pairs. Relevant pairs: () [] 「」 （）.
+ * - Recognize as a hashtag if the character before # does not match [a-z0-9](case insensitive).
+ * - If the content is only numbers, it will not be recognized as a hashtag.
+ */
 object HashtagFinder : ISubstringFinder {
   private val regexAlphaAndNumericTail = Regex("[a-z0-9]$", RegexOption.IGNORE_CASE)
   private val regexNumericOnly = Regex("^[0-9]+$")
