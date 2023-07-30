@@ -40,7 +40,6 @@ dokkaHtml.configure {
             ["org.jetbrains.dokka.base.DokkaBase": dokkaBaseConfiguration]
     )
 
-    outputDirectory.set(file("$rootDir/docs"))
     dokkaSourceSets {
         configureEach {
             sourceRoots.from(file("api/src/main/kotlin"))

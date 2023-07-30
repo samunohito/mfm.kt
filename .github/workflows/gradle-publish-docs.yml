@@ -4,9 +4,19 @@ on:
   push:
     branches:
       - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-  deploy_docs:
+  build_docs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
@@ -26,8 +36,18 @@ jobs:
       - name: generate docs
         run: ./gradlew dokkaHtml
 
-      - name: deploy
-        uses: peaceiris/actions-gh-pages@v3
+      - name: upload artifact
+        uses: actions/upload-pages-artifact@v2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs
+          path: build/dokka/html
+
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    needs: build_docs
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
