@@ -3,6 +3,9 @@ package com.github.samunohito.mfm.api.finder.core
 import com.github.samunohito.mfm.api.finder.*
 import com.github.samunohito.mfm.api.utils.next
 
+/**
+ * An implementation of [ISubstringFinder] that searches for a given string in a given string.
+ */
 class StringFinder(private val word: String) : ISubstringFinder {
   override fun find(input: String, startAt: Int, context: ISubstringFinderContext): ISubstringFinderResult {
     val resultRange = startAt until (startAt + word.length)

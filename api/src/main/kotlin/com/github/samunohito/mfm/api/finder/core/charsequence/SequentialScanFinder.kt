@@ -4,6 +4,12 @@ import com.github.samunohito.mfm.api.finder.ISubstringFinder
 import com.github.samunohito.mfm.api.finder.ISubstringFinderContext
 import com.github.samunohito.mfm.api.finder.core.utils.SubstringFinderUtils
 
+/**
+ * Implementation of [ScanFinderBase].
+ * [hasNext] becomes false when all [terminates] return success. If they don't return success, it becomes true.
+ *
+ * @see ScanFinderBase
+ */
 class SequentialScanFinder private constructor(
   private val terminates: Collection<ISubstringFinder>
 ) : ScanFinderBase() {

@@ -1,5 +1,11 @@
 package com.github.samunohito.mfm.api.finder.core
 
+import com.github.samunohito.mfm.api.finder.ISubstringFinder
+
+/**
+ * Indicates the type of format found by [ISubstringFinder]
+ */
+
 enum class FoundType {
   Unknown,
   Empty,

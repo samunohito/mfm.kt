@@ -5,9 +5,15 @@ import com.github.samunohito.mfm.api.finder.ISubstringFinderContext
 import com.github.samunohito.mfm.api.finder.ISubstringFinderResult
 import com.github.samunohito.mfm.api.finder.core.utils.SubstringFinderUtils
 
+/**
+ * Implementation of [ScanFinderBase]. As long as any of the [terminates] returns success, [hasNext] will be true.
+ * You can also reverse this behavior (while->until) by setting [isWhile] to false.
+ *
+ * @see ScanFinderBase
+ */
 class AlternateScanFinder private constructor(
   private val terminates: Collection<ISubstringFinder>,
-  isWhile: Boolean
+  private val isWhile: Boolean
 ) : ScanFinderBase() {
   private val handler: (ISubstringFinderResult) -> Boolean = if (isWhile) {
     { it.success }
