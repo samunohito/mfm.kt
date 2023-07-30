@@ -13,9 +13,9 @@ object UrlAltFinder : ISubstringFinder {
   private val schema = RegexFinder(Regex("https?://"))
   private val urlFinder = SequentialFinder(open, schema, ScanningFinder(">"), close)
 
-  override fun find(input: String, startAt: Int): ISubstringFinderResult {
+  override fun find(input: String, startAt: Int, context: ISubstringFinderContext): ISubstringFinderResult {
     // 開始・終了のブラケットが見つかるまで
-    val scanResult = urlFinder.find(input, startAt)
+    val scanResult = urlFinder.find(input, startAt, context)
     if (!scanResult.success) {
       return failure()
     }

@@ -14,7 +14,7 @@ interface ISubstringFinder {
    * @param startAt The index to start searching from. Defaults to 0.
    * @return The result of the substring search as an [ISubstringFinderResult].
    */
-  fun find(input: String, startAt: Int = 0): ISubstringFinderResult
+  fun find(input: String, startAt: Int, context: ISubstringFinderContext): ISubstringFinderResult
 
   /**
    * Returns an optional version of the current substring finder.
@@ -45,8 +45,8 @@ interface ISubstringFinder {
      * @param startAt The index to start searching from.
      * @return The result of the substring search as an [ISubstringFinderResult].
      */
-    override fun find(input: String, startAt: Int): ISubstringFinderResult {
-      val result = delegate.find(input, startAt)
+    override fun find(input: String, startAt: Int, context: ISubstringFinderContext): ISubstringFinderResult {
+      val result = delegate.find(input, startAt, context)
       return if (result.success) {
         result
       } else {
@@ -64,8 +64,8 @@ interface ISubstringFinder {
      * @param startAt The index to start searching from.
      * @return The result of the substring search as an [ISubstringFinderResult].
      */
-    override fun find(input: String, startAt: Int): ISubstringFinderResult {
-      val result = delegate.find(input, startAt)
+    override fun find(input: String, startAt: Int, context: ISubstringFinderContext): ISubstringFinderResult {
+      val result = delegate.find(input, startAt, context)
       return if (result.success) {
         failure()
       } else {

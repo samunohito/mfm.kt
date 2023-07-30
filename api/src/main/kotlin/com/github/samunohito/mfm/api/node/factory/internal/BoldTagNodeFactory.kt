@@ -14,7 +14,7 @@ object BoldTagNodeFactory : SimpleNodeFactoryBase<MfmBold>() {
     foundInfo: SubstringFoundInfo,
     context: INodeFactoryContext
   ): IFactoryResult<MfmBold> {
-    val result = NodeFactory.createNodes(input, foundInfo.nestedInfos, MfmNodeAttribute.setOfInline, context)
+    val result = NodeFactory.createNodes(input, foundInfo.nestedInfos, context, MfmNodeAttribute.setOfInline)
     if (result.isEmpty()) {
       return failure()
     }

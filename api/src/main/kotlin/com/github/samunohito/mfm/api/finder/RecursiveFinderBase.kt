@@ -10,13 +10,13 @@ abstract class RecursiveFinderBase(
   protected abstract val finders: List<ISubstringFinder>
   protected abstract val foundType: FoundType
 
-  override fun find(input: String, startAt: Int): ISubstringFinderResult {
+  override fun find(input: String, startAt: Int, context: ISubstringFinderContext): ISubstringFinderResult {
     var textNodeStartAt = startAt
     var latestIndex = startAt
     val foundInfos = mutableListOf<SubstringFoundInfo>()
 
-    while (!shouldTerminate(input, latestIndex)) {
-      val findResult = findWithFinders(input, latestIndex)
+    while (!shouldTerminate(input, latestIndex, context)) {
+      val findResult = findWithFinders(input, latestIndex, context)
       if (findResult.success) {
         if (textNodeStartAt != latestIndex) {
           // 前回見つかったノードと今回見つかったノードの間にある文字たちをTextノードとして登録する
@@ -47,17 +47,30 @@ abstract class RecursiveFinderBase(
     }
   }
 
-  private fun shouldTerminate(input: String, latestIndex: Int): Boolean {
+  private fun shouldTerminate(
+    input: String,
+    latestIndex: Int,
+    context: ISubstringFinderContext
+  ): Boolean {
     if (input.length < latestIndex) {
       return true
     }
 
-    return terminateFinder.find(input, latestIndex).success
+    return terminateFinder.find(input, latestIndex, context).success
   }
 
-  private fun findWithFinders(input: String, latestIndex: Int): ISubstringFinderResult {
+  private fun findWithFinders(
+    input: String,
+    latestIndex: Int,
+    context: ISubstringFinderContext
+  ): ISubstringFinderResult {
     for (finder in finders) {
-      val result = finder.find(input, latestIndex)
+      val result = if (finder::class.java in context.excludeFinders) {
+        failure()
+      } else {
+        finder.find(input, latestIndex, context)
+      }
+
       if (result.success) {
         return result
       }

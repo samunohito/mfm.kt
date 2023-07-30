@@ -14,7 +14,7 @@ object BigNodeFactory : SimpleNodeFactoryBase<MfmFn>() {
     foundInfo: SubstringFoundInfo,
     context: INodeFactoryContext
   ): IFactoryResult<MfmFn> {
-    val result = NodeFactory.createNodes(input, foundInfo.nestedInfos, MfmNodeAttribute.setOfInline, context)
+    val result = NodeFactory.createNodes(input, foundInfo.nestedInfos, context, MfmNodeAttribute.setOfInline)
     if (result.isEmpty()) {
       return failure()
     }

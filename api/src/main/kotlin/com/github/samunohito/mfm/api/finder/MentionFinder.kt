@@ -57,7 +57,7 @@ object MentionFinder : ISubstringFinder {
     return success(FoundType.Mention, modifiedHostnameRange, modifiedHostnameRange, modifiedHostnameRange.next())
   }
 
-  override fun find(input: String, startAt: Int): ISubstringFinderResult {
+  override fun find(input: String, startAt: Int, context: ISubstringFinderContext): ISubstringFinderResult {
     val mentionMatch = regexMention.find(input.substring(startAt))
       ?: return failure()
 
@@ -88,12 +88,13 @@ object MentionFinder : ISubstringFinder {
         return failure()
       }
 
-      val mentionRange = usernameResult.foundInfo.contentRange.first..hostnameResult.foundInfo.contentRange.last
+      val overallRange = startAt..hostnameResult.foundInfo.contentRange.last
+      val contentRange = usernameResult.foundInfo.contentRange.first..hostnameResult.foundInfo.contentRange.last
       return success(
         FoundType.Mention,
-        mentionRange,
-        mentionRange,
-        mentionRange.next(),
+        overallRange,
+        contentRange,
+        overallRange.next(),
         listOf(
           SubstringFoundInfo(
             FoundType.Mention,
@@ -115,17 +116,19 @@ object MentionFinder : ISubstringFinder {
         return failure()
       }
 
+      val overallRange = startAt..usernameResult.foundInfo.contentRange.last
+      val contentRange = usernameResult.foundInfo.contentRange
       return success(
         FoundType.Mention,
-        usernameResult.foundInfo.overallRange,
-        usernameResult.foundInfo.contentRange,
-        usernameResult.foundInfo.contentRange.next(),
+        overallRange,
+        contentRange,
+        overallRange.next(),
         listOf(
           SubstringFoundInfo(
             FoundType.Mention,
-            usernameResult.foundInfo.overallRange,
-            usernameResult.foundInfo.contentRange,
-            usernameResult.foundInfo.contentRange.next()
+            contentRange,
+            contentRange,
+            contentRange.next()
           ),
           SubstringFoundInfo.EMPTY,
         )

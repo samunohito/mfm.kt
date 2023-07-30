@@ -24,8 +24,8 @@ object CodeBlockFinder : ISubstringFinder {
     NewLineFinder.optional()
   )
 
-  override fun find(input: String, startAt: Int): ISubstringFinderResult {
-    val result = codeBlockFinder.find(input, startAt)
+  override fun find(input: String, startAt: Int, context: ISubstringFinderContext): ISubstringFinderResult {
+    val result = codeBlockFinder.find(input, startAt, context)
     if (!result.success) {
       return failure()
     }

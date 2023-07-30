@@ -15,8 +15,8 @@ object BoldUnderFinder : ISubstringFinder {
     mark
   )
 
-  override fun find(input: String, startAt: Int): ISubstringFinderResult {
-    val result = boldUnderFinder.find(input, startAt)
+  override fun find(input: String, startAt: Int, context: ISubstringFinderContext): ISubstringFinderResult {
+    val result = boldUnderFinder.find(input, startAt, context)
     if (!result.success) {
       return failure()
     }

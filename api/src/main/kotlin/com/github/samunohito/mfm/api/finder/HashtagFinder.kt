@@ -32,12 +32,12 @@ object HashtagFinder : ISubstringFinder {
       )
     )
 
-    override fun find(input: String, startAt: Int): ISubstringFinderResult {
+    override fun find(input: String, startAt: Int, context: ISubstringFinderContext): ISubstringFinderResult {
       var latestIndex = startAt
       val foundInfos = mutableListOf<SubstringFoundInfo>()
 
       while (true) {
-        val result = nestableFinder.find(input, latestIndex)
+        val result = nestableFinder.find(input, latestIndex, context)
         if (!result.success) {
           break
         }
@@ -56,8 +56,8 @@ object HashtagFinder : ISubstringFinder {
     }
   }
 
-  override fun find(input: String, startAt: Int): ISubstringFinderResult {
-    val result = hashtagFinder.find(input, startAt)
+  override fun find(input: String, startAt: Int, context: ISubstringFinderContext): ISubstringFinderResult {
+    val result = hashtagFinder.find(input, startAt, context)
     if (!result.success) {
       return failure()
     }

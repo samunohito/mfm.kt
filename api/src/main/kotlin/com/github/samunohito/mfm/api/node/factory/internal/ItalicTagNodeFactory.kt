@@ -14,7 +14,7 @@ object ItalicTagNodeFactory : SimpleNodeFactoryBase<MfmItalic>() {
     foundInfo: SubstringFoundInfo,
     context: INodeFactoryContext
   ): IFactoryResult<MfmItalic> {
-    val result = NodeFactory.createNodes(input, foundInfo.nestedInfos, MfmNodeAttribute.setOfInline, context)
+    val result = NodeFactory.createNodes(input, foundInfo.nestedInfos, context, MfmNodeAttribute.setOfInline)
     if (result.isEmpty()) {
       return failure()
     }

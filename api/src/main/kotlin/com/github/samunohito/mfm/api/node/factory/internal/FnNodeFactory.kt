@@ -49,6 +49,6 @@ object FnNodeFactory : SimpleNodeFactoryBase<MfmFn>() {
 
   private fun sliceContent(input: String, foundInfo: SubstringFoundInfo, context: INodeFactoryContext): List<IMfmNode> {
     val content = foundInfo[FnFinder.SubIndex.Content]
-    return NodeFactory.createNodes(input, content.nestedInfos, MfmNodeAttribute.setOfInline, context)
+    return NodeFactory.createNodes(input, content.nestedInfos, context, MfmNodeAttribute.setOfInline)
   }
 }

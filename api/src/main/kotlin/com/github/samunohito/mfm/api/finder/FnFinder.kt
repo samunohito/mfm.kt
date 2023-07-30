@@ -31,16 +31,16 @@ object FnFinder : ISubstringFinder {
     )
     private val argSeparator = StringFinder(",")
 
-    override fun find(input: String, startAt: Int): ISubstringFinderResult {
+    override fun find(input: String, startAt: Int, context: ISubstringFinderContext): ISubstringFinderResult {
       var latestIndex = startAt
       val args = mutableListOf<SubstringFoundInfo>()
       while (true) {
-        val argResult = argFinder.find(input, latestIndex)
+        val argResult = argFinder.find(input, latestIndex, context)
         if (argResult.success) {
           args.add(argResult.foundInfo)
           latestIndex = argResult.foundInfo.resumeIndex
         } else {
-          val separatorResult = argSeparator.find(input, latestIndex)
+          val separatorResult = argSeparator.find(input, latestIndex, context)
           if (separatorResult.success) {
             latestIndex = separatorResult.foundInfo.resumeIndex
           } else {
@@ -55,8 +55,8 @@ object FnFinder : ISubstringFinder {
     }
   }
 
-  override fun find(input: String, startAt: Int): ISubstringFinderResult {
-    val result = funcFinder.find(input, startAt)
+  override fun find(input: String, startAt: Int, context: ISubstringFinderContext): ISubstringFinderResult {
+    val result = funcFinder.find(input, startAt, context)
     if (!result.success) {
       return failure()
     }

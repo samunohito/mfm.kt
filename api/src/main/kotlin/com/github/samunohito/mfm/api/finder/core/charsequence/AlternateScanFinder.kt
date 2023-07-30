@@ -1,6 +1,7 @@
 package com.github.samunohito.mfm.api.finder.core.charsequence
 
 import com.github.samunohito.mfm.api.finder.ISubstringFinder
+import com.github.samunohito.mfm.api.finder.ISubstringFinderContext
 import com.github.samunohito.mfm.api.finder.ISubstringFinderResult
 import com.github.samunohito.mfm.api.finder.core.utils.SubstringFinderUtils
 
@@ -14,8 +15,8 @@ class AlternateScanFinder private constructor(
     { !it.success }
   }
 
-  override fun hasNext(text: String, startAt: Int): Boolean {
-    val result = SubstringFinderUtils.alternate(text, startAt, terminates)
+  override fun hasNext(text: String, startAt: Int, context: ISubstringFinderContext): Boolean {
+    val result = SubstringFinderUtils.alternate(text, startAt, terminates, context)
     return handler(result)
   }
 

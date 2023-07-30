@@ -1,6 +1,7 @@
 package com.github.samunohito.mfm.api
 
 import com.github.samunohito.mfm.api.finder.FullFinder
+import com.github.samunohito.mfm.api.finder.ISubstringFinderContext
 import com.github.samunohito.mfm.api.finder.SimpleFinder
 import com.github.samunohito.mfm.api.node.IMfmNode
 import com.github.samunohito.mfm.api.node.MfmNodeAttribute
@@ -13,13 +14,19 @@ object Mfm {
    */
   @JvmStatic
   fun parse(input: String, maxNestLevel: Int = 20): List<IMfmNode> {
-    val findResult = FullFinder().find(input, 0)
+    val finderContext = ISubstringFinderContext.Impl()
+    val findResult = FullFinder().find(input, 0, finderContext)
     if (!findResult.success) {
       return listOf()
     }
 
-    val context = INodeFactoryContext.Impl(maximumNestLevel = maxNestLevel)
-    return NodeFactory.createNodes(input, findResult.foundInfo.nestedInfos, MfmNodeAttribute.setOfAll, context)
+    val factoryContext = INodeFactoryContext.Impl(maximumNestLevel = maxNestLevel)
+    return NodeFactory.createNodes(
+      input,
+      findResult.foundInfo.nestedInfos,
+      factoryContext,
+      MfmNodeAttribute.setOfAll
+    )
   }
 
   /**
@@ -27,12 +34,18 @@ object Mfm {
    */
   @JvmStatic
   fun parseSimple(input: String, maxNestLevel: Int = 20): List<IMfmNode> {
-    val findResult = SimpleFinder().find(input, 0)
+    val finderContext = ISubstringFinderContext.Impl()
+    val findResult = SimpleFinder().find(input, 0, finderContext)
     if (!findResult.success) {
       return listOf()
     }
 
-    val context = INodeFactoryContext.Impl(maximumNestLevel = maxNestLevel)
-    return NodeFactory.createNodes(input, findResult.foundInfo.nestedInfos, MfmNodeAttribute.setOfSimple, context)
+    val factoryContext = INodeFactoryContext.Impl(maximumNestLevel = maxNestLevel)
+    return NodeFactory.createNodes(
+      input,
+      findResult.foundInfo.nestedInfos,
+      factoryContext,
+      MfmNodeAttribute.setOfSimple
+    )
   }
 }

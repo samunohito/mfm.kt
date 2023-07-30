@@ -1,18 +1,15 @@
 package com.github.samunohito.mfm.api.finder.core.fixed
 
-import com.github.samunohito.mfm.api.finder.ISubstringFinder
-import com.github.samunohito.mfm.api.finder.ISubstringFinderResult
+import com.github.samunohito.mfm.api.finder.*
 import com.github.samunohito.mfm.api.finder.core.FoundType
-import com.github.samunohito.mfm.api.finder.failure
-import com.github.samunohito.mfm.api.finder.success
 
 object LineBeginFinder : ISubstringFinder {
-  override fun find(input: String, startAt: Int): ISubstringFinderResult {
+  override fun find(input: String, startAt: Int, context: ISubstringFinderContext): ISubstringFinderResult {
     val result = when {
       input.length == startAt -> true
       startAt == 0 -> true
-      CrFinder.find(input, startAt - 1).success -> true
-      LfFinder.find(input, startAt - 1).success -> true
+      CrFinder.find(input, startAt - 1, context).success -> true
+      LfFinder.find(input, startAt - 1, context).success -> true
       else -> false
     }
 

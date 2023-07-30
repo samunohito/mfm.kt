@@ -18,8 +18,8 @@ object EmojiCodeFinder : ISubstringFinder {
     LineEndFinder.optional(),
   )
 
-  override fun find(input: String, startAt: Int): ISubstringFinderResult {
-    val result = emojiCodeFinder.find(input, startAt)
+  override fun find(input: String, startAt: Int, context: ISubstringFinderContext): ISubstringFinderResult {
+    val result = emojiCodeFinder.find(input, startAt, context)
     if (!result.success) {
       return failure()
     }

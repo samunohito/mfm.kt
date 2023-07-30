@@ -13,8 +13,8 @@ object SmallTagFinder : ISubstringFinder {
     close
   )
 
-  override fun find(input: String, startAt: Int): ISubstringFinderResult {
-    val result = finder.find(input, startAt)
+  override fun find(input: String, startAt: Int, context: ISubstringFinderContext): ISubstringFinderResult {
+    val result = finder.find(input, startAt, context)
     if (!result.success) {
       return failure()
     }

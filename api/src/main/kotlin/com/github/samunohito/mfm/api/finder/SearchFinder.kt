@@ -27,14 +27,14 @@ object SearchFinder : ISubstringFinder {
       SpaceFinder, buttonFinder, LineEndFinder
     )
 
-    override fun find(input: String, startAt: Int): ISubstringFinderResult {
+    override fun find(input: String, startAt: Int, context: ISubstringFinderContext): ISubstringFinderResult {
       for (i in startAt until input.length) {
-        if (NewLineFinder.find(input, i).success) {
+        if (NewLineFinder.find(input, i, context).success) {
           // 改行されていたら検索ボタン形式が破綻するので中断
           return failure()
         }
 
-        val result = searchButtonFinder.find(input, i)
+        val result = searchButtonFinder.find(input, i, context)
         if (result.success) {
           // 削除ボタンの検出が成功したらクエリの範囲がわかるので、それを返す
           val queryRange = startAt until i
@@ -47,8 +47,8 @@ object SearchFinder : ISubstringFinder {
     }
   }
 
-  override fun find(input: String, startAt: Int): ISubstringFinderResult {
-    val result = searchFormFinder.find(input, startAt)
+  override fun find(input: String, startAt: Int, context: ISubstringFinderContext): ISubstringFinderResult {
+    val result = searchFormFinder.find(input, startAt, context)
     if (!result.success) {
       return failure()
     }

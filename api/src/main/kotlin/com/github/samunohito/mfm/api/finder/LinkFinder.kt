@@ -18,9 +18,20 @@ object LinkFinder : ISubstringFinder {
     AlternateFinder(UrlAltFinder, UrlFinder),
     roundClose,
   )
+  private val excludeFinderClasses = setOf(
+    HashtagFinder::class.java,
+    LinkFinder::class.java,
+    MentionFinder::class.java,
+    UrlFinder::class.java,
+    UrlAltFinder::class.java,
+  )
 
-  override fun find(input: String, startAt: Int): ISubstringFinderResult {
-    val result = linkFinder.find(input, startAt)
+  override fun find(input: String, startAt: Int, context: ISubstringFinderContext): ISubstringFinderResult {
+    // リンク書式のラベル内はハッシュタグ、メンション、リンク、URL、URL(<>付き)を検索しない（テキストとして認識する）
+    context.excludeFinders = excludeFinderClasses
+    val result = linkFinder.find(input, startAt, context)
+    context.excludeFinders = emptySet()
+
     if (!result.success) {
       return failure()
     }

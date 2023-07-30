@@ -27,11 +27,11 @@ object QuoteFinder : ISubstringFinder {
       NewLineFinder.optional(),
     )
 
-    override fun find(input: String, startAt: Int): ISubstringFinderResult {
+    override fun find(input: String, startAt: Int, context: ISubstringFinderContext): ISubstringFinderResult {
       var latestIndex = startAt
       val lines = mutableListOf<SubstringFoundInfo>()
       while (true) {
-        val result = oneLineFinder.find(input, latestIndex)
+        val result = oneLineFinder.find(input, latestIndex, context)
         if (!result.success) {
           break
         }
@@ -57,8 +57,8 @@ object QuoteFinder : ISubstringFinder {
     }
   }
 
-  override fun find(input: String, startAt: Int): ISubstringFinderResult {
-    val result = quoteFinder.find(input, startAt)
+  override fun find(input: String, startAt: Int, context: ISubstringFinderContext): ISubstringFinderResult {
+    val result = quoteFinder.find(input, startAt, context)
     if (!result.success) {
       return failure()
     }

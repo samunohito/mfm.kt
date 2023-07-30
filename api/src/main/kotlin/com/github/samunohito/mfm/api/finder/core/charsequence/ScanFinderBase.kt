@@ -1,19 +1,16 @@
 package com.github.samunohito.mfm.api.finder.core.charsequence
 
-import com.github.samunohito.mfm.api.finder.ISubstringFinder
-import com.github.samunohito.mfm.api.finder.ISubstringFinderResult
+import com.github.samunohito.mfm.api.finder.*
 import com.github.samunohito.mfm.api.finder.core.FoundType
-import com.github.samunohito.mfm.api.finder.failure
-import com.github.samunohito.mfm.api.finder.success
 import com.github.samunohito.mfm.api.utils.next
 
 abstract class ScanFinderBase : ISubstringFinder {
-  override fun find(input: String, startAt: Int): ISubstringFinderResult {
+  override fun find(input: String, startAt: Int, context: ISubstringFinderContext): ISubstringFinderResult {
     var latestIndex = startAt
 
     val inputRange = startAt until input.length
     for (i in inputRange) {
-      if (!hasNext(input, i)) {
+      if (!hasNext(input, i, context)) {
         break
       }
 
@@ -29,5 +26,5 @@ abstract class ScanFinderBase : ISubstringFinder {
     }
   }
 
-  protected abstract fun hasNext(text: String, startAt: Int): Boolean
+  protected abstract fun hasNext(text: String, startAt: Int, context: ISubstringFinderContext): Boolean
 }

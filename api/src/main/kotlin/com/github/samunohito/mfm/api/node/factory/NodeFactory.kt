@@ -12,11 +12,11 @@ object NodeFactory {
   fun createNodes(
     input: String,
     foundInfos: List<SubstringFoundInfo>,
-    allowNodeAttribute: Set<MfmNodeAttribute> = MfmNodeAttribute.setOfAll,
     context: INodeFactoryContext,
+    allowNodeAttribute: Set<MfmNodeAttribute> = MfmNodeAttribute.setOfAll,
   ): List<IMfmNode> {
     return foundInfos.asSequence()
-      .map { createNodes(input, it, allowNodeAttribute, context) }
+      .map { createNodes(input, it, context, allowNodeAttribute) }
       .filter { it.success }
       .map { it.node }
       .toList()
@@ -25,17 +25,30 @@ object NodeFactory {
   private fun createNodes(
     input: String,
     foundInfo: SubstringFoundInfo,
-    allowNodeAttribute: Set<MfmNodeAttribute> = MfmNodeAttribute.setOfAll,
     context: INodeFactoryContext,
+    allowNodeAttribute: Set<MfmNodeAttribute> = MfmNodeAttribute.setOfAll,
+  ): IFactoryResult<IMfmNode> {
+    return deepenNest(context) {
+      createNodesImpl(input, foundInfo, context, allowNodeAttribute)
+    }
+  }
+
+  private fun createNodesImpl(
+    input: String,
+    foundInfo: SubstringFoundInfo,
+    context: INodeFactoryContext,
+    allowNodeAttribute: Set<MfmNodeAttribute> = MfmNodeAttribute.setOfAll,
   ): IFactoryResult<IMfmNode> {
     // ネストが上限に達している場合は入力をそのままMfmTextとして扱い、これ以上ネストさせない
-    if (context.nestLevel >= context.maximumNestLevel) {
+    if (context.nestLevel > context.maximumNestLevel) {
       return success(MfmText(input.substring(foundInfo.overallRange)), foundInfo)
     }
 
     when (val foundType = foundInfo.type) {
       FoundType.Simple, FoundType.Inline, FoundType.Full -> {
-        val results = foundInfo.nestedInfos.map { createNodes(input, it, allowNodeAttribute, context) }
+        val results = foundInfo.nestedInfos.map {
+          createNodes(input, it, context, allowNodeAttribute)
+        }
         if (results.any { !it.success }) {
           return failure()
         }
@@ -45,11 +58,7 @@ object NodeFactory {
 
       else -> {
         val factory = mappingToFactory(foundType)
-
-        context.nestLevel++
         val result = factory.create(input, foundInfo, context)
-        context.nestLevel--
-
         if (!result.success) {
           return failure()
         }
@@ -95,5 +104,12 @@ object NodeFactory {
       FoundType.Text -> TextNodeFactory
       else -> throw IllegalArgumentException("Not Support FoundType: $foundType")
     }
+  }
+
+  private fun <T> deepenNest(context: INodeFactoryContext, block: () -> T): T {
+    context.nestLevel++
+    val result = block()
+    context.nestLevel--
+    return result
   }
 }
