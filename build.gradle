@@ -1,10 +1,10 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.7.20'
     id 'org.jetbrains.dokka' version "1.+"
+    id("com.glovoapp.semantic-versioning") version "1.+"
 }
 
 group = 'com.github.samunohito'
-version = '0.0.1'
 
 repositories {
     mavenCentral()
