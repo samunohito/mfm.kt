@@ -6,6 +6,15 @@ import com.github.samunohito.mfm.api.finder.core.SequentialFinder
 import com.github.samunohito.mfm.api.finder.core.StringFinder
 import com.github.samunohito.mfm.api.finder.core.fixed.NewLineFinder
 
+/**
+ * An [ISubstringFinder] implementation for detecting "strike" syntax.
+ * The string enclosed by "~~" will be the search result.
+ *
+ * ### Notes
+ * - Apply [InlineFinder] to the content again to recursively detect inline syntax.
+ * - Characters other than "~" and newline can be used in the content.
+ * - The content cannot be left empty.
+ */
 object StrikeWaveFinder : ISubstringFinder {
   private val mark = StringFinder("~~")
   private val finder = SequentialFinder(

@@ -9,6 +9,17 @@ import com.github.samunohito.mfm.api.finder.core.fixed.NewLineFinder
 import com.github.samunohito.mfm.api.finder.core.fixed.SpaceFinder
 import com.github.samunohito.mfm.api.utils.next
 
+/**
+ * An [ISubstringFinder] implementation for detecting "quote" syntax.
+ * The string enclosed by ">" will be the search result.
+ *
+ * ### Notes
+ * - Perform recursive parsing on quoted content. Not only inline syntax but also block syntax is covered.
+ * - Ignore 0-1 spaces after '>'.
+ * - Lines of adjacent citations are merged.
+ * - Blank lines can be included in multi-line citations.
+ * - Empty lines after quotes are ignored.
+ */
 object QuoteFinder : ISubstringFinder {
   private val quoteFinder = SequentialFinder(
     NewLineFinder.optional(),

@@ -4,6 +4,19 @@ import com.github.samunohito.mfm.api.finder.core.FoundType
 import com.github.samunohito.mfm.api.utils.next
 import com.github.samunohito.mfm.api.utils.offset
 
+/**
+ * An [ISubstringFinder] implementation for detecting "mention" syntax.
+ * The string starting with "@" will be the search result.
+ *
+ * ### Notes
+ * - If the first character before the @ matches [a-z0-9] (case-insensitive) it will not be recognized as a mention.
+ * - Username must be at least 1 letter.
+ * - [a-z0-9_-] (case-insensitive) can be used for the Username.
+ * - Username cannot start or end with "-".
+ * - Host name must be at least 1 character.
+ * - [a-z0-9_-.] (not case sensitive) can be used in the hostname.
+ * - The host name cannot start or end with '-' or '.'
+ */
 object MentionFinder : ISubstringFinder {
   private const val regexGroupUserName = "username"
   private const val regexGroupHostName = "hostname"

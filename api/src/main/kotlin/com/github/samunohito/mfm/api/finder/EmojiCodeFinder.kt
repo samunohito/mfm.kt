@@ -12,7 +12,7 @@ import com.github.samunohito.mfm.api.finder.core.fixed.LineEndFinder
  * The string enclosed by ":" will be the search result.
  *
  * ### Notes
- * - Only allow characters matching the regex pattern of [a-z0-9_+-] (case insensitive)
+ * - Only allow characters matching the regex pattern of [a-z0-9_+-] (case-insensitive)
  * - The Content cannot be left empty.
  */
 object EmojiCodeFinder : ISubstringFinder {

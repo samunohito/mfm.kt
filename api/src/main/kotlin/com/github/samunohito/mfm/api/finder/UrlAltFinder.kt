@@ -7,6 +7,16 @@ import com.github.samunohito.mfm.api.finder.core.StringFinder
 import com.github.samunohito.mfm.api.finder.core.charsequence.ScanningFinder
 import com.github.samunohito.mfm.api.utils.merge
 
+/**
+ * An [ISubstringFinder] implementation for detecting "URL" syntax.
+ * Search results will match patterns where URLs, such as 'http://example.com/' or 'http://さんぷる.com', are enclosed in angle brackets.
+ * e.g. <http://example.com/>
+ * e.g. <http://さんぷる.com/>
+ *
+ * ### Notes
+ * - Allows https as well as http.
+ * - Any characters other than line breaks and spaces can be used in the content.
+ */
 object UrlAltFinder : ISubstringFinder {
   private val open = StringFinder("<")
   private val close = StringFinder(">")

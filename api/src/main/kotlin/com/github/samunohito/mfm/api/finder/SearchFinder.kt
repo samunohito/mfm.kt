@@ -10,6 +10,14 @@ import com.github.samunohito.mfm.api.finder.core.fixed.SpaceFinder
 import com.github.samunohito.mfm.api.utils.merge
 import com.github.samunohito.mfm.api.utils.next
 
+/**
+ * An [ISubstringFinder] implementation for detecting "search" syntax.
+ * Strings that match the pattern "keyword \[検索]" or "keyword \[search]" are the search results.
+ *
+ * ### Notes
+ * - The presence or absence of "[]" is not distinguished.
+ * - "search" is case-insensitive
+ */
 object SearchFinder : ISubstringFinder {
   private val buttonFinder = RegexFinder(Regex("\\[?(検索|search)]?", RegexOption.IGNORE_CASE))
   private val searchFormFinder = SequentialFinder(

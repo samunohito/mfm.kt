@@ -12,8 +12,8 @@ import com.github.samunohito.mfm.api.finder.core.fixed.SpaceFinder
  * The string enclosed by "*" will be the search result.
  *
  * ### Notes
- * - Only allow characters matching the regex pattern of [a-z0-9 \t] (case insensitive)
- * - If the character before the starting symbol (the first "*") matches [a-z0-9] (case insensitive), it is not recognized as italic formatting.
+ * - Only allow characters matching the regex pattern of [a-z0-9 \t] (case-insensitive)
+ * - If the character before the starting symbol (the first "*") matches [a-z0-9] (case-insensitive), it is not recognized as italic formatting.
  * - The content cannot be left empty.
  */
 @Suppress("DuplicatedCode")

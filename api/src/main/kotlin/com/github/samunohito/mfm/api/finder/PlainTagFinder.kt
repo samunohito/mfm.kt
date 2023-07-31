@@ -6,6 +6,13 @@ import com.github.samunohito.mfm.api.finder.core.StringFinder
 import com.github.samunohito.mfm.api.finder.core.charsequence.SequentialScanFinder
 import com.github.samunohito.mfm.api.finder.core.fixed.NewLineFinder
 
+/**
+ * An [ISubstringFinder] implementation for detecting "plain tag" syntax.
+ * The string enclosed by <plain> tags will be the search result.
+ *
+ * ### Notes
+ * - Nesting of MFM syntax is not possible. All content is interpreted as text.
+ */
 object PlainTagFinder : ISubstringFinder {
   private val open = StringFinder("<plain>")
   private val close = StringFinder("</plain>")

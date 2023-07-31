@@ -6,6 +6,15 @@ import com.github.samunohito.mfm.api.finder.core.StringFinder
 import com.github.samunohito.mfm.api.finder.core.charsequence.AlternateScanFinder
 import com.github.samunohito.mfm.api.finder.core.fixed.NewLineFinder
 
+/**
+ * An [ISubstringFinder] implementation for detecting "math inline" syntax.
+ * The string enclosed by "\[" and "\]" will be the search result.
+ *
+ * ### Notes
+ * - Nesting of MFM syntax is not possible. All content is interpreted as text.
+ * - Content cannot be empty.
+ * - The content cannot contain line breaks.
+ */
 object MathInlineFinder : ISubstringFinder {
   private val open = StringFinder(word = "\\(")
   private val close = StringFinder("\\)")

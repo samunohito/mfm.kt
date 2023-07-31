@@ -7,6 +7,15 @@ import com.github.samunohito.mfm.api.finder.core.SequentialFinder
 import com.github.samunohito.mfm.api.utils.merge
 import com.github.samunohito.mfm.api.utils.next
 
+/**
+ * An [ISubstringFinder] implementation for detecting "URL" syntax.
+ * Strings that match the pattern "https?://..." are the search results.
+ *
+ * ### Notes
+ * - The content can contain characters matching [.,a-z0-9_/:%#@$&?!~=+-] (case-insensitive).
+ * - Parentheses can be used in the content if they come in pairs. Relevant pairs: ()[].
+ * - "." or "," cannot be the last character.
+ */
 object UrlFinder : ISubstringFinder {
   private val regexCommaAndPeriodTail = Regex("[.,]+$")
   private val urlFinder = SequentialFinder(

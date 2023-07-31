@@ -16,7 +16,7 @@ import com.github.samunohito.mfm.api.utils.next
  * - The content cannot contain half-width spaces, full-width spaces, newlines, or tab characters.
  * - The content cannot include . , ! ? ' " # : / 【 】 < > 【 】 ( ) 「 」 （ ）.
  * - Parentheses can only be included in the content when they come in pairs. Relevant pairs: () [] 「」 （）.
- * - Recognize as a hashtag if the character before # does not match [a-z0-9](case insensitive).
+ * - Recognize as a hashtag if the character before # does not match [a-z0-9](case-insensitive).
  * - If the content is only numbers, it will not be recognized as a hashtag.
  */
 object HashtagFinder : ISubstringFinder {

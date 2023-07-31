@@ -8,6 +8,16 @@ import com.github.samunohito.mfm.api.finder.core.fixed.LineBeginFinder
 import com.github.samunohito.mfm.api.finder.core.fixed.LineEndFinder
 import com.github.samunohito.mfm.api.finder.core.fixed.NewLineFinder
 
+/**
+ * An [ISubstringFinder] implementation for detecting "math block" syntax.
+ * The string enclosed by "\\[" and "\\]" will be the search result.
+ *
+ * ### Notes
+ * - Nesting of MFM syntax is not possible. All content is interpreted as text.
+ * - "\\[" must be the beginning of the line.
+ * - "\\]" must be the end of the line.
+ * - Leading and trailing spaces and newlines are trimmed.
+ */
 object MathBlockFinder : ISubstringFinder {
   private val open = StringFinder("\\[")
   private val close = StringFinder("\\]")

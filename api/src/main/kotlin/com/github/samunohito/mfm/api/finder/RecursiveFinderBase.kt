@@ -4,6 +4,13 @@ import com.github.samunohito.mfm.api.finder.core.FoundType
 import com.github.samunohito.mfm.api.utils.merge
 import com.github.samunohito.mfm.api.utils.next
 
+
+/**
+ * Base implementation for detecting nested MFM forms within MFM forms.
+ * Parse recursively until [terminateFinder] is satisfied.
+ * Note that the [ISubstringFinder]s registered in [ISubstringFinderContext.excludeFinders],
+ * which are passed to [ISubstringFinder.find], are not used during analysis.
+ */
 abstract class RecursiveFinderBase(
   private val terminateFinder: ISubstringFinder
 ) : ISubstringFinder {

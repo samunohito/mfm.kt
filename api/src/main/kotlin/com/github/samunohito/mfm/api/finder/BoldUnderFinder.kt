@@ -12,7 +12,7 @@ import com.github.samunohito.mfm.api.finder.core.fixed.SpaceFinder
  * The string enclosed by "__" will be the search result.
  *
  * ### Notes
- * - Only allow characters matching the regex pattern of [a-z0-9 \t] (case insensitive)
+ * - Only allow characters matching the regex pattern of [a-z0-9 \t] (case-insensitive)
  * - The Content cannot be left empty.
  */
 object BoldUnderFinder : ISubstringFinder {
