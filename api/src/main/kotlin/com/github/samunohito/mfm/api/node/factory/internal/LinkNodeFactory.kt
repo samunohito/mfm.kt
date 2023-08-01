@@ -1,9 +1,10 @@
 package com.github.samunohito.mfm.api.node.factory.internal
 
-import com.github.samunohito.mfm.api.finder.LinkFinder
 import com.github.samunohito.mfm.api.finder.SubstringFoundInfo
 import com.github.samunohito.mfm.api.finder.core.FoundType
-import com.github.samunohito.mfm.api.node.*
+import com.github.samunohito.mfm.api.finder.inline.LinkFinder
+import com.github.samunohito.mfm.api.node.MfmLink
+import com.github.samunohito.mfm.api.node.MfmNodeAttribute
 import com.github.samunohito.mfm.api.node.factory.NodeFactory
 
 object LinkNodeFactory : SimpleNodeFactoryBase<MfmLink>() {

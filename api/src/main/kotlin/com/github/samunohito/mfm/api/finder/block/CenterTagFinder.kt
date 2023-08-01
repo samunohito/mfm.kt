@@ -1,5 +1,6 @@
-package com.github.samunohito.mfm.api.finder
+package com.github.samunohito.mfm.api.finder.block
 
+import com.github.samunohito.mfm.api.finder.*
 import com.github.samunohito.mfm.api.finder.core.FoundType
 import com.github.samunohito.mfm.api.finder.core.SequentialFinder
 import com.github.samunohito.mfm.api.finder.core.StringFinder
@@ -24,7 +25,7 @@ object CenterTagFinder : ISubstringFinder {
     LineBeginFinder,
     open,
     NewLineFinder.optional(),
-    InlineFinder(SequentialFinder(NewLineFinder.optional(), close)),
+    InlineFinder(SequentialFinder(optional(), close)),
     NewLineFinder.optional(),
     close,
     LineEndFinder,

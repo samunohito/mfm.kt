@@ -1,5 +1,6 @@
-package com.github.samunohito.mfm.api.finder
+package com.github.samunohito.mfm.api.finder.inline
 
+import com.github.samunohito.mfm.api.finder.*
 import com.github.samunohito.mfm.api.finder.core.FoundType
 import com.github.samunohito.mfm.api.utils.next
 import com.github.samunohito.mfm.api.utils.offset

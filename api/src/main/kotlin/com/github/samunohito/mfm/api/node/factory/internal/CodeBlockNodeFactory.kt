@@ -1,7 +1,7 @@
 package com.github.samunohito.mfm.api.node.factory.internal
 
-import com.github.samunohito.mfm.api.finder.CodeBlockFinder
 import com.github.samunohito.mfm.api.finder.SubstringFoundInfo
+import com.github.samunohito.mfm.api.finder.block.CodeBlockFinder
 import com.github.samunohito.mfm.api.finder.core.FoundType
 import com.github.samunohito.mfm.api.node.MfmBlockCode
 

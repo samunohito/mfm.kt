@@ -1,25 +1,27 @@
-package com.github.samunohito.mfm.api.finder
+package com.github.samunohito.mfm.api.finder.inline
 
+import com.github.samunohito.mfm.api.finder.*
+import com.github.samunohito.mfm.api.finder.core.AlternateFinder
 import com.github.samunohito.mfm.api.finder.core.FoundType
 import com.github.samunohito.mfm.api.finder.core.SequentialFinder
 import com.github.samunohito.mfm.api.finder.core.StringFinder
+import com.github.samunohito.mfm.api.finder.core.fixed.NewLineFinder
 
 /**
- * An [ISubstringFinder] implementation for detecting "bold" syntax.
- * The string enclosed by <i> tags will be the search result.
+ * An [ISubstringFinder] implementation for detecting "strike" syntax.
+ * The string enclosed by "~~" will be the search result.
  *
  * ### Notes
  * - Apply [InlineFinder] to the content again to recursively detect inline syntax.
- * - Any character and newline can be used in the content.
+ * - Characters other than "~" and newline can be used in the content.
  * - The content cannot be left empty.
  */
-object ItalicTagFinder : ISubstringFinder {
-  private val open = StringFinder("<i>")
-  private val close = StringFinder("</i>")
+object StrikeWaveFinder : ISubstringFinder {
+  private val mark = StringFinder("~~")
   private val finder = SequentialFinder(
-    open,
-    InlineFinder(close),
-    close
+    mark,
+    InlineFinder(AlternateFinder(mark, NewLineFinder)),
+    mark
   )
 
   override fun find(input: String, startAt: Int, context: ISubstringFinderContext): ISubstringFinderResult {
@@ -30,7 +32,7 @@ object ItalicTagFinder : ISubstringFinder {
 
     val contents = result.foundInfo.nestedInfos[1]
     return success(
-      FoundType.ItalicTag,
+      FoundType.StrikeWave,
       result.foundInfo.overallRange,
       contents.contentRange,
       result.foundInfo.resumeIndex,

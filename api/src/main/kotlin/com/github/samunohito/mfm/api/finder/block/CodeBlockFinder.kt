@@ -1,5 +1,6 @@
-package com.github.samunohito.mfm.api.finder
+package com.github.samunohito.mfm.api.finder.block
 
+import com.github.samunohito.mfm.api.finder.*
 import com.github.samunohito.mfm.api.finder.core.FoundType
 import com.github.samunohito.mfm.api.finder.core.SequentialFinder
 import com.github.samunohito.mfm.api.finder.core.StringFinder

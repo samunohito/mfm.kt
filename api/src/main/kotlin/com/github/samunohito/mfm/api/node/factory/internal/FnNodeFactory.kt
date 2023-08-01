@@ -1,8 +1,8 @@
 package com.github.samunohito.mfm.api.node.factory.internal
 
-import com.github.samunohito.mfm.api.finder.FnFinder
 import com.github.samunohito.mfm.api.finder.SubstringFoundInfo
 import com.github.samunohito.mfm.api.finder.core.FoundType
+import com.github.samunohito.mfm.api.finder.inline.FnFinder
 import com.github.samunohito.mfm.api.node.IMfmNode
 import com.github.samunohito.mfm.api.node.MfmFn
 import com.github.samunohito.mfm.api.node.MfmNodeAttribute

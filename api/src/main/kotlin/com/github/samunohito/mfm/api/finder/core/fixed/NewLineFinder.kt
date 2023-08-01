@@ -4,7 +4,6 @@ import com.github.samunohito.mfm.api.finder.ISubstringFinder
 import com.github.samunohito.mfm.api.finder.ISubstringFinderContext
 import com.github.samunohito.mfm.api.finder.ISubstringFinderResult
 import com.github.samunohito.mfm.api.finder.core.AlternateFinder
-import com.github.samunohito.mfm.api.finder.core.utils.SubstringFinderUtils
 
 /**
  * An implementation of [ISubstringFinder] that searches for newline characters (line feed, carriage return, and carriage return followed by line feed) in a given string

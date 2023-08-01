@@ -1,7 +1,9 @@
 package com.github.samunohito.mfm.api.finder
 
+import com.github.samunohito.mfm.api.finder.block.*
 import com.github.samunohito.mfm.api.finder.core.FoundType
 import com.github.samunohito.mfm.api.finder.core.fixed.CharSequenceTerminateFinder
+import com.github.samunohito.mfm.api.finder.inline.*
 
 /**
  * An [ISubstringFinder] implementation for detecting all syntax.
