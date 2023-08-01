@@ -3,6 +3,9 @@ package com.github.samunohito.mfm.api.finder
 import com.github.samunohito.mfm.api.finder.core.FoundType
 import com.github.samunohito.mfm.api.finder.core.fixed.CharSequenceTerminateFinder
 
+/**
+ * An [ISubstringFinder] implementation for detecting inline syntax.
+ */
 class InlineFinder(
   terminateFinder: ISubstringFinder = CharSequenceTerminateFinder,
 ) : RecursiveFinderBase(terminateFinder) {
