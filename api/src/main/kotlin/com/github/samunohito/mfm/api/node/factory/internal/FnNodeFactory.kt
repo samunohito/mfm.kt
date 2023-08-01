@@ -1,12 +1,12 @@
 package com.github.samunohito.mfm.api.node.factory.internal
 
-import com.github.samunohito.mfm.api.finder.SubstringFoundInfo
-import com.github.samunohito.mfm.api.finder.core.FoundType
-import com.github.samunohito.mfm.api.finder.inline.FnFinder
 import com.github.samunohito.mfm.api.node.IMfmNode
 import com.github.samunohito.mfm.api.node.MfmFn
 import com.github.samunohito.mfm.api.node.MfmNodeAttribute
 import com.github.samunohito.mfm.api.node.factory.NodeFactory
+import com.github.samunohito.mfm.api.parser.SubstringFoundInfo
+import com.github.samunohito.mfm.api.parser.core.FoundType
+import com.github.samunohito.mfm.api.parser.inline.FnParser
 
 object FnNodeFactory : SimpleNodeFactoryBase<MfmFn>() {
   override val supportFoundTypes: Set<FoundType> = setOf(FoundType.Fn)
@@ -29,12 +29,12 @@ object FnNodeFactory : SimpleNodeFactoryBase<MfmFn>() {
   }
 
   private fun sliceName(input: String, foundInfo: SubstringFoundInfo): String {
-    val name = foundInfo[FnFinder.SubIndex.Name]
+    val name = foundInfo[FnParser.SubIndex.Name]
     return input.substring(name.contentRange)
   }
 
   private fun sliceArgs(input: String, foundInfo: SubstringFoundInfo): Map<String, Any> {
-    val args = foundInfo[FnFinder.SubIndex.Args]
+    val args = foundInfo[FnParser.SubIndex.Args]
     return args.nestedInfos.asSequence()
       .map { input.substring(it.contentRange) }
       .map { it.split("=") }
@@ -48,7 +48,7 @@ object FnNodeFactory : SimpleNodeFactoryBase<MfmFn>() {
   }
 
   private fun sliceContent(input: String, foundInfo: SubstringFoundInfo, context: INodeFactoryContext): List<IMfmNode> {
-    val content = foundInfo[FnFinder.SubIndex.Content]
+    val content = foundInfo[FnParser.SubIndex.Content]
     return NodeFactory.createNodes(input, content.nestedInfos, context, MfmNodeAttribute.setOfInline)
   }
 }

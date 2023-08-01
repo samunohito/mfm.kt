@@ -1,9 +1,9 @@
 package com.github.samunohito.mfm.api.node.factory.internal
 
-import com.github.samunohito.mfm.api.finder.SubstringFoundInfo
-import com.github.samunohito.mfm.api.finder.core.FoundType
-import com.github.samunohito.mfm.api.finder.inline.MentionFinder
 import com.github.samunohito.mfm.api.node.MfmMention
+import com.github.samunohito.mfm.api.parser.SubstringFoundInfo
+import com.github.samunohito.mfm.api.parser.core.FoundType
+import com.github.samunohito.mfm.api.parser.inline.MentionParser
 
 object MentionNodeFactory : SimpleNodeFactoryBase<MfmMention>() {
   override val supportFoundTypes: Set<FoundType> = setOf(FoundType.Mention)
@@ -13,8 +13,8 @@ object MentionNodeFactory : SimpleNodeFactoryBase<MfmMention>() {
     foundInfo: SubstringFoundInfo,
     context: INodeFactoryContext
   ): IFactoryResult<MfmMention> {
-    val usernameInfo = foundInfo[MentionFinder.SubIndex.Username]
-    val hostnameInfo = foundInfo[MentionFinder.SubIndex.Hostname]
+    val usernameInfo = foundInfo[MentionParser.SubIndex.Username]
+    val hostnameInfo = foundInfo[MentionParser.SubIndex.Hostname]
 
     val username = input.substring(usernameInfo.contentRange)
     val hostname = if (hostnameInfo != SubstringFoundInfo.EMPTY) {

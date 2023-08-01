@@ -1,12 +1,12 @@
 package com.github.samunohito.mfm.api.node.factory.internal
 
-import com.github.samunohito.mfm.api.finder.FullFinder
-import com.github.samunohito.mfm.api.finder.ISubstringFinderContext
-import com.github.samunohito.mfm.api.finder.SubstringFoundInfo
-import com.github.samunohito.mfm.api.finder.core.FoundType
 import com.github.samunohito.mfm.api.node.MfmNodeAttribute
 import com.github.samunohito.mfm.api.node.MfmQuote
 import com.github.samunohito.mfm.api.node.factory.NodeFactory
+import com.github.samunohito.mfm.api.parser.FullParser
+import com.github.samunohito.mfm.api.parser.IMfmParserContext
+import com.github.samunohito.mfm.api.parser.SubstringFoundInfo
+import com.github.samunohito.mfm.api.parser.core.FoundType
 
 object QuoteNodeFactory : SimpleNodeFactoryBase<MfmQuote>() {
   override val supportFoundTypes: Set<FoundType> = setOf(FoundType.Quote)
@@ -23,9 +23,9 @@ object QuoteNodeFactory : SimpleNodeFactoryBase<MfmQuote>() {
     }
 
     // parse inner content
-    val finderContext = ISubstringFinderContext.Impl()
+    val finderContext = IMfmParserContext.Impl()
     val contentText = contentLines.joinToString("\n")
-    val contentFindResult = FullFinder().find(contentText, 0, finderContext)
+    val contentFindResult = FullParser().find(contentText, 0, finderContext)
     if (!contentFindResult.success) {
       return failure()
     }

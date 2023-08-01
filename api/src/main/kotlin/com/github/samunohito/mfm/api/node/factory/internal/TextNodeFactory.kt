@@ -1,7 +1,7 @@
 package com.github.samunohito.mfm.api.node.factory.internal
 
-import com.github.samunohito.mfm.api.finder.SubstringFoundInfo
 import com.github.samunohito.mfm.api.node.MfmText
+import com.github.samunohito.mfm.api.parser.SubstringFoundInfo
 
 object TextNodeFactory : INodeFactory<MfmText> {
   override fun create(

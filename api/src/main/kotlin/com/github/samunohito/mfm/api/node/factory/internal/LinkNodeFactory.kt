@@ -1,11 +1,11 @@
 package com.github.samunohito.mfm.api.node.factory.internal
 
-import com.github.samunohito.mfm.api.finder.SubstringFoundInfo
-import com.github.samunohito.mfm.api.finder.core.FoundType
-import com.github.samunohito.mfm.api.finder.inline.LinkFinder
 import com.github.samunohito.mfm.api.node.MfmLink
 import com.github.samunohito.mfm.api.node.MfmNodeAttribute
 import com.github.samunohito.mfm.api.node.factory.NodeFactory
+import com.github.samunohito.mfm.api.parser.SubstringFoundInfo
+import com.github.samunohito.mfm.api.parser.core.FoundType
+import com.github.samunohito.mfm.api.parser.inline.LinkParser
 
 object LinkNodeFactory : SimpleNodeFactoryBase<MfmLink>() {
   override val supportFoundTypes: Set<FoundType> = setOf(FoundType.Link)
@@ -15,9 +15,9 @@ object LinkNodeFactory : SimpleNodeFactoryBase<MfmLink>() {
     foundInfo: SubstringFoundInfo,
     context: INodeFactoryContext
   ): IFactoryResult<MfmLink> {
-    val squareOpen = foundInfo[LinkFinder.SubIndex.SquareOpen]
-    val label = foundInfo[LinkFinder.SubIndex.Label]
-    val url = foundInfo[LinkFinder.SubIndex.Url]
+    val squareOpen = foundInfo[LinkParser.SubIndex.SquareOpen]
+    val label = foundInfo[LinkParser.SubIndex.Label]
+    val url = foundInfo[LinkParser.SubIndex.Url]
 
     val isSilent = (input.substring(squareOpen.contentRange) == "?[")
     val urlText = input.substring(url.contentRange)

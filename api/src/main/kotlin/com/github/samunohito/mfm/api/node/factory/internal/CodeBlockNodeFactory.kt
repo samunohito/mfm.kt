@@ -1,9 +1,9 @@
 package com.github.samunohito.mfm.api.node.factory.internal
 
-import com.github.samunohito.mfm.api.finder.SubstringFoundInfo
-import com.github.samunohito.mfm.api.finder.block.CodeBlockFinder
-import com.github.samunohito.mfm.api.finder.core.FoundType
 import com.github.samunohito.mfm.api.node.MfmBlockCode
+import com.github.samunohito.mfm.api.parser.SubstringFoundInfo
+import com.github.samunohito.mfm.api.parser.block.CodeBlockParser
+import com.github.samunohito.mfm.api.parser.core.FoundType
 
 object CodeBlockNodeFactory : SimpleNodeFactoryBase<MfmBlockCode>() {
   override val supportFoundTypes: Set<FoundType> = setOf(FoundType.CodeBlock)
@@ -13,8 +13,8 @@ object CodeBlockNodeFactory : SimpleNodeFactoryBase<MfmBlockCode>() {
     foundInfo: SubstringFoundInfo,
     context: INodeFactoryContext
   ): IFactoryResult<MfmBlockCode> {
-    val langResult = foundInfo[CodeBlockFinder.SubIndex.Lang]
-    val codeResult = foundInfo[CodeBlockFinder.SubIndex.Code]
+    val langResult = foundInfo[CodeBlockParser.SubIndex.Lang]
+    val codeResult = foundInfo[CodeBlockParser.SubIndex.Code]
 
     val code = input.substring(codeResult.contentRange)
     val node = if (langResult != SubstringFoundInfo.EMPTY) {

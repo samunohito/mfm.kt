@@ -1,8 +1,8 @@
 package com.github.samunohito.mfm.api.node.factory.internal
 
-import com.github.samunohito.mfm.api.finder.SubstringFoundInfo
-import com.github.samunohito.mfm.api.finder.core.FoundType
 import com.github.samunohito.mfm.api.node.IMfmNode
+import com.github.samunohito.mfm.api.parser.SubstringFoundInfo
+import com.github.samunohito.mfm.api.parser.core.FoundType
 
 abstract class SimpleNodeFactoryBase<T : IMfmNode> : INodeFactory<T> {
   protected abstract val supportFoundTypes: Set<FoundType>

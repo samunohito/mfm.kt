@@ -2,10 +2,10 @@
 
 package com.github.samunohito.mfm.api.node.factory.internal
 
-import com.github.samunohito.mfm.api.finder.SubstringFoundInfo
-import com.github.samunohito.mfm.api.finder.core.FoundType
 import com.github.samunohito.mfm.api.node.MfmItalic
 import com.github.samunohito.mfm.api.node.MfmText
+import com.github.samunohito.mfm.api.parser.SubstringFoundInfo
+import com.github.samunohito.mfm.api.parser.core.FoundType
 
 object ItalicUnderNodeFactory : SimpleNodeFactoryBase<MfmItalic>() {
   override val supportFoundTypes: Set<FoundType> = setOf(FoundType.ItalicUnder)

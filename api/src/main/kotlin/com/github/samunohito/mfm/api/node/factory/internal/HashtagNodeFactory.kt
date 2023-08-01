@@ -1,8 +1,8 @@
 package com.github.samunohito.mfm.api.node.factory.internal
 
-import com.github.samunohito.mfm.api.finder.SubstringFoundInfo
-import com.github.samunohito.mfm.api.finder.core.FoundType
 import com.github.samunohito.mfm.api.node.MfmHashtag
+import com.github.samunohito.mfm.api.parser.SubstringFoundInfo
+import com.github.samunohito.mfm.api.parser.core.FoundType
 
 object HashtagNodeFactory : SimpleNodeFactoryBase<MfmHashtag>() {
   override val supportFoundTypes: Set<FoundType> = setOf(FoundType.Hashtag)

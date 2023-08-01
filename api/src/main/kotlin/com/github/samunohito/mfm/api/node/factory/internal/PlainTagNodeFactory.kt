@@ -1,9 +1,9 @@
 package com.github.samunohito.mfm.api.node.factory.internal
 
-import com.github.samunohito.mfm.api.finder.SubstringFoundInfo
-import com.github.samunohito.mfm.api.finder.core.FoundType
 import com.github.samunohito.mfm.api.node.MfmPlain
 import com.github.samunohito.mfm.api.node.MfmText
+import com.github.samunohito.mfm.api.parser.SubstringFoundInfo
+import com.github.samunohito.mfm.api.parser.core.FoundType
 
 object PlainTagNodeFactory : SimpleNodeFactoryBase<MfmPlain>() {
   override val supportFoundTypes = setOf(FoundType.PlainTag)

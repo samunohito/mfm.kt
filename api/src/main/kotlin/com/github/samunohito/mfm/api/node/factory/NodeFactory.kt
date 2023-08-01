@@ -1,12 +1,12 @@
 package com.github.samunohito.mfm.api.node.factory
 
-import com.github.samunohito.mfm.api.finder.SubstringFoundInfo
-import com.github.samunohito.mfm.api.finder.core.FoundType
 import com.github.samunohito.mfm.api.node.IMfmNode
 import com.github.samunohito.mfm.api.node.MfmNest
 import com.github.samunohito.mfm.api.node.MfmNodeAttribute
 import com.github.samunohito.mfm.api.node.MfmText
 import com.github.samunohito.mfm.api.node.factory.internal.*
+import com.github.samunohito.mfm.api.parser.SubstringFoundInfo
+import com.github.samunohito.mfm.api.parser.core.FoundType
 
 object NodeFactory {
   fun createNodes(

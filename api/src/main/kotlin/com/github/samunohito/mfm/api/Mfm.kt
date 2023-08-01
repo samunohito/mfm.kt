@@ -1,12 +1,12 @@
 package com.github.samunohito.mfm.api
 
-import com.github.samunohito.mfm.api.finder.FullFinder
-import com.github.samunohito.mfm.api.finder.ISubstringFinderContext
-import com.github.samunohito.mfm.api.finder.SimpleFinder
 import com.github.samunohito.mfm.api.node.IMfmNode
 import com.github.samunohito.mfm.api.node.MfmNodeAttribute
 import com.github.samunohito.mfm.api.node.factory.NodeFactory
 import com.github.samunohito.mfm.api.node.factory.internal.INodeFactoryContext
+import com.github.samunohito.mfm.api.parser.FullParser
+import com.github.samunohito.mfm.api.parser.IMfmParserContext
+import com.github.samunohito.mfm.api.parser.SimpleParser
 
 object Mfm {
   /**
@@ -14,8 +14,8 @@ object Mfm {
    */
   @JvmStatic
   fun parse(input: String, maxNestLevel: Int = 20): List<IMfmNode> {
-    val finderContext = ISubstringFinderContext.Impl()
-    val findResult = FullFinder().find(input, 0, finderContext)
+    val finderContext = IMfmParserContext.Impl()
+    val findResult = FullParser().find(input, 0, finderContext)
     if (!findResult.success) {
       return listOf()
     }
@@ -34,8 +34,8 @@ object Mfm {
    */
   @JvmStatic
   fun parseSimple(input: String, maxNestLevel: Int = 20): List<IMfmNode> {
-    val finderContext = ISubstringFinderContext.Impl()
-    val findResult = SimpleFinder().find(input, 0, finderContext)
+    val finderContext = IMfmParserContext.Impl()
+    val findResult = SimpleParser().find(input, 0, finderContext)
     if (!findResult.success) {
       return listOf()
     }

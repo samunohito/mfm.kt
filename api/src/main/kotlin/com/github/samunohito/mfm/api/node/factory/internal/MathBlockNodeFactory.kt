@@ -1,8 +1,8 @@
 package com.github.samunohito.mfm.api.node.factory.internal
 
-import com.github.samunohito.mfm.api.finder.SubstringFoundInfo
-import com.github.samunohito.mfm.api.finder.core.FoundType
 import com.github.samunohito.mfm.api.node.MfmMathBlock
+import com.github.samunohito.mfm.api.parser.SubstringFoundInfo
+import com.github.samunohito.mfm.api.parser.core.FoundType
 
 object MathBlockNodeFactory : SimpleNodeFactoryBase<MfmMathBlock>() {
   override val supportFoundTypes: Set<FoundType> = setOf(FoundType.MathBlock)
