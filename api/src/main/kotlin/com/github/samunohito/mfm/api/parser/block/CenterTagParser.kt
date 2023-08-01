@@ -25,7 +25,7 @@ object CenterTagParser : IMfmParser {
     LineBeginParser,
     open,
     NewLineParser.optional(),
-    InlineParser(SequentialParser(optional(), close)),
+    InlineParser(SequentialParser(NewLineParser.optional(), close)),
     NewLineParser.optional(),
     close,
     LineEndParser,
