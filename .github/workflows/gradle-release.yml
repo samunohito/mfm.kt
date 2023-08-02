@@ -45,11 +45,25 @@ jobs:
           arguments: :api:jar
 
       - name: release
-        uses: ncipollo/release-action@v1
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: release ${{ env.VERSION }}
-          artifacts: "api/build/libs/mfm-*.jar"
-          token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: v${{ env.VERSION }}
+          release_name: Release ${{ env.VERSION }}
+          body_path: ./api/build/libs/mfm-*.jar
+          draft: false
+          prerelease: false
+
+      - name: upload
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./api/build/libs/mfm-*.jar
 
       - name: apply version to repository
         run: |
