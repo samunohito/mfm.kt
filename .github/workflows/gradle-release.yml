@@ -52,7 +52,7 @@ jobs:
       - name: release
         uses: ncipollo/release-action@v1
         with:
-          name: release ${{ steps.init.outputs.version }}
+          name: ${{ steps.init.outputs.version }}
           artifacts: "api/build/libs/mfm-*.jar"
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
