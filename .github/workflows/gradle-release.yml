@@ -59,7 +59,7 @@ jobs:
         with:
           tag_name: v${{ env.VERSION }}
           release_name: Release ${{ env.VERSION }}
-          body_path: ./api/build/libs/mfm-*.jar
+          body_path: ./api/build/libs/mfm-${{ env.VERSION }}.jar
           draft: false
           prerelease: false
 
@@ -70,7 +70,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./api/build/libs/mfm-*.jar
+          asset_path: ./api/build/libs/mfm-${{ env.VERSION }}.jar
 
       - name: apply version to repository
         run: |
