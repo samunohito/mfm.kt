@@ -12,3 +12,10 @@ runs:
       with:
         java-version: '11'
         distribution: 'corretto'
+
+    - name: apply version to properties and variables
+      shell: bash
+      run: |
+        export version=$(echo ${GITHUB_REF##*/} | sed 's/^v//')
+        echo "version=$version" > ./version.properties
+        echo "##[set-output name=version;]$version"
