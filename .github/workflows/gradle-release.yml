@@ -33,7 +33,7 @@ jobs:
         with:
           arguments: build
 
-  publish-to-release:
+  publish-release:
     runs-on: ubuntu-latest
     needs: build
     steps:
@@ -56,7 +56,15 @@ jobs:
           artifacts: "api/build/libs/mfm-*.jar"
           token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
-  publish-to-package:
+      - name: publish
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: :api:publish
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+
+  build-docs:
     runs-on: ubuntu-latest
     needs: build
     steps:
@@ -76,5 +84,13 @@ jobs:
         with:
           path: build/dokka/html
 
+  deploy-docs:
+    runs-on: ubuntu-latest
+    needs: build-docs
+    environment:
+      name: mfm.kt docs
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - name: deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v2
