@@ -10,23 +10,21 @@ permissions:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
       - name: checkout
         uses: actions/checkout@v3
 
-      - name: executable
-        run: chmod a+x ./gradlew
+      - name: init
+        uses: ./.github/actions/init
 
-      - name: setup jdk
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'corretto'
-
-      - name: build and test
+      - name: build
         uses: gradle/gradle-build-action@v2
         with:
           arguments: build
+
+      - name: apply version to properties and variables
+        run: |
+          export version=$(echo ${GITHUB_REF##*/} | sed 's/^v//')
+          echo "version=$version" > ./version.properties
+          echo "##[set-output name=version;]$version"

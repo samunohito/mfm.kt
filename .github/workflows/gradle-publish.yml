@@ -1,8 +1,10 @@
 name: Publish
 
 on:
-  release:
-    types: [ created ]
+  workflow_dispatch:
+
+#  release:
+#    types: [ created ]
 
 jobs:
   build:
@@ -44,3 +46,4 @@ jobs:
         env:
           USERNAME: ${{ github.actor }}
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

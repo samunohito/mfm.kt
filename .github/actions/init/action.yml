@@ -1,0 +1,14 @@
+name: initialize
+description: 'Initializes the project using Gradle'
+runs:
+  using: composite
+  steps:
+    - name: executable
+      shell: bash
+      run: chmod a+x ./gradlew
+
+    - name: setup jdk
+      uses: actions/setup-java@v3
+      with:
+        java-version: '11'
+        distribution: 'corretto'
