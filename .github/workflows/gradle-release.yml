@@ -43,6 +43,13 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: :api:jar
+          
+      - name: path
+        run: |
+          ls -l
+          ls -l ./api
+          ls -l ./api/build/
+          ls -l ./api/build/libs
 
       - name: release
         id: create_release
