@@ -70,10 +70,10 @@ jobs:
         with:
           arguments: dokkaHtml
 
-#      - name: upload artifact
-#        uses: actions/upload-pages-artifact@v2
-#        with:
-#          path: build/dokka/html
+      - name: upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: build/dokka/html
 
       - name: deploy to GitHub Pages
         uses: actions/deploy-pages@v2
