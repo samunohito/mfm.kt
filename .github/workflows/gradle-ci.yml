@@ -18,7 +18,5 @@ jobs:
       - name: init
         uses: ./.github/actions/init
 
-      - name: build
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: build --stacktrace --info --console=plain
+      - name: build and test
+        uses: ./.github/actions/buildAndTest
