@@ -16,7 +16,7 @@ runs:
     - name: export version
       shell: bash
       run: |
-        if [[ ${GITHUB_REF} =~ ^refs/tags/ ]; then
+        if [[ ${GITHUB_REF} =~ ^refs/tags/ ]]; then
           export version=$(echo ${GITHUB_REF##*/} | sed 's/^v//')
         else
           export version=$(grep -oP '(?<=version=)\d+\.\d+\.\d+' ./version.properties)
