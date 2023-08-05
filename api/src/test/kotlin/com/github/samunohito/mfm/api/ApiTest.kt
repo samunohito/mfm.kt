@@ -15,11 +15,10 @@ class ApiTest {
   inner class ToString {
     @Test
     fun basic() {
-      // TODO: everynayn!のあとに🎉が入る予定だが、絵文字は未実装なので…
       val input = """
         before
         <center>
-        Hello ${'$'}[tada everynyan!]
+        Hello ${'$'}[tada everynyan! 🎉]
 
         I'm @ai, A bot of misskey!
 
@@ -101,7 +100,6 @@ class ApiTest {
     }
 
     @Test
-    @Disabled("絵文字未実装")
     fun unicodeEmoji() {
       val input = "今起きた😇"
       assertEquals(

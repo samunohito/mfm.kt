@@ -419,7 +419,6 @@ class FullParserTest {
   }
 
   @Nested
-  @Disabled("現在未実装")
   inner class UnicodeEmoji {
     @Test
     fun basic() {
@@ -1053,7 +1052,6 @@ class FullParserTest {
     }
 
     @Test
-    @Disabled("TODO: fix")
     fun `with keycap number sign`() {
       val input = "#️⃣abc123 #abc"
       val output = listOf(
@@ -1065,13 +1063,12 @@ class FullParserTest {
     }
 
     @Test
-    @Disabled("TODO: fix")
     fun `with keycap number sign 2`() {
       val input = "abc\n#️⃣123"
       val output = listOf(
         MfmText("abc\n"),
         MfmUnicodeEmoji("#️⃣"),
-        MfmText("abc"),
+        MfmText("123"),
       )
       assertMfmNodeEquals(output, Mfm.parse(input))
     }

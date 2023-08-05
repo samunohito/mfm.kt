@@ -27,9 +27,7 @@ class SimpleParserTest {
       assertEquals(expect, actual)
     }
 
-    // TODO:絵文字対応したらDisabled解除
     @Test
-    @Disabled
     fun `keycap number sign`() {
       val input = "abc#\uFE0F⃣123"
       val expect = listOf(MfmText("abc"), MfmUnicodeEmoji("#\uFE0F⃣"), MfmText("123"))
