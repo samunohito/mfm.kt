@@ -4,13 +4,11 @@ runs:
   using: composite
   steps:
     - name: build
-      shell: bash
       uses: gradle/gradle-build-action@v2
       with:
         arguments: build -x test
 
     - name: test
-      shell: bash
       uses: gradle/gradle-build-action@v2
       with:
         arguments: test
