@@ -13,9 +13,14 @@ runs:
         java-version: '11'
         distribution: 'corretto'
 
-    - name: apply version to properties and variables
+    - name: export version
       shell: bash
       run: |
-        export version=$(echo ${GITHUB_REF##*/} | sed 's/^v//')
+        if [[ ${GITHUB_REF} =~ ^refs/tags/ ]; then
+          export version=$(echo ${GITHUB_REF##*/} | sed 's/^v//')
+        else
+          export version=$(grep -oP '(?<=version=)\d+\.\d+\.\d+' ./version.properties)
+        fi
+
         echo "version=$version" > ./version.properties
         echo "##[set-output name=version;]$version"
