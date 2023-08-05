@@ -34,7 +34,7 @@ NOTE:
 
 - 最新のバージョンについてはReleaseまたはPackagesを参照してください。
 - 上記の設定例ではGitHubのユーザー名とトークンを環境変数から取得しています。ご利用の環境にあわせて適切に設定してください（[GitHub Docsの参考ページ](https://docs.github.com/ja/packages/working-with-a-github-packages-registry/working-with-the-gradle-registry#using-a-published-package)）
-- このプロジェクトはKotlin 1.7.20で開発されているため、Kotlinのランタイムに依存しています。
+- このプロジェクトはKotlinで開発されているため、Kotlinのランタイムに依存しています。
 
 ## Usage
 

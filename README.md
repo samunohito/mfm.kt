@@ -32,7 +32,7 @@ dependencies {
 
 - For the latest version, please refer to Releases or Packages.
 - In the above configuration example, the GitHub username and token are fetched from environment variables. Please configure appropriately for your environment (Reference page on GitHub Docs).
-- This project is developed with Kotlin 1.7.20, so it depends on the Kotlin runtime.
+- This project is developed with Kotlin, so it depends on the Kotlin runtime.
 
 ## Usage
 
