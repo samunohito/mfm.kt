@@ -36,7 +36,7 @@ object UrlParser : IMfmParser {
         closeRegexBracket,
       ),
       // このパターンに合致する文字が登場するまでを繰り返し検索する
-      RegexParser(Regex("[.,a-z0-9_/:%#@\\\\$&?!~=+\\-]+")),
+      RegexParser(Regex("[.,a-zA-Z0-9_/:%#@\\\\$&?!~=+\\-]+")),
     )
 
     override fun find(input: String, startAt: Int, context: IMfmParserContext): IMfmParserResult {
