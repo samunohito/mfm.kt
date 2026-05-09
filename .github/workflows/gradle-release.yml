@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: init
         uses: ./.github/actions/init
@@ -32,7 +32,7 @@ jobs:
     needs: build
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: init
         id: init
@@ -63,7 +63,7 @@ jobs:
     needs: build
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: init
         uses: ./.github/actions/init
