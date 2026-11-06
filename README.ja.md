@@ -66,6 +66,8 @@ val text = mfmTree.stringify()
 
 ## Develop
 
+ビルドには JDK 21 が必要です。API と CLI のバイトコードは Java 8 向けです。Kotlin から利用する場合は Kotlin 2.4 のメタデータに対応したコンパイラが必要です。
+
 ```shell
 # Clone this repository
 git clone https://github.com/samunohito/mfm.kt.git

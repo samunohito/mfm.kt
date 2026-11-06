@@ -1,14 +1,8 @@
 name: BuildAndTest
-description: 'Build the project using Gradle'
+description: 'Build and test the project using the Gradle wrapper'
 runs:
   using: composite
   steps:
-    - name: build
-      uses: gradle/gradle-build-action@v2
-      with:
-        arguments: build -x test
-
-    - name: test
-      uses: gradle/gradle-build-action@v2
-      with:
-        arguments: test
+    - name: build and test
+      shell: bash
+      run: ./gradlew build :cli:shadowJar --no-daemon

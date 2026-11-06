@@ -3,6 +3,8 @@ name: CI
 on:
   pull_request:
     branches: [ "master" ]
+  push:
+    branches: [ "master" ]
   workflow_dispatch:
 
 permissions:
@@ -13,10 +15,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
 
       - name: init
         uses: ./.github/actions/init
 
       - name: build and test
         uses: ./.github/actions/buildAndTest
+      - name: validate docs and publication metadata
+        run: ./gradlew dokkaHtml :api:generatePomFileForMavenPublication :api:generateMetadataFileForMavenPublication --no-daemon
