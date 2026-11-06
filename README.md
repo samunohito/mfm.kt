@@ -63,6 +63,8 @@ val text = mfmTree.stringify()
 
 ## Develop
 
+Building requires JDK 21. The API and CLI target Java 8 bytecode; Kotlin consumers need a compiler compatible with Kotlin 2.4 metadata.
+
 ```shell
 # Clone this repository
 git clone https://github.com/samunohito/mfm.kt.git

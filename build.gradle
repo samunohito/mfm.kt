@@ -1,17 +1,21 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.7.20'
-    id 'org.jetbrains.dokka' version "1.+"
-    id("com.glovoapp.semantic-versioning") version "1.+"
+    id 'org.jetbrains.kotlin.jvm' version '2.4.21'
+    id 'org.jetbrains.dokka' version '2.3.0'
 }
 
 group = 'com.github.samunohito'
+
+def versionProperties = new Properties()
+versionProperties.load(new StringReader(providers.fileContents(layout.projectDirectory.file('version.properties')).asText.get()))
+version = versionProperties.getProperty('version')
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation 'ch.qos.logback:logback-classic:1.5.32'
+    dokka project(':api')
+    implementation 'ch.qos.logback:logback-classic:1.6.6'
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
 }
 
@@ -19,35 +23,36 @@ test {
     useJUnitPlatform()
 }
 
-compileKotlin {
-    kotlinOptions.jvmTarget = '1.8'
-}
-
-compileTestKotlin {
-    kotlinOptions.jvmTarget = '1.8'
-}
-
-dokkaHtml.configure {
-    String dokkaBaseConfiguration = """
-    {
-      "projectName": "mfm.kt",
-      "footerMessage": "(c) 2023 samunohito"
-    }
-    """
-    pluginsMapConfiguration.set(
-            // fully qualified plugin name to json configuration
-            ["org.jetbrains.dokka.base.DokkaBase": dokkaBaseConfiguration]
-    )
-
-    dokkaSourceSets {
-        configureEach {
-            sourceRoots.from(file("api/src/main/kotlin"))
-            documentedVisibilities.set(
-                    setOf(
-                            Visibility.PUBLIC,
-                            Visibility.PROTECTED,
-                    )
-            )
+allprojects {
+    plugins.withId('org.jetbrains.kotlin.jvm') {
+        kotlin {
+            jvmToolchain(21)
+            compilerOptions {
+                jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8
+            }
+        }
+        java {
+            sourceCompatibility = JavaVersion.VERSION_1_8
+            targetCompatibility = JavaVersion.VERSION_1_8
+        }
+        tasks.withType(Test).configureEach {
+            useJUnitPlatform()
         }
     }
+}
+
+dokka {
+    moduleName = 'mfm.kt'
+    dokkaPublications.html {
+        outputDirectory = layout.buildDirectory.dir('dokka/html')
+    }
+    pluginsConfiguration.html {
+        footerMessage = '(c) 2023 samunohito'
+    }
+}
+
+// Retain the existing documentation entry point for local users.
+tasks.register('dokkaHtml') {
+    group = 'documentation'
+    dependsOn tasks.named('dokkaGeneratePublicationHtml')
 }

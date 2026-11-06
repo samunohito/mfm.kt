@@ -7,8 +7,6 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: "pages"
@@ -19,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
 
       - name: init
         uses: ./.github/actions/init
@@ -28,63 +26,63 @@ jobs:
         uses: ./.github/actions/buildAndTest
 
   publish-release:
+    permissions:
+      contents: write
+      packages: write
     runs-on: ubuntu-latest
     needs: build
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
 
       - name: init
         id: init
         uses: ./.github/actions/init
 
       - name: jar
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: :api:jar
+        run: ./gradlew :api:jar --no-daemon
 
       - name: release
         uses: ncipollo/release-action@v1
         with:
           name: ${{ steps.init.outputs.version }}
           artifacts: "api/build/libs/mfm-*.jar"
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: publish
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: :api:publish
+        run: ./gradlew :api:publish --no-daemon
         env:
           GITHUB_ACTOR: ${{ github.actor }}
-          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build-docs:
     runs-on: ubuntu-latest
     needs: build
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
 
       - name: init
         uses: ./.github/actions/init
 
       - name: generate docs
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: dokkaHtml
+        run: ./gradlew dokkaHtml --no-daemon
 
       - name: upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v5
         with:
           path: build/dokka/html
 
   deploy-docs:
     runs-on: ubuntu-latest
     needs: build-docs
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: mfm.kt docs
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v5

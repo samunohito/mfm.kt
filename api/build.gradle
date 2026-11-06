@@ -1,7 +1,11 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.7.20'
+    id 'org.jetbrains.kotlin.jvm'
     id 'maven-publish'
+    id 'org.jetbrains.dokka'
 }
+
+group = rootProject.group
+version = rootProject.version
 
 repositories {
     mavenCentral()
@@ -29,7 +33,7 @@ publishing {
             groupId = group
             artifactId = name
             version = version
-            from components.kotlin
+            from components.java
         }
     }
     repositories {
@@ -41,5 +45,14 @@ publishing {
                 password = System.getenv("GITHUB_TOKEN")
             }
         }
+    }
+}
+dokka {
+    moduleName = 'mfm.kt'
+    dokkaSourceSets.configureEach {
+        documentedVisibilities.set([
+            org.jetbrains.dokka.gradle.engine.parameters.VisibilityModifier.Public,
+            org.jetbrains.dokka.gradle.engine.parameters.VisibilityModifier.Protected
+        ])
     }
 }
